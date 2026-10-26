@@ -47,6 +47,34 @@ function onDragLeave() {
   isDragging.value = false
 }
 
+function onPaste(e: ClipboardEvent) {
+  if (props.disabled) return
+
+  const clipboardData = e.clipboardData
+  if (!clipboardData) return
+
+  // 优先从 files 中查找图片
+  for (const file of clipboardData.files) {
+    if (file.type.startsWith('image/')) {
+      handleFile(file)
+      e.preventDefault()
+      return
+    }
+  }
+
+  // 从 items 中查找图片（某些浏览器只暴露 items）
+  for (const item of clipboardData.items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile()
+      if (file) {
+        handleFile(file)
+        e.preventDefault()
+        return
+      }
+    }
+  }
+}
+
 function clearFile() {
   selectedFile.value = null
   if (previewUrl.value) {
@@ -65,9 +93,11 @@ function clearFile() {
     <div
       class="drop-zone"
       :class="{ dragging: isDragging, disabled: props.disabled }"
+      tabindex="0"
       @drop.prevent="onDrop"
       @dragover.prevent="onDragOver"
       @dragleave.prevent="onDragLeave"
+      @paste="onPaste"
       @click="!props.disabled && fileInput?.click()"
     >
       <input
@@ -79,8 +109,8 @@ function clearFile() {
         @change="onInputChange"
       />
       <div v-if="!previewUrl" class="placeholder">
-        <p>点击或拖拽图片到此处</p>
-        <p class="hint">支持 PNG / JPG / JPEG</p>
+        <p>点击、拖拽或粘贴图片到此处</p>
+        <p class="hint">支持 PNG / JPG / JPEG · Ctrl+V 粘贴</p>
       </div>
       <img v-else :src="previewUrl" class="preview" alt="预览" />
     </div>
@@ -115,6 +145,12 @@ function clearFile() {
   cursor: pointer;
   transition: border-color 0.2s;
   background: #fafafa;
+  outline: none;
+}
+
+.drop-zone:focus-visible {
+  border-color: #4a90d9;
+  background: #e8f0fe;
 }
 
 .drop-zone.dragging {
