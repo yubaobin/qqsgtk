@@ -8,3 +8,8 @@ class OCRResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str
+
+
+class AnswerResponse(BaseModel):
+    question: str
+    answer: str

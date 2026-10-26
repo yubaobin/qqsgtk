@@ -111,3 +111,45 @@ def test_ocr_corrupt_image(client):
 
     assert response.status_code == 400
     assert "损坏" in response.json()["detail"]
+
+
+def test_answer_success(client):
+    """POST /answer with a valid question returns matched answer."""
+    from unittest.mock import patch
+    with patch("app.main.find_answer") as mock_find:
+        mock_find.return_value = {"question": "三国演义是谁的著作", "answer": "罗贯中"}
+
+        response = client.post(
+            "/answer",
+            json={"question": "三国演义是谁的著作"},
+        )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["question"] == "三国演义是谁的著作"
+    assert data["answer"] == "罗贯中"
+
+
+def test_answer_not_found(client):
+    """POST /answer with unmatched question returns 404."""
+    from unittest.mock import patch
+    with patch("app.main.find_answer") as mock_find:
+        mock_find.return_value = None
+
+        response = client.post(
+            "/answer",
+            json={"question": "完全不相关的问题"},
+        )
+
+    assert response.status_code == 404
+    assert "未找到" in response.json()["detail"]
+
+
+def test_answer_empty_question(client):
+    """POST /answer with empty question returns 400."""
+    response = client.post(
+        "/answer",
+        json={"question": ""},
+    )
+    assert response.status_code == 400
+    assert "不能为空" in response.json()["detail"]

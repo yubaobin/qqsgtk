@@ -1,10 +1,11 @@
 import logging
 
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.schemas import OCRResponse, HealthResponse
+from app.schemas import OCRResponse, HealthResponse, AnswerResponse
 from app.ocr_engine import recognize
+from app.answer_engine import find_answer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,6 +47,25 @@ async def ocr(file: UploadFile = File(...)):
 
     text = "\n".join(lines)
     return OCRResponse(text=text, lines=lines)
+
+
+@app.post("/answer", response_model=AnswerResponse)
+async def answer(request: Request):
+    """根据问题文本在 question.json 中模糊匹配答案。"""
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="请求体不是有效的 JSON")
+
+    question = body.get("question", "").strip()
+    if not question:
+        raise HTTPException(status_code=400, detail="问题不能为空")
+
+    result = find_answer(question)
+    if result is None:
+        raise HTTPException(status_code=404, detail="未找到匹配的答案")
+
+    return AnswerResponse(question=result["question"], answer=result["answer"])
 
 
 if __name__ == "__main__":
