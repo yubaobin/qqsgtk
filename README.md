@@ -39,6 +39,11 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
+
+# 首次运行需要下载 PaddleOCR 模型（约 17MB）
+# 如果网络无法访问 paddleocr.bj.bcebos.com，使用此脚本手动下载
+./download_models.sh
+
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
