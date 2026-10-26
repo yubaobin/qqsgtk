@@ -62,7 +62,7 @@ def test_ocr_empty_result(client):
 
 
 def test_ocr_engine_failure(client):
-    """POST /ocr returns 500 when OCR engine raises an exception."""
+    """POST /ocr returns 500 when OCR engine raises a generic exception."""
     from PIL import Image
     import io
     img = Image.new("RGB", (1, 1), color="white")
@@ -71,7 +71,7 @@ def test_ocr_engine_failure(client):
     buf.seek(0)
 
     with patch("app.main.recognize") as mock_recognize:
-        mock_recognize.side_effect = ValueError("Cannot read image")
+        mock_recognize.side_effect = RuntimeError("Engine crashed")
 
         response = client.post(
             "/ocr",
@@ -80,3 +80,34 @@ def test_ocr_engine_failure(client):
 
     assert response.status_code == 500
     assert "detail" in response.json()
+
+
+def test_ocr_non_image_file(client):
+    """POST /ocr with a non-image file (e.g. .txt) returns 400."""
+    import io
+    buf = io.BytesIO(b"hello world, this is not an image")
+
+    response = client.post(
+        "/ocr",
+        files={"file": ("test.txt", buf, "text/plain")},
+    )
+
+    assert response.status_code == 400
+    assert "仅支持图片文件" in response.json()["detail"]
+
+
+def test_ocr_corrupt_image(client):
+    """POST /ocr with a corrupt image (garbage bytes) returns 400."""
+    import io
+    buf = io.BytesIO(b"not a real png but pretending")
+
+    with patch("app.main.recognize") as mock_recognize:
+        mock_recognize.side_effect = OSError("cannot identify image file")
+
+        response = client.post(
+            "/ocr",
+            files={"file": ("test.png", buf, "image/png")},
+        )
+
+    assert response.status_code == 400
+    assert "损坏" in response.json()["detail"]

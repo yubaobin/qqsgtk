@@ -19,6 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+ALLOWED_IMAGE_TYPES = {"image/png", "image/jpeg", "image/jpg", "image/webp", "image/bmp"}
+
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
@@ -27,8 +29,8 @@ async def health_check():
 
 @app.post("/ocr", response_model=OCRResponse)
 async def ocr(file: UploadFile = File(...)):
-    if not file:
-        raise HTTPException(status_code=400, detail="未上传文件")
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="仅支持图片文件 (PNG, JPG, JPEG, WEBP, BMP)")
 
     image_bytes = await file.read()
     if not image_bytes:
@@ -36,8 +38,8 @@ async def ocr(file: UploadFile = File(...)):
 
     try:
         lines = recognize(image_bytes)
-    except ValueError as e:
-        raise HTTPException(status_code=500, detail=f"图片处理失败: {e}")
+    except OSError as e:
+        raise HTTPException(status_code=400, detail=f"图片文件损坏或无法读取: {e}")
     except Exception as e:
         logger.exception("OCR failed")
         raise HTTPException(status_code=500, detail=f"识别失败: {e}")

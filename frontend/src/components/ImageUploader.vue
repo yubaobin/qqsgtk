@@ -21,6 +21,9 @@ function handleFile(file: File | null) {
     alert('请选择图片文件')
     return
   }
+  if (previewUrl.value) {
+    URL.revokeObjectURL(previewUrl.value)
+  }
   selectedFile.value = file
   previewUrl.value = URL.createObjectURL(file)
   emit('update:file', file)

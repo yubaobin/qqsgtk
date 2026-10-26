@@ -31,14 +31,17 @@ def recognize(image_bytes: bytes) -> list[str]:
         Returns empty list if no text is found.
 
     Raises:
-        ValueError: If the image cannot be opened.
+        OSError: If the image cannot be opened (corrupt or non-image).
         Exception: For other OCR failures.
     """
+    import numpy as np
+
     engine = get_ocr_engine()
 
     image = Image.open(io.BytesIO(image_bytes))
+    image_array = np.array(image)
 
-    result = engine.ocr(image, cls=True)
+    result = engine.ocr(image_array, cls=True)
 
     if not result:
         return []
