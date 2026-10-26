@@ -1,0 +1,33 @@
+/* component: slider */
+
+.ux-slider { --ux-slider-main-bg-color:var(--ux-color-primary);--ux-slider-runway-bg-color:var(--ux-border-color-light);--ux-slider-stop-bg-color:var(--ux-color-white);--ux-slider-disabled-color:var(--ux-text-color-placeholder);--ux-slider-border-radius:3px;--ux-slider-height:6px;--ux-slider-button-size:16px;--ux-slider-button-wrapper-size:36px;--ux-slider-button-wrapper-offset:-15px;--ux-slider-input-margin:24px;align-items:center;display:flex;height:32px;width:100% }
+.ux-slider__bar { background-color:var(--ux-slider-main-bg-color);border-bottom-left-radius:var(--ux-slider-border-radius);border-top-left-radius:var(--ux-slider-border-radius);height:var(--ux-slider-height);position:absolute }
+.ux-slider__button { background-color:var(--ux-color-white);border:2px solid var(--ux-slider-main-bg-color);border-radius:50%;box-sizing:border-box;display:inline-block;height:var(--ux-slider-button-size);transition:var(--ux-transition-duration-fast);-webkit-user-select:none;-moz-user-select:none;user-select:none;vertical-align:middle;width:var(--ux-slider-button-size) }
+.ux-slider__button-wrapper { background-color:transparent;height:var(--ux-slider-button-wrapper-size);line-height:normal;outline:none;position:absolute;text-align:center;top:var(--ux-slider-button-wrapper-offset);transform:translateX(-50%);-webkit-user-select:none;-moz-user-select:none;user-select:none;width:var(--ux-slider-button-wrapper-size);z-index:1 }
+.ux-slider__button-wrapper:after { content:&quot;&quot;;display:inline-block;height:100%;vertical-align:middle }
+.ux-slider__button-wrapper.dragging { cursor:grabbing }
+.ux-slider__button-wrapper.hover,.ux-slider__button-wrapper:hover { cursor:grab }
+.ux-slider__button.dragging { cursor:grabbing }
+.ux-slider__button.dragging,.ux-slider__button.hover,.ux-slider__button:hover { transform:scale(1.2) }
+.ux-slider__button.hover,.ux-slider__button:hover { cursor:grab }
+.ux-slider__input { flex-shrink:0;width:130px }
+.ux-slider__marks { height:100%;left:12px;top:0;width:18px }
+.ux-slider__marks-text { color:var(--ux-color-info);font-size:14px;margin-top:15px;position:absolute;transform:translateX(-50%);white-space:pre }
+.ux-slider__runway { background-color:var(--ux-slider-runway-bg-color);border-radius:var(--ux-slider-border-radius);cursor:pointer;flex:1;height:var(--ux-slider-height);position:relative }
+.ux-slider__runway.is-disabled { cursor:default }
+.ux-slider__runway.is-disabled .ux-slider__bar { background-color:var(--ux-slider-disabled-color) }
+.ux-slider__runway.is-disabled .ux-slider__button { border-color:var(--ux-slider-disabled-color) }
+.ux-slider__runway.is-disabled .ux-slider__button-wrapper.dragging,.ux-slider__runway.is-disabled .ux-slider__button-wrapper.hover,.ux-slider__runway.is-disabled .ux-slider__button-wrapper:hover { cursor:not-allowed }
+.ux-slider__runway.is-disabled .ux-slider__button.dragging,.ux-slider__runway.is-disabled .ux-slider__button.hover,.ux-slider__runway.is-disabled .ux-slider__button:hover { transform:scale(1) }
+.ux-slider__runway.is-disabled .ux-slider__button.dragging,.ux-slider__runway.is-disabled .ux-slider__button.hover,.ux-slider__runway.is-disabled .ux-slider__button:hover { cursor:not-allowed }
+.ux-slider__runway.show-input { margin-right:var(--ux-slider-input-margin);width:auto }
+.ux-slider__stop { background-color:var(--ux-slider-stop-bg-color);border-radius:var(--ux-border-radius-circle);height:var(--ux-slider-height);position:absolute;transform:translateX(-50%);width:var(--ux-slider-height) }
+.ux-slider--large { height:40px }
+.ux-slider--mini { height:24px }
+.ux-slider--small { height:28px }
+.ux-slider.is-vertical { display:inline-flex;flex:0;height:100%;position:relative;width:auto }
+.ux-slider.is-vertical .ux-slider__bar { border-radius:0 0 4px 4px;height:auto;width:var(--ux-slider-height) }
+.ux-slider.is-vertical .ux-slider__button-wrapper { left:var(--ux-slider-button-wrapper-offset);top:auto;transform:translateY(50%) }
+.ux-slider.is-vertical .ux-slider__marks-text { left:15px;margin-top:0;transform:translateY(50%) }
+.ux-slider.is-vertical .ux-slider__runway { height:100%;margin:0 16px;width:var(--ux-slider-height) }
+.ux-slider.is-vertical .ux-slider__stop { transform:translateY(50%) }

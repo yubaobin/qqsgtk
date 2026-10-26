@@ -1,0 +1,10 @@
+/* component: image */
+
+.ux-image { display:inline-block;overflow:hidden;position:relative }
+.ux-image__error { align-items:center;color:var(--ux-text-color-placeholder);display:flex;font-size:14px;justify-content:center;vertical-align:middle }
+.ux-image__error,.ux-image__inner,.ux-image__placeholder,.ux-image__wrapper { height:100%;width:100% }
+.ux-image__error,.ux-image__placeholder { background:var(--ux-fill-color-light) }
+.ux-image__inner { opacity:1;vertical-align:top }
+.ux-image__inner.is-loading { opacity:0 }
+.ux-image__preview { cursor:pointer }
+.ux-image__wrapper { left:0;position:absolute;top:0 }

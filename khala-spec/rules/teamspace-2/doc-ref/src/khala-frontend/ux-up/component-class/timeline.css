@@ -1,0 +1,10 @@
+/* component: timeline */
+
+.ux-timeline { --ux-timeline-node-size-normal:12px;--ux-timeline-node-left-normal:-1px;--ux-timeline-node-top-normal:3px;--ux-timeline-node-size-large:14px;--ux-timeline-node-left-large:-2px;--ux-timeline-node-top-large:2px;--ux-timeline-node-circle-size:6px;--ux-timeline-node-color:var(--ux-border-color-light);--ux-timeline-wrapper-top:-3px;--ux-timeline-font-size:var(--ux-font-size-base);--ux-timeline-item-padding-bottom:16px;font-size:var(--ux-timeline-font-size);list-style:none;margin:0 }
+.ux-timeline .ux-timeline-item__center { align-items:center;display:flex }
+.ux-timeline .ux-timeline-item__center .ux-timeline-item__circle,.ux-timeline .ux-timeline-item__center .ux-timeline-item__node { top:auto }
+.ux-timeline .ux-timeline-item__center .ux-timeline-item__tail { top:var(--ux-timeline-item-node-top) }
+.ux-timeline .ux-timeline-item__center .ux-timeline-item__wrapper { width:100% }
+.ux-timeline .ux-timeline-item__center:first-child .ux-timeline-item__tail { height:calc(50% + 10px);top:calc(50% - 10px + var(--ux-timeline-item-node-top)) }
+.ux-timeline .ux-timeline-item__center:last-child .ux-timeline-item__tail { display:block;height:calc(50% - 10px) }
+.ux-timeline .ux-timeline-item:last-child .ux-timeline-item__tail { display:none }

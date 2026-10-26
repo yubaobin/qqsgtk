@@ -1,0 +1,36 @@
+# 存储适配器配置示例
+# 适用版本: Khala 7.x+
+
+khala:
+  file:
+    # 当前使用的存储类型
+    storage-type: local
+    # storage-type: minio
+    # storage-type: aliyun-oss
+    # storage-type: huawei-obs
+
+    # 本地存储配置
+    local:
+      base-path: /data/files
+      domain: http://localhost:8080
+
+    # MinIO 配置
+    minio:
+      endpoint: http://localhost:9000
+      access-key: minioadmin
+      secret-key: minioadmin
+      bucket-name: khala
+
+    # 阿里云 OSS 配置
+    aliyun-oss:
+      endpoint: oss-cn-hangzhou.aliyuncs.com
+      access-key-id: your-access-key-id
+      access-key-secret: your-access-key-secret
+      bucket-name: khala-bucket
+
+    # 华为云 OBS 配置
+    huawei-obs:
+      endpoint: obs.cn-north-4.myhuaweicloud.com
+      access-key-id: your-access-key-id
+      secret-access-key: your-secret-access-key
+      bucket-name: khala-bucket

@@ -1,0 +1,40 @@
+# ========================================
+# Sentinel 流量控制配置
+# ========================================
+
+spring:
+  cloud:
+    sentinel:
+      # 是否启用 Sentinel，默认 true
+      enabled: true
+      # Sentinel Dashboard 地址
+      transport:
+        dashboard: localhost:8080
+        # 客户端与 Dashboard 通信端口（默认 8719，如有冲突自动+1）
+        port: 8719
+      # 是否饥饿加载（默认懒加载）
+      eager: true
+      # Web 限流配置
+      filter:
+        enabled: true
+        # 拦截所有 URL
+        url-patterns: /**
+      # Feign 整合
+      feign:
+        enabled: true
+      # 规则数据源（Nacos 持久化）
+      datasource:
+        flow:
+          nacos:
+            server-addr: localhost:8848
+            namespace: public
+            group-id: SENTINEL_GROUP
+            data-id: ${spring.application.name}-flow-rules
+            rule-type: flow
+        degrade:
+          nacos:
+            server-addr: localhost:8848
+            namespace: public
+            group-id: SENTINEL_GROUP
+            data-id: ${spring.application.name}-degrade-rules
+            rule-type: degrade

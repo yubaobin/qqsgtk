@@ -1,0 +1,22 @@
+/* component: image-viewer */
+
+.ux-image-viewer__actions { background-color:var(--ux-text-color-regular);border-color:#fff;border-radius:22px;bottom:30px;height:44px;left:50%;padding:0 23px;transform:translateX(-50%) }
+.ux-image-viewer__actions__divider { margin:0 -6px }
+.ux-image-viewer__actions__inner { align-items:center;color:#fff;cursor:default;display:flex;font-size:23px;gap:22px;height:100%;justify-content:space-around;padding:0 6px;width:100% }
+.ux-image-viewer__btn { align-items:center;border-radius:50%;box-sizing:border-box;cursor:pointer;display:flex;justify-content:center;opacity:.8;position:absolute;-webkit-user-select:none;-moz-user-select:none;user-select:none;z-index:1 }
+.ux-image-viewer__btn .ux-icon { cursor:pointer }
+.ux-image-viewer__canvas { align-items:center;display:flex;height:100%;justify-content:center;position:static;-webkit-user-select:none;-moz-user-select:none;user-select:none;width:100% }
+.ux-image-viewer__close { right:40px;top:40px }
+.ux-image-viewer__close { background-color:var(--ux-image-viewer-op-icon-bg-color);border-color:var(--ux-image-viewer-op-icon-color);color:var(--ux-image-viewer-op-icon-color);font-size:24px;height:44px;width:44px }
+.ux-image-viewer__mask { background:#000;height:100%;left:0;opacity:.5;position:absolute;top:0;width:100% }
+.ux-image-viewer__next { right:40px;text-indent:2px }
+.ux-image-viewer__next,.ux-image-viewer__prev { background-color:var(--ux-image-viewer-op-icon-bg-color);border-color:var(--ux-image-viewer-op-icon-color);color:var(--ux-image-viewer-op-icon-color);font-size:24px;height:44px;top:50%;transform:translateY(-50%);width:44px }
+.ux-image-viewer__prev { left:40px }
+.ux-image-viewer__progress { bottom:90px;color:#fff;cursor:default;left:50%;transform:translateX(-50%) }
+.ux-image-viewer__wrapper { --ux-image-viewer-op-icon-color:#FFF;--ux-image-viewer-op-icon-bg-color:var(--ux-text-color-regular);bottom:0;left:0;position:fixed;right:0;top:0 }
+.ux-image-viewer__wrapper:focus { outline:none!important }
+.viewer-fade-enter-active { animation:viewer-fade-in var(--ux-transition-duration) }
+.viewer-fade-leave-active { animation:viewer-fade-out var(--ux-transition-duration) }
+}@keyframes viewer-fade-out { 0%{opacity:1;transform:translateZ(0) }
+to { opacity:1;transform:translateZ(0) }
+to { opacity:0;transform:translate3d(0,-20px,0) }

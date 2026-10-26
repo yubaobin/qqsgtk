@@ -1,0 +1,52 @@
+/* component: pagination */
+
+.ux-pager { font-size:0;list-style:none;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;user-select:none }
+.ux-pager li { background:var(--ux-pagination-bg-color);border:none;border-radius:var(--ux-pagination-border-radius);box-sizing:border-box;color:var(--ux-pagination-button-color);cursor:pointer;font-size:var(--ux-pagination-font-size);height:var(--ux-pagination-button-size);justify-content:center;line-height:var(--ux-pagination-button-size);min-width:var(--ux-pagination-button-size);padding:0 4px;text-align:center }
+.ux-pager li * { pointer-events:none }
+.ux-pager li:focus { outline:none }
+.ux-pager li:focus-visible { outline:1px solid var(--ux-pagination-hover-color);outline-offset:-1px }
+.ux-pager li.is-active { cursor:default;font-weight:bold }
+.ux-pager li.is-active,.ux-pager li:hover { color:var(--ux-pagination-hover-color) }
+.ux-pager li.is-active.is-disabled { color:var(--ux-pagination-active-disabled-color);font-weight:bold }
+.ux-pager li.is-disabled,.ux-pager li:disabled { background-color:var(--ux-pagination-button-disabled-bg-color);color:var(--ux-pagination-button-disabled-color);cursor:not-allowed }
+.ux-pager,.ux-pager li { align-items:center;display:flex }
+.ux-pagination { --ux-pagination-bg-color:var(--ux-fill-color-blank);--ux-pagination-text-color:var(--ux-text-color-primary);--ux-pagination-layout-text-color:var(--ux-text-color-regular);--ux-pagination-layout-disabled-color:var(--ux-text-color-placeholder);--ux-pagination-active-disabled-color:var(--ux-text-color-secondary);--ux-pagination-border-radius:2px;--ux-pagination-button-color:var(--ux-text-color-primary);--ux-pagination-button-disabled-color:var(--ux-text-color-placeholder);--ux-pagination-button-disabled-bg-color:var(--ux-fill-color-blank);--ux-pagination-button-active-disabled-bg-color:var(--ux-fill-color-dark);--ux-pagination-button-bg-color:var(--ux-fill-color);--ux-pagination-button-active-bg-color:var(--ux-color-primary);--ux-pagination-button-active-text-color:var(--ux-color-white);--ux-pagination-background-disabled-bg-color:var(--ux-disabled-bg-color);--ux-pagination-button-border:none;--ux-pagination-button-active-border:none;--ux-pagination-button-disabled-border:none;--ux-pagination-button-active-disabled-border:none;--ux-pagination-hover-color:var(--ux-color-primary);--ux-pagination-item-gap:16px;--ux-pagination-button-size-large:40px;--ux-pagination-button-size:32px;--ux-pagination-button-size-small:28px;--ux-pagination-button-size-mini:24px;--ux-pagination-font-size-large:14px;--ux-pagination-font-size:14px;--ux-pagination-font-size-small:12px;--ux-pagination-font-size-mini:12px;align-items:center;color:var(--ux-pagination-text-color);display:flex;font-size:var(--ux-pagination-font-size);font-weight:normal;white-space:nowrap }
+.ux-pagination .btn-next .ux-icon,.ux-pagination .btn-prev .ux-icon { display:block;font-size:12px;font-weight:bold;width:inherit }
+.ux-pagination .btn-prev { margin-left:var(--ux-pagination-item-gap) }
+.ux-pagination .ux-input__inner { -moz-appearance:textfield;text-align:center }
+.ux-pagination .ux-select { width:128px }
+.ux-pagination button { align-items:center;background:var(--ux-pagination-bg-color);border:none;border-radius:var(--ux-pagination-border-radius);box-sizing:border-box;color:var(--ux-pagination-button-color);cursor:pointer;display:flex;font-size:var(--ux-pagination-font-size);height:var(--ux-pagination-button-size);justify-content:center;line-height:var(--ux-pagination-button-size);min-width:var(--ux-pagination-button-size);padding:0 4px;text-align:center }
+.ux-pagination button * { pointer-events:none }
+.ux-pagination button:focus { outline:none }
+.ux-pagination button:focus-visible { outline:1px solid var(--ux-pagination-hover-color);outline-offset:-1px }
+.ux-pagination button.is-active { cursor:default;font-weight:bold }
+.ux-pagination button.is-active,.ux-pagination button:hover { color:var(--ux-pagination-hover-color) }
+.ux-pagination button.is-active.is-disabled { color:var(--ux-pagination-active-disabled-color);font-weight:bold }
+.ux-pagination button.is-disabled,.ux-pagination button:disabled { background-color:var(--ux-pagination-button-disabled-bg-color);color:var(--ux-pagination-button-disabled-color);cursor:not-allowed }
+.ux-pagination__classifier { margin-left:8px }
+.ux-pagination__editor { box-sizing:border-box;text-align:center }
+.ux-pagination__editor .ux-input__inner::-webkit-inner-spin-button,.ux-pagination__editor .ux-input__inner::-webkit-outer-spin-button { -webkit-appearance:none;margin:0 }
+.ux-pagination__editor .ux-input__wrapper { padding-left:8px;padding-right:8px }
+.ux-pagination__editor.ux-input { width:56px }
+.ux-pagination__goto { margin-right:8px }
+.ux-pagination__jump { align-items:center;color:var(--ux-pagination-layout-text-color);display:flex;font-weight:normal;margin-left:var(--ux-pagination-item-gap) }
+.ux-pagination__jump[disabled=true] { color:var(--ux-pagination-layout-disabled-color) }
+.ux-pagination__rightwrapper { align-items:center;display:flex;flex:1;justify-content:flex-end }
+.ux-pagination__sizes,.ux-pagination__total { color:var(--ux-pagination-layout-text-color);font-weight:normal;margin-left:var(--ux-pagination-item-gap) }
+.ux-pagination__total[disabled=true] { color:var(--ux-pagination-layout-disabled-color) }
+.ux-pagination--large .btn-next,.ux-pagination--large .btn-prev,.ux-pagination--large .ux-pager li { font-size:var(--ux-pagination-font-size-large);height:var(--ux-pagination-button-size-large);line-height:var(--ux-pagination-button-size-large);min-width:var(--ux-pagination-button-size-large) }
+.ux-pagination--large .ux-select .ux-input { width:160px }
+.ux-pagination--large button,.ux-pagination--large span:not([class*=suffix]) { font-size:var(--ux-pagination-font-size-large) }
+.ux-pagination--mini .btn-next,.ux-pagination--mini .btn-prev,.ux-pagination--mini .ux-pager li { font-size:var(--ux-pagination-font-size-mini);height:var(--ux-pagination-button-size-mini);line-height:var(--ux-pagination-button-size-mini);min-width:var(--ux-pagination-button-size-mini) }
+.ux-pagination--mini .ux-select { width:90px }
+.ux-pagination--mini button,.ux-pagination--mini span:not([class*=suffix]) { font-size:var(--ux-pagination-font-size-mini) }
+.ux-pagination--small .btn-next,.ux-pagination--small .btn-prev,.ux-pagination--small .ux-pager li { font-size:var(--ux-pagination-font-size-small);height:var(--ux-pagination-button-size-small);line-height:var(--ux-pagination-button-size-small);min-width:var(--ux-pagination-button-size-small) }
+.ux-pagination--small .ux-select { width:100px }
+.ux-pagination--small button,.ux-pagination--small span:not([class*=suffix]) { font-size:var(--ux-pagination-font-size-small) }
+.ux-pagination.is-background .btn-next,.ux-pagination.is-background .btn-prev,.ux-pagination.is-background .ux-pager li { background-color:var(--ux-pagination-button-bg-color);border:var(--ux-pagination-button-border);border-radius:4px;margin:0 4px }
+.ux-pagination.is-background .btn-next.is-active,.ux-pagination.is-background .btn-prev.is-active,.ux-pagination.is-background .ux-pager li.is-active { background-color:var(--ux-pagination-button-active-bg-color);border:var(--ux-pagination-button-active-border);color:var(--ux-pagination-button-active-text-color) }
+.ux-pagination.is-background .btn-next.is-disabled,.ux-pagination.is-background .btn-next:disabled,.ux-pagination.is-background .btn-prev.is-disabled,.ux-pagination.is-background .btn-prev:disabled,.ux-pagination.is-background .ux-pager li.is-disabled,.ux-pagination.is-background .ux-pager li:disabled { background-color:var(--ux-pagination-background-disabled-bg-color);border:var(--ux-pagination-button-disabled-border);color:var(--ux-pagination-button-disabled-color) }
+.ux-pagination.is-background .btn-next.is-disabled.is-active,.ux-pagination.is-background .btn-next:disabled.is-active,.ux-pagination.is-background .btn-prev.is-disabled.is-active,.ux-pagination.is-background .btn-prev:disabled.is-active,.ux-pagination.is-background .ux-pager li.is-disabled.is-active,.ux-pagination.is-background .ux-pager li:disabled.is-active { background-color:var(--ux-pagination-button-active-disabled-bg-color);border:var(--ux-pagination-button-active-disabled-border);color:var(--ux-pagination-active-disabled-color) }
+.ux-pagination.is-background .btn-prev { margin-left:var(--ux-pagination-item-gap) }
+.ux-pagination&gt;.is-first { margin-left:0!important }
+.ux-pagination&gt;.is-last { margin-right:0!important }

@@ -1,0 +1,13 @@
+@use &#39;@/styles/mixins/function.scss&#39; as *;
+
+.some-element {
+    // 组件库的可用变量
+    background-color: getCssVar(&#39;color&#39;, &#39;primary&#39;);
+    color: getCssVar(&#39;text-color&#39;, &#39;primary&#39;);
+    font-size: getCssVar(&#39;font-size&#39;, &#39;base&#39;);
+}
+
+.dropdown-menu__item {
+    // 项目级自定义变量
+    color: getCssVar(&#39;layout&#39;, &#39;header-color&#39;);
+}

@@ -1,0 +1,27 @@
+/* component: input-tag */
+
+.ux-input-tag { --ux-input-tag-border-color-hover:var(--ux-border-color-hover);--ux-input-tag-placeholder-color:var(--ux-text-color-placeholder);--ux-input-tag-disabled-color:var(--ux-disabled-text-color);--ux-input-tag-disabled-border:var(--ux-disabled-border-color);--ux-input-tag-font-size:var(--ux-font-size-base);--ux-input-tag-close-hover-color:var(--ux-text-color-secondary);--ux-input-tag-text-color:var(--ux-text-color-regular);--ux-input-tag-input-focus-border-color:var(--ux-color-primary);--ux-input-tag-width:100%;--ux-input-tag-mini-height:var(--ux-component-size);--ux-input-tag-gap:6px;--ux-input-tag-padding:4px;--ux-input-tag-inner-padding:6px;--ux-input-tag-line-height:28px;align-items:center;background-color:var(--ux-fill-color-blank);border-radius:var(--ux-border-radius-base);box-shadow:0 0 0 1px var(--ux-border-color) inset;box-sizing:border-box;cursor:pointer;display:flex;font-size:var(--ux-input-tag-font-size);line-height:var(--ux-input-tag-line-height);min-height:var(--ux-input-tag-mini-height);padding:var(--ux-input-tag-padding);transform:translateZ(0);transition:var(--ux-transition-duration);width:var(--ux-input-tag-width) }
+.ux-input-tag__drop-indicator { background-color:var(--ux-color-primary);height:var(--ux-input-tag-line-height);position:absolute;top:0;width:1px }
+.ux-input-tag__inner { align-items:center;display:flex;flex:1;flex-wrap:wrap;gap:var(--ux-input-tag-gap);max-width:100%;min-width:0;position:relative }
+.ux-input-tag__inner .ux-tag { border-color:transparent;cursor:pointer;max-width:100% }
+.ux-input-tag__inner .ux-tag .ux-tag__content { line-height:normal;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
+.ux-input-tag__inner .ux-tag.ux-tag--plain { border-color:var(--ux-tag-border-color) }
+.ux-input-tag__inner.is-draggable .ux-tag { cursor:move;-webkit-user-select:none;-moz-user-select:none;user-select:none }
+.ux-input-tag__inner.is-left-space { margin-left:var(--ux-input-tag-inner-padding) }
+.ux-input-tag__inner.is-right-space { margin-right:var(--ux-input-tag-inner-padding) }
+.ux-input-tag__input { -webkit-appearance:none;-moz-appearance:none;appearance:none;background-color:transparent;border:none;color:var(--ux-input-tag-text-color);font-family:inherit;font-size:inherit;line-height:inherit;outline:none;padding:0;width:100% }
+.ux-input-tag__input-calculator { left:0;max-width:100%;overflow:hidden;position:absolute;top:0;visibility:hidden;white-space:pre }
+.ux-input-tag__input-wrapper { flex:1 }
+.ux-input-tag__input::-moz-placeholder { color:var(--ux-input-tag-placeholder-color) }
+.ux-input-tag__input::placeholder { color:var(--ux-input-tag-placeholder-color) }
+.ux-input-tag__prefix,.ux-input-tag__suffix { align-items:center;color:var(--ux-input-icon-color,var(--ux-text-color-placeholder));display:flex;flex-shrink:0;padding:0 var(--ux-input-tag-inner-padding) }
+.ux-input-tag__suffix { gap:8px }
+.ux-input-tag--large { --ux-input-tag-gap:6px;--ux-input-tag-padding:6px;--ux-input-tag-inner-padding:6px;--ux-input-tag-font-size:14px }
+.ux-input-tag--mini { --ux-input-tag-gap:4px;--ux-input-tag-padding:4px;--ux-input-tag-inner-padding:6px;--ux-input-tag-font-size:12px;--ux-input-tag-line-height:20px;--ux-input-tag-mini-height:var(--ux-component-size-mini) }
+.ux-input-tag--small { --ux-input-tag-gap:4px;--ux-input-tag-padding:4px;--ux-input-tag-inner-padding:6px;--ux-input-tag-font-size:13px;--ux-input-tag-line-height:24px;--ux-input-tag-mini-height:var(--ux-component-size-small) }
+.ux-input-tag.is-disabled { background-color:var(--ux-fill-color-light);cursor:not-allowed }
+.ux-input-tag.is-disabled .ux-input-tag__inner .ux-input-tag__input,.ux-input-tag.is-disabled .ux-input-tag__inner .ux-tag { cursor:not-allowed }
+.ux-input-tag.is-disabled,.ux-input-tag.is-disabled:hover { box-shadow:0 0 0 1px var(--ux-input-tag-disabled-border) inset }
+.ux-input-tag.is-disabled.is-focus { box-shadow:0 0 0 1px var(--ux-input-focus-border-color) inset }
+.ux-input-tag.is-focused { box-shadow:0 0 0 1px var(--ux-color-primary) inset }
+.ux-input-tag.is-hovering:not(.is-focused) { box-shadow:0 0 0 1px var(--ux-border-color-hover) inset }

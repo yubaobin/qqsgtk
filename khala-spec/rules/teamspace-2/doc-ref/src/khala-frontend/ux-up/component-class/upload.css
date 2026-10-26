@@ -1,0 +1,100 @@
+/* component: upload */
+
+.ux-upload { align-items:center;cursor:pointer;display:inline-flex;justify-content:center;outline:none }
+.ux-upload iframe { filter:alpha(opacity=0);left:0;opacity:0;position:absolute;top:0;z-index:-1 }
+.ux-upload__input { display:none }
+.ux-upload__tip { color:var(--ux-upload-tip-text-color);font-size:12px;margin-top:var(--ux-upload-tip-margin) }
+.ux-upload--picture-card { align-items:center;background-color:var(--ux-fill-color-lighter);border:1px dashed var(--ux-border-color-darker);border-radius:6px;box-sizing:border-box;cursor:pointer;display:inline-flex;height:var(--ux-upload-picture-card-size);justify-content:center;vertical-align:top;width:var(--ux-upload-picture-card-size) }
+.ux-upload--picture-card:hover { border-color:var(--ux-color-primary);color:var(--ux-color-primary) }
+.ux-upload--picture-card&gt;i { color:var(--ux-text-color-secondary);font-size:28px }
+.ux-upload-container { --ux-upload-dragger-padding-horizontal:40px;--ux-upload-dragger-padding-vertical:10px;--ux-upload-item-thumbnail-size:70px;--ux-upload-picture-card-size:148px;--ux-upload-list-picture-card-size:148px;--ux-upload-tip-text-color:var(--ux-text-color-regular);--ux-upload-tip-margin:8px;--ux-upload-list-item-text-color:var(--ux-text-color-regular);--ux-upload-drag-bg-color:var(--ux-fill-color-blank);--ux-upload-drag-font-size:var(--ux-font-size-base);--ux-upload-drag-text-color:var(--ux-text-color-regular);--ux-upload-drag-icon-size:64px;--ux-upload-drag-icon-color:var(--ux-text-color-placeholder);--ux-upload-drag-border-radius:6px }
+.ux-upload-cover { cursor:default;height:100%;left:0;overflow:hidden;position:absolute;top:0;width:100%;z-index:10 }
+.ux-upload-cover img { display:block;height:100%;width:100% }
+.ux-upload-cover__content { height:100%;left:0;position:absolute;top:0;width:100% }
+.ux-upload-cover__interact { background-color:var(--ux-overlay-color-light);bottom:0;height:100%;left:0;position:absolute;text-align:center;width:100% }
+.ux-upload-cover__interact .btn { color:#ffffff;cursor:pointer;display:inline-block;font-size:14px;margin-top:60px;transition:var(--ux-transition-md-fade);vertical-align:middle }
+.ux-upload-cover__interact .btn i { margin-top:0 }
+.ux-upload-cover__interact .btn i { color:#ffffff;display:block;font-size:24px;line-height:inherit;margin:0 auto 5px }
+.ux-upload-cover__interact .btn span { opacity:0;transition:opacity .15s linear }
+.ux-upload-cover__interact .btn:hover { transform:translateY(-13px) }
+.ux-upload-cover__interact .btn:hover span { opacity:1 }
+.ux-upload-cover__interact .btn:not(:first-child) { margin-left:35px }
+.ux-upload-cover__label { background:var(--ux-color-success);height:24px;right:-15px;text-align:center;top:-6px;transform:rotate(45deg);width:40px }
+.ux-upload-cover__label i { color:#fff;font-size:12px;margin-top:11px;transform:rotate(-45deg) }
+.ux-upload-cover__progress { display:inline-block;position:static;vertical-align:middle;width:243px }
+.ux-upload-cover__progress+.ux-upload__inner { opacity:0 }
+.ux-upload-cover__title { background-color:#ffffff;bottom:0;color:var(--ux-text-color-primary);font-size:14px;font-weight:normal;height:36px;left:0;line-height:36px;margin:0;overflow:hidden;padding:0 10px;position:absolute;text-align:left;text-overflow:ellipsis;white-space:nowrap;width:100% }
+.ux-upload-cover:after { content:&quot;&quot;;display:inline-block;height:100%;vertical-align:middle }
+.ux-upload-cover+.ux-upload__inner { opacity:0;position:relative;z-index:1 }
+.ux-upload-dragger { background-color:var(--ux-upload-drag-bg-color);border:1px dashed var(--ux-border-color);border-radius:var(--ux-upload-drag-border-radius);box-sizing:border-box;cursor:pointer;overflow:hidden;padding:var(--ux-upload-dragger-padding-horizontal) var(--ux-upload-dragger-padding-vertical);position:relative;text-align:center }
+.ux-upload-dragger .ux-icon--upload { color:var(--ux-upload-drag-icon-color);font-size:var(--ux-upload-drag-icon-size);margin-bottom:16px }
+.ux-upload-dragger .ux-upload__text { color:var(--ux-upload-drag-text-color);font-size:var(--ux-upload-drag-font-size);text-align:center }
+.ux-upload-dragger .ux-upload__text em { color:var(--ux-color-primary);font-style:normal }
+.ux-upload-dragger:hover { border-color:var(--ux-color-primary) }
+.ux-upload-dragger.is-dragover { background-color:var(--ux-color-primary-light-9);border:2px dashed var(--ux-color-primary);padding:calc(var(--ux-upload-dragger-padding-horizontal) - 1px) calc(var(--ux-upload-dragger-padding-vertical) - 1px) }
+.ux-upload-dragger+.ux-upload__tip { text-align:center }
+.ux-upload-dragger~.ux-upload__files { border-top:var(--ux-border);margin-top:8px;padding-top:4px }
+.ux-upload-list { list-style:none;margin:8px 0 0;padding:0;position:relative }
+.ux-upload-list__item { border-radius:4px;box-sizing:border-box;color:var(--ux-upload-list-item-text-color);font-size:14px;line-height:1.4;position:relative;transition:all .5s cubic-bezier(.55,0,.1,1);width:100% }
+.ux-upload-list__item .ux-icon--close { color:var(--ux-text-color-regular);cursor:pointer;display:none;opacity:.75;position:absolute;right:5px;top:50%;transform:translateY(-50%);transition:opacity var(--ux-transition-duration) }
+.ux-upload-list__item .ux-icon--close-tip { color:var(--ux-color-primary);cursor:pointer;display:none;font-size:12px;font-style:normal;opacity:1;position:absolute;right:5px;top:1px }
+.ux-upload-list__item .ux-icon--close:hover { color:var(--ux-color-primary);opacity:1 }
+.ux-upload-list__item .ux-icon--upload-success { color:var(--ux-color-success) }
+.ux-upload-list__item .ux-progress { position:absolute;top:20px;width:100% }
+.ux-upload-list__item .ux-progress__text { position:absolute;right:0;top:-13px }
+.ux-upload-list__item .ux-progress-bar { margin-right:0;padding-right:0 }
+.ux-upload-list__item .ux-upload-list__item-info { display:inline-flex;flex-direction:column;justify-content:center;width:calc(100% - 30px) }
+.ux-upload-list__item-delete { color:var(--ux-text-color-regular);display:none;font-size:12px;position:absolute;right:10px;top:0 }
+.ux-upload-list__item-delete:hover { color:var(--ux-color-primary) }
+.ux-upload-list__item-file-name { overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
+.ux-upload-list__item-name { align-items:center;color:var(--ux-text-color-regular);display:inline-flex;font-size:var(--ux-font-size-base);padding:0 4px;text-align:center;transition:color var(--ux-transition-duration) }
+.ux-upload-list__item-name .ux-icon { color:var(--ux-text-color-secondary);margin-right:6px }
+.ux-upload-list__item-status-label { align-items:center;display:none;height:100%;justify-content:center;line-height:inherit;position:absolute;right:4px;top:0;transition:opacity var(--ux-transition-duration) }
+.ux-upload-list__item:hover { background-color:var(--ux-fill-color-light) }
+.ux-upload-list__item:hover .ux-icon--close { display:inline-flex }
+.ux-upload-list__item:hover .ux-progress__text { display:none }
+.ux-upload-list__item.is-success .ux-upload-list__item-name:focus,.ux-upload-list__item.is-success .ux-upload-list__item-name:hover { color:var(--ux-color-primary);cursor:pointer }
+.ux-upload-list__item.is-success .ux-upload-list__item-status-label { display:inline-flex }
+.ux-upload-list__item.is-success:active .ux-icon--close-tip,.ux-upload-list__item.is-success:not(.focusing):focus .ux-icon--close-tip { display:none }
+.ux-upload-list__item.is-success:active,.ux-upload-list__item.is-success:not(.focusing):focus { outline-width:0 }
+.ux-upload-list__item.is-success:focus .ux-upload-list__item-status-label,.ux-upload-list__item.is-success:hover .ux-upload-list__item-status-label { display:none;opacity:0 }
+.ux-upload-list__item.is-success:focus:not(:hover) .ux-icon--close-tip { display:inline-block }
+.ux-upload-list__item+.ux-upload-list__item { margin-top:4px }
+.ux-upload-list--picture .ux-progress { position:relative;top:-7px }
+.ux-upload-list--picture .ux-upload-list__item { align-items:center;background-color:var(--ux-fill-color-blank);border:1px solid var(--ux-border-color);border-radius:6px;box-sizing:border-box;display:flex;margin-top:10px;overflow:hidden;padding:10px;z-index:0 }
+.ux-upload-list--picture .ux-upload-list__item .ux-icon--check,.ux-upload-list--picture .ux-upload-list__item .ux-icon--circle-check { color:#ffffff }
+.ux-upload-list--picture .ux-upload-list__item .ux-icon--close { top:5px;transform:translateY(0) }
+.ux-upload-list--picture .ux-upload-list__item-status-label { background:var(--ux-color-success);height:26px;position:absolute;right:-17px;text-align:center;top:-7px;transform:rotate(45deg);width:46px }
+.ux-upload-list--picture .ux-upload-list__item-status-label i { font-size:12px;margin-top:12px;transform:rotate(-45deg) }
+.ux-upload-list--picture .ux-upload-list__item-thumbnail { align-items:center;background-color:var(--ux-color-white);display:inline-flex;height:var(--ux-upload-item-thumbnail-size);justify-content:center;position:relative;width:var(--ux-upload-item-thumbnail-size);z-index:1 }
+.ux-upload-list--picture .ux-upload-list__item:hover .ux-progress__text { display:block }
+.ux-upload-list--picture .ux-upload-list__item:hover .ux-upload-list__item-status-label { display:inline-flex;opacity:0 }
+.ux-upload-list--picture .ux-upload-list__item.is-success .ux-upload-list__item-name i { display:none }
+.ux-upload-list--picture-card { display:inline-flex;flex-wrap:wrap;margin:0 }
+.ux-upload-list--picture-card .ux-progress { bottom:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:126px }
+.ux-upload-list--picture-card .ux-progress .ux-progress__text { top:50% }
+.ux-upload-list--picture-card .ux-upload-list__item { background-color:var(--ux-fill-color-blank);border:1px solid var(--ux-border-color);border-radius:6px;box-sizing:border-box;display:inline-flex;height:var(--ux-upload-list-picture-card-size);margin:0 8px 8px 0;overflow:hidden;padding:0;width:var(--ux-upload-list-picture-card-size) }
+.ux-upload-list--picture-card .ux-upload-list__item .ux-icon--check,.ux-upload-list--picture-card .ux-upload-list__item .ux-icon--circle-check { color:#ffffff }
+.ux-upload-list--picture-card .ux-upload-list__item .ux-icon--close { display:none }
+.ux-upload-list--picture-card .ux-upload-list__item .ux-upload-list__item-name { display:none }
+.ux-upload-list--picture-card .ux-upload-list__item-actions { align-items:center;background-color:var(--ux-overlay-color-lighter);color:#fff;cursor:default;display:inline-flex;font-size:20px;height:100%;justify-content:center;left:0;opacity:0;position:absolute;top:0;transition:opacity var(--ux-transition-duration);width:100% }
+.ux-upload-list--picture-card .ux-upload-list__item-actions .ux-upload-list__item-delete { color:inherit;font-size:inherit;position:static }
+.ux-upload-list--picture-card .ux-upload-list__item-actions span { cursor:pointer;display:none }
+.ux-upload-list--picture-card .ux-upload-list__item-actions span+span { margin-left:16px }
+.ux-upload-list--picture-card .ux-upload-list__item-actions:hover { opacity:1 }
+.ux-upload-list--picture-card .ux-upload-list__item-actions:hover span { display:inline-flex }
+.ux-upload-list--picture-card .ux-upload-list__item-status-label { background:var(--ux-color-success);height:24px;right:-15px;text-align:center;top:-6px;transform:rotate(45deg);width:40px }
+.ux-upload-list--picture-card .ux-upload-list__item-status-label i { font-size:12px;margin-top:11px;transform:rotate(-45deg) }
+.ux-upload-list--picture-card .ux-upload-list__item-thumbnail { height:100%;width:100% }
+.ux-upload-list--picture-card .ux-upload-list__item:hover .ux-progress__text { display:block }
+.ux-upload-list--picture-card .ux-upload-list__item:hover .ux-upload-list__item-status-label { display:block;opacity:0 }
+.ux-upload:focus { color:var(--ux-color-primary) }
+.ux-upload:focus,.ux-upload:focus .ux-upload-dragger { border-color:var(--ux-color-primary) }
+.ux-upload.is-disabled { cursor:not-allowed }
+.ux-upload.is-disabled .ux-upload-dragger { background-color:var(--ux-disabled-bg-color);cursor:not-allowed }
+.ux-upload.is-disabled .ux-upload-dragger .ux-upload__text { color:var(--ux-text-color-placeholder) }
+.ux-upload.is-disabled .ux-upload-dragger .ux-upload__text em { color:var(--ux-disabled-text-color) }
+.ux-upload.is-disabled .ux-upload-dragger:hover { border-color:var(--ux-border-color-darker) }
+.ux-upload.is-disabled:focus { color:inherit }
+.ux-upload.is-disabled:focus,.ux-upload.is-disabled:focus .ux-upload-dragger { border-color:var(--ux-border-color-darker) }
+.ux-upload.is-drag { display:block }

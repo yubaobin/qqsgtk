@@ -1,0 +1,57 @@
+/* component: step */
+
+.ux-step { flex-shrink:1;position:relative }
+.ux-step__description { font-size:12px;font-weight:normal;line-height:20px;margin-top:-5px;padding-right:10% }
+.ux-step__description.is-error { color:var(--ux-color-danger) }
+.ux-step__description.is-finish { color:var(--ux-color-primary) }
+.ux-step__description.is-process { color:var(--ux-text-color-primary) }
+.ux-step__description.is-success { color:var(--ux-color-success) }
+.ux-step__description.is-wait { color:var(--ux-text-color-placeholder) }
+.ux-step__head { position:relative;width:100% }
+.ux-step__head.is-error { border-color:var(--ux-color-danger);color:var(--ux-color-danger) }
+.ux-step__head.is-finish { border-color:var(--ux-color-primary);color:var(--ux-color-primary) }
+.ux-step__head.is-process { border-color:var(--ux-text-color-primary);color:var(--ux-text-color-primary) }
+.ux-step__head.is-success { border-color:var(--ux-color-success);color:var(--ux-color-success) }
+.ux-step__head.is-wait { border-color:var(--ux-text-color-placeholder);color:var(--ux-text-color-placeholder) }
+.ux-step__icon { align-items:center;background:var(--ux-bg-color);box-sizing:border-box;display:inline-flex;font-size:14px;height:24px;justify-content:center;position:relative;transition:.15s ease-out;width:24px;z-index:1 }
+.ux-step__icon-inner { color:inherit;display:inline-block;font-weight:bold;line-height:1;text-align:center;-webkit-user-select:none;-moz-user-select:none;user-select:none }
+.ux-step__icon-inner.is-status { transform:translateY(1px) }
+.ux-step__icon-inner[class*=ux-icon]:not(.is-status) { font-size:24px;font-weight:normal }
+.ux-step__icon.is-icon { width:40px }
+.ux-step__icon.is-text { border:2px solid;border-radius:50% }
+.ux-step__line { background-color:var(--ux-text-color-placeholder);border-color:currentColor;position:absolute }
+.ux-step__line-inner { border:1px solid;box-sizing:border-box;display:block;height:0;transition:.15s ease-out;width:0 }
+.ux-step__main { text-align:left;white-space:normal }
+.ux-step__title { font-size:16px;line-height:38px }
+.ux-step__title.is-error { color:var(--ux-color-danger) }
+.ux-step__title.is-finish { color:var(--ux-color-primary) }
+.ux-step__title.is-process { color:var(--ux-text-color-primary);font-weight:bold }
+.ux-step__title.is-success { color:var(--ux-color-success) }
+.ux-step__title.is-wait { color:var(--ux-text-color-placeholder) }
+.ux-step:last-of-type .ux-step__description,.ux-step:last-of-type .ux-step__main { padding-right:0 }
+.ux-step:last-of-type .ux-step__line { display:none }
+.ux-step:last-of-type.is-flex { flex-basis:auto!important;flex-grow:0;flex-shrink:0 }
+.ux-step.is-center .ux-step__description { padding-left:20%;padding-right:20% }
+.ux-step.is-center .ux-step__head,.ux-step.is-center .ux-step__main { text-align:center }
+.ux-step.is-center .ux-step__line { left:50%;right:-50% }
+.ux-step.is-horizontal { display:inline-block }
+.ux-step.is-horizontal .ux-step__line { height:2px;left:0;right:0;top:11px }
+.ux-step.is-simple { align-items:center;display:flex }
+.ux-step.is-simple .ux-step__arrow { align-items:center;display:flex;flex-grow:1;justify-content:center }
+.ux-step.is-simple .ux-step__arrow:after { transform:rotate(45deg) translateY(4px);transform-origin:100% 100% }
+.ux-step.is-simple .ux-step__arrow:after,.ux-step.is-simple .ux-step__arrow:before { background:var(--ux-text-color-placeholder);content:&quot;&quot;;display:inline-block;height:15px;position:absolute;width:1px }
+.ux-step.is-simple .ux-step__arrow:before { transform:rotate(-45deg) translateY(-4px);transform-origin:0 0 }
+.ux-step.is-simple .ux-step__head { font-size:0;padding-right:10px;width:auto }
+.ux-step.is-simple .ux-step__icon { background:transparent;font-size:12px;height:16px;width:16px }
+.ux-step.is-simple .ux-step__icon-inner.is-status { transform:scale(.8) translateY(1px) }
+.ux-step.is-simple .ux-step__icon-inner[class*=ux-icon]:not(.is-status) { font-size:18px }
+.ux-step.is-simple .ux-step__main { align-items:stretch;display:flex;flex-grow:1;position:relative }
+.ux-step.is-simple .ux-step__title { font-size:16px;line-height:20px }
+.ux-step.is-simple:last-of-type .ux-step__arrow { display:none }
+.ux-step.is-simple:not(:last-of-type) .ux-step__title { max-width:50%;overflow-wrap:break-word }
+.ux-step.is-vertical { display:flex }
+.ux-step.is-vertical .ux-step__head { flex-grow:0;width:24px }
+.ux-step.is-vertical .ux-step__icon.is-icon { width:24px }
+.ux-step.is-vertical .ux-step__line { bottom:0;left:11px;top:0;width:2px }
+.ux-step.is-vertical .ux-step__main { flex-grow:1;padding-left:10px }
+.ux-step.is-vertical .ux-step__title { line-height:24px;padding-bottom:8px }

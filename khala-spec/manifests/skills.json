@@ -1,0 +1,165 @@
+{
+  "kind": "skills",
+  "source": "assets",
+  "teamspace": "khala-spec",
+  "kb_ref": "fp-bb0a246b",
+  "spec_version": "1.1.3",
+  "manifest_version": "2026.10.26",
+  "counts": {
+    "skills": 0,
+    "commands": 37,
+    "refs": 0
+  },
+  "skills": [],
+  "commands": [
+    {
+      "id": "cmd:apply-tdd",
+      "file": "commands/apply-tdd.md"
+    },
+    {
+      "id": "cmd:apply",
+      "file": "commands/apply.md"
+    },
+    {
+      "id": "cmd:archive",
+      "file": "commands/archive.md"
+    },
+    {
+      "id": "cmd:asset-replacer",
+      "file": "commands/asset-replacer.md"
+    },
+    {
+      "id": "cmd:bulk-archive",
+      "file": "commands/bulk-archive.md"
+    },
+    {
+      "id": "cmd:checklist",
+      "file": "commands/checklist.md"
+    },
+    {
+      "id": "cmd:create-menu",
+      "file": "commands/create-menu.md"
+    },
+    {
+      "id": "cmd:db-init",
+      "file": "commands/db-init.md"
+    },
+    {
+      "id": "cmd:deploy",
+      "file": "commands/deploy.md"
+    },
+    {
+      "id": "cmd:design-archive",
+      "file": "commands/design-archive.md"
+    },
+    {
+      "id": "cmd:design-export",
+      "file": "commands/design-export.md"
+    },
+    {
+      "id": "cmd:design-from-code",
+      "file": "commands/design-from-code.md"
+    },
+    {
+      "id": "cmd:design-review",
+      "file": "commands/design-review.md"
+    },
+    {
+      "id": "cmd:design",
+      "file": "commands/design.md"
+    },
+    {
+      "id": "cmd:execase",
+      "file": "commands/execase.md"
+    },
+    {
+      "id": "cmd:gencase",
+      "file": "commands/gencase.md"
+    },
+    {
+      "id": "cmd:generate",
+      "file": "commands/generate.md"
+    },
+    {
+      "id": "cmd:legacy-analyze",
+      "file": "commands/legacy-analyze.md"
+    },
+    {
+      "id": "cmd:legacy-rule-validate",
+      "file": "commands/legacy-rule-validate.md"
+    },
+    {
+      "id": "cmd:module-init",
+      "file": "commands/module-init.md"
+    },
+    {
+      "id": "cmd:pbc-extractor",
+      "file": "commands/pbc-extractor.md"
+    },
+    {
+      "id": "cmd:propose",
+      "file": "commands/propose.md"
+    },
+    {
+      "id": "cmd:prototype",
+      "file": "commands/prototype.md"
+    },
+    {
+      "id": "cmd:qa",
+      "file": "commands/qa.md"
+    },
+    {
+      "id": "cmd:quick-requirement",
+      "file": "commands/quick-requirement.md"
+    },
+    {
+      "id": "cmd:require-archive",
+      "file": "commands/require-archive.md"
+    },
+    {
+      "id": "cmd:require-export",
+      "file": "commands/require-export.md"
+    },
+    {
+      "id": "cmd:require-from-code",
+      "file": "commands/require-from-code.md"
+    },
+    {
+      "id": "cmd:require-review",
+      "file": "commands/require-review.md"
+    },
+    {
+      "id": "cmd:require",
+      "file": "commands/require.md"
+    },
+    {
+      "id": "cmd:review",
+      "file": "commands/review.md"
+    },
+    {
+      "id": "cmd:sync",
+      "file": "commands/sync.md"
+    },
+    {
+      "id": "cmd:test",
+      "file": "commands/test.md"
+    },
+    {
+      "id": "cmd:text-to-image",
+      "file": "commands/text-to-image.md"
+    },
+    {
+      "id": "cmd:theme",
+      "file": "commands/theme.md"
+    },
+    {
+      "id": "cmd:uptheme",
+      "file": "commands/uptheme.md"
+    },
+    {
+      "id": "cmd:vuechange",
+      "file": "commands/vuechange.md"
+    }
+  ],
+  "refs": []
+}

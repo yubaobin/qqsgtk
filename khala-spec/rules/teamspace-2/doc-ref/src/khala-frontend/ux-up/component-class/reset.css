@@ -1,0 +1,19 @@
+/* component: reset */
+
+a { color:var(--ux-color-primary);text-decoration:none }
+a:active { color:var(--ux-color-primary-dark-2) }
+a:focus,a:hover { color:var(--ux-color-primary-light-3) }
+button,input,textarea { font-family:inherit }
+h1 { font-size:calc(var(--ux-font-size-base) + 6px) }
+h1,h2,h3,h4,h5,h6 { color:var(--ux-text-color-regular);font-weight:inherit }
+h1:first-child,h2:first-child,h3:first-child,h4:first-child,h5:first-child,h6:first-child { margin-top:0 }
+h1:last-child,h2:last-child,h3:last-child,h4:last-child,h5:last-child,h6:last-child { margin-bottom:0 }
+h2 { font-size:calc(var(--ux-font-size-base) + 4px) }
+h3 { font-size:calc(var(--ux-font-size-base) + 2px) }
+h4,h5,h6,p { font-size:inherit }
+hr { border:0;border-top:1px solid var(--ux-border-color-lighter);margin-bottom:16px;margin-top:16px }
+p { line-height:1.8 }
+p:first-child { margin-top:0 }
+p:last-child { margin-bottom:0 }
+small { font-size:calc(var(--ux-font-size-base) - 2px) }
+sub,sup { font-size:calc(var(--ux-font-size-base) - 1px) }

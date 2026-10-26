@@ -1,0 +1,34 @@
+/* component: form */
+
+.ux-form { --ux-form-label-color:var(--ux-text-color-regular);--ux-form-inline-content-width:220px }
+.ux-form--inline .ux-form-item { --ux-form-inline-item-margin-right:12px;display:inline-flex;margin-right:var(--ux-form-inline-item-margin-right);vertical-align:middle }
+.ux-form--inline .ux-form-item--large { --ux-form-inline-item-margin-right:18px }
+.ux-form--inline .ux-form-item--mini { --ux-form-inline-item-margin-right:8px }
+.ux-form--inline .ux-form-item--small { --ux-form-inline-item-margin-right:10px }
+.ux-form--inline.ux-form--label-top { display:flex;flex-wrap:wrap }
+.ux-form--inline.ux-form--label-top .ux-form-item { display:block }
+.ux-form-item { --ux-form-label-font-size:14px;--ux-form-item-margin-bottom:16px;--ux-form-item-line-height:32px;--ux-form-item-error-padding-top:2px;--ux-form-item-label-top-margin-bottom:8px;--ux-form-item-label-top-line-height:24px;display:flex;margin-bottom:var(--ux-form-item-margin-bottom) }
+.ux-form-item .ux-form-item { margin-bottom:0 }
+.ux-form-item .ux-input__validateIcon { display:none }
+.ux-form-item__content { align-items:center;display:flex;flex:1;flex-wrap:wrap;min-width:0;position:relative }
+.ux-form-item__content .ux-input-group { vertical-align:top }
+.ux-form-item__content,.ux-form-item__label { font-size:var(--ux-form-label-font-size);line-height:var(--ux-form-item-line-height) }
+.ux-form-item__error { color:var(--ux-color-danger);font-size:12px;left:0;line-height:1;padding-top:var(--ux-form-item-error-padding-top);position:absolute;top:100% }
+.ux-form-item__error--inline { display:inline-block;left:auto;margin-left:8px;position:relative;top:auto }
+.ux-form-item__label { align-items:flex-start;box-sizing:border-box;color:var(--ux-form-label-color);display:inline-flex;flex:0 0 auto;height:var(--ux-form-item-line-height);padding:0 12px 0 0 }
+.ux-form-item__label-wrap { display:flex }
+.ux-form-item--default { --ux-form-label-font-size:14px;--ux-form-item-margin-bottom:16px;--ux-form-item-line-height:32px;--ux-form-item-error-padding-top:2px;--ux-form-item-label-top-margin-bottom:8px }
+.ux-form-item--feedback .ux-input__validateIcon { display:inline-flex }
+.ux-form-item--label-left .ux-form-item__label { justify-content:flex-start }
+.ux-form-item--label-right .ux-form-item__label { justify-content:flex-end;text-align:right }
+.ux-form-item--label-top { display:block }
+.ux-form-item--label-top .ux-form-item__label { display:block;height:auto;line-height:var(--ux-form-item-label-top-line-height);margin-bottom:var(--ux-form-item-label-top-margin-bottom);text-align:left;width:-moz-fit-content;width:fit-content }
+.ux-form-item--large { --ux-form-label-font-size:14px;--ux-form-item-margin-bottom:24px;--ux-form-item-line-height:40px;--ux-form-item-error-padding-top:4px;--ux-form-item-label-top-margin-bottom:12px }
+.ux-form-item--mini { --ux-form-label-font-size:12px;--ux-form-item-margin-bottom:16px;--ux-form-item-line-height:24px;--ux-form-item-error-padding-top:1px;--ux-form-item-label-top-margin-bottom:4px }
+.ux-form-item--small { --ux-form-label-font-size:14px;--ux-form-item-margin-bottom:16px;--ux-form-item-line-height:28px;--ux-form-item-error-padding-top:2px;--ux-form-item-label-top-margin-bottom:4px }
+.ux-form-item.is-error .ux-form-item__content .ux-input__validateIcon { color:var(--ux-color-danger) }
+.ux-form-item.is-error .ux-form-item__content .ux-input-group__append .ux-input__validateIcon,.ux-form-item.is-error .ux-form-item__content .ux-input-group__prepend .ux-input__validateIcon { display:none }
+.ux-form-item.is-error .ux-form-item__content .ux-input-group__append .ux-input__wrapper,.ux-form-item.is-error .ux-form-item__content .ux-input-group__prepend .ux-input__wrapper { box-shadow:inset 0 0 0 1px transparent }
+.ux-form-item.is-error .ux-form-item__content .ux-input-tag__wrapper,.ux-form-item.is-error .ux-form-item__content .ux-input-tag__wrapper.is-focus,.ux-form-item.is-error .ux-form-item__content .ux-input-tag__wrapper:focus,.ux-form-item.is-error .ux-form-item__content .ux-input-tag__wrapper:hover,.ux-form-item.is-error .ux-form-item__content .ux-input__wrapper,.ux-form-item.is-error .ux-form-item__content .ux-input__wrapper.is-focus,.ux-form-item.is-error .ux-form-item__content .ux-input__wrapper:focus,.ux-form-item.is-error .ux-form-item__content .ux-input__wrapper:hover,.ux-form-item.is-error .ux-form-item__content .ux-select__wrapper,.ux-form-item.is-error .ux-form-item__content .ux-select__wrapper.is-focus,.ux-form-item.is-error .ux-form-item__content .ux-select__wrapper:focus,.ux-form-item.is-error .ux-form-item__content .ux-select__wrapper:hover,.ux-form-item.is-error .ux-form-item__content .ux-textarea__inner,.ux-form-item.is-error .ux-form-item__content .ux-textarea__inner.is-focus,.ux-form-item.is-error .ux-form-item__content .ux-textarea__inner:focus,.ux-form-item.is-error .ux-form-item__content .ux-textarea__inner:hover { box-shadow:0 0 0 1px var(--ux-color-danger) inset }
+.ux-form-item.is-required:not(.is-no-asterisk).asterisk-left&gt;.ux-form-item__label-wrap&gt;.ux-form-item__label:before,.ux-form-item.is-required:not(.is-no-asterisk).asterisk-left&gt;.ux-form-item__label:before { color:var(--ux-color-danger);content:&quot;*&quot;;margin-right:4px }
+.ux-form-item.is-required:not(.is-no-asterisk).asterisk-right&gt;.ux-form-item__label-wrap&gt;.ux-form-item__label:after,.ux-form-item.is-required:not(.is-no-asterisk).asterisk-right&gt;.ux-form-item__label:after { color:var(--ux-color-danger);content:&quot;*&quot;;margin-left:4px }

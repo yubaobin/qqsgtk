@@ -1,0 +1,5 @@
+/* component: popconfirm */
+
+.ux-popconfirm__action { margin-top:8px;text-align:right }
+.ux-popconfirm__icon { margin-right:4px }
+.ux-popconfirm__main { align-items:center;display:flex }

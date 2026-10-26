@@ -1,0 +1,24 @@
+# ========================================
+# 敏感词检测配置
+# ========================================
+
+khala:
+  sensitive:
+    word:
+      # 是否开启敏感词检测，默认 true
+      enabled: true
+      # 当前激活的算法：dfa（默认）| bucket | ttmp
+      # dfa: 确定性有限自动机，性能最优
+      # bucket: 哈希桶过滤，适合大量敏感词
+      # ttmp: 文本匹配算法
+      active: dfa
+      # 是否自动刷新敏感词库（每1分钟），默认 false
+      auto-refresh: true
+      # 高亮敏感词的 HTML 格式，默认 <font color='red'>%s</font>
+      high-light-html: "<font color='red'>%s</font>"
+      # 敏感词数据源配置
+      datasource:
+        # 数据源类型：database（数据库）| file（文件）
+        type: database
+        # 如果使用 file 类型，配置敏感词字典文件路径
+        # path: /path/to/sensitive-words.txt

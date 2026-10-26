@@ -1,0 +1,23 @@
+/* component: radio-button */
+
+.ux-radio-button { --ux-radio-button-checked-bg-color:var(--ux-color-primary);--ux-radio-button-checked-text-color:var(--ux-color-white);--ux-radio-button-checked-border-color:var(--ux-color-primary);--ux-radio-button-disabled-checked-fill:var(--ux-border-color-extra-light) }
+.ux-radio-button__inner { -webkit-appearance:none;background:var(--ux-button-bg-color,var(--ux-fill-color-blank));border:var(--ux-border);border-left:0;border-radius:0;box-sizing:border-box;color:var(--ux-button-text-color,var(--ux-text-color-regular));cursor:pointer;font-size:var(--ux-font-size-base);font-weight:var(--ux-button-font-weight,var(--ux-font-weight-primary));line-height:1;margin:0;padding:8px 12px;text-align:center;transition:var(--ux-transition-all);-webkit-user-select:none;-moz-user-select:none;user-select:none;vertical-align:middle;white-space:nowrap }
+.ux-radio-button__inner [class*=ux-icon-] { line-height:.9 }
+.ux-radio-button__inner [class*=ux-icon-]+span { margin-left:4px }
+.ux-radio-button__inner:hover { color:var(--ux-color-primary) }
+.ux-radio-button__inner.is-round { padding:8px 12px }
+.ux-radio-button__original-radio { opacity:0;outline:none;position:absolute;z-index:-1 }
+.ux-radio-button__original-radio:disabled:checked+.ux-radio-button__inner { background-color:var(--ux-radio-button-disabled-checked-fill) }
+.ux-radio-button__original-radio:disabled+.ux-radio-button__inner { background-color:var(--ux-button-disabled-bg-color,var(--ux-fill-color-blank));background-image:none;border-color:var(--ux-button-disabled-border-color,var(--ux-border-color-light));box-shadow:none;color:var(--ux-disabled-text-color);cursor:not-allowed }
+.ux-radio-button__original-radio:focus-visible+.ux-radio-button__inner { border-left:var(--ux-border);border-left-color:var(--ux-radio-button-checked-border-color,var(--ux-color-primary));border-radius:var(--ux-border-radius-base);box-shadow:none;outline:2px solid var(--ux-radio-button-checked-border-color);outline-offset:1px;z-index:2 }
+.ux-radio-button--large .ux-radio-button__inner { border-radius:0;font-size:var(--ux-font-size-base);padding:12px 15px }
+.ux-radio-button--large .ux-radio-button__inner.is-round { padding:12px 15px }
+.ux-radio-button--mini .ux-radio-button__inner { border-radius:0;font-size:12px;padding:5px 7px }
+.ux-radio-button--mini .ux-radio-button__inner.is-round { padding:5px 7px }
+.ux-radio-button--small .ux-radio-button__inner { border-radius:0;font-size:12px;padding:7px 10px }
+.ux-radio-button--small .ux-radio-button__inner.is-round { padding:7px 10px }
+.ux-radio-button,.ux-radio-button__inner { display:inline-block;outline:none;position:relative }
+.ux-radio-button:first-child .ux-radio-button__inner { border-left:var(--ux-border);border-radius:var(--ux-border-radius-base) 0 0 var(--ux-border-radius-base);box-shadow:none!important }
+.ux-radio-button:first-child:last-child .ux-radio-button__inner { border-radius:var(--ux-border-radius-base) }
+.ux-radio-button:last-child .ux-radio-button__inner { border-radius:0 var(--ux-border-radius-base) var(--ux-border-radius-base) 0 }
+.ux-radio-button.is-active .ux-radio-button__original-radio:not(:disabled)+.ux-radio-button__inner { background-color:var(--ux-radio-button-checked-bg-color,var(--ux-color-primary));border-color:var(--ux-radio-button-checked-border-color,var(--ux-color-primary));box-shadow:-1px 0 0 0 var(--ux-radio-button-checked-border-color,var(--ux-color-primary));color:var(--ux-radio-button-checked-text-color,var(--ux-color-white)) }

@@ -1,0 +1,7 @@
+/* component: tree-select */
+
+.ux-tree-select { --ux-tree-node-content-height:26px;--ux-tree-node-hover-bg-color:var(--ux-fill-color-light);--ux-tree-text-color:var(--ux-text-color-regular);--ux-tree-expand-icon-color:var(--ux-text-color-placeholder) }
+.ux-tree-select__popper .ux-select-dropdown__item { background:transparent!important;flex:1;height:20px;line-height:20px;padding-left:0 }
+.ux-tree-select__popper .ux-select-dropdown__list&gt;.ux-select-dropdown__item { padding-left:32px }
+.ux-tree-select__popper .ux-tree-node__expand-icon { margin-left:8px }
+.ux-tree-select__popper .ux-tree-node.is-checked&gt;.ux-tree-node__content .ux-select-dropdown__item.selected:after { content:none }

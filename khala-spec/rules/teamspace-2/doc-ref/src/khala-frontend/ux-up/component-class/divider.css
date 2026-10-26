@@ -1,0 +1,9 @@
+/* component: divider */
+
+.ux-divider { --ux-divider-border-color:var(--ux-border-color);--ux-divider-border-style:var(--ux-border-style);--ux-divider-text-color:var(--ux-text-color-primary);--ux-divider-font-size:var(--ux-font-size-base);--ux-divider-text-bg-color:var(--ux-bg-color);--ux-divider-text-padding:0 20px;--ux-divider-horizontal-margin:var(--ux-sys-space-large);--ux-divider-vertical-margin:var(--ux-sys-space-base);position:relative }
+.ux-divider__text { background-color:var(--ux-divider-text-bg-color);color:var(--ux-divider-text-color);font-size:var(--ux-divider-font-size);font-weight:500;padding:var(--ux-divider-text-padding);position:absolute }
+.ux-divider__text.is-center { left:50%;transform:translateX(-50%) translateY(-50%) }
+.ux-divider__text.is-left { left:16px;transform:translateY(-50%) }
+.ux-divider__text.is-right { right:16px;transform:translateY(-50%) }
+.ux-divider--horizontal { border-top:1px var(--ux-divider-border-color) var(--ux-divider-border-style);display:block;height:1px;margin:var(--ux-divider-horizontal-margin) 0;width:100% }
+.ux-divider--vertical { border-left:1px var(--ux-divider-border-color) var(--ux-divider-border-style);display:inline-block;height:1em;margin:0 var(--ux-divider-vertical-margin);position:relative;vertical-align:middle;width:1px }

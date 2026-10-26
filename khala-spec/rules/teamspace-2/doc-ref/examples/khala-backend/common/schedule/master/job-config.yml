@@ -1,0 +1,18 @@
+# PowerJob Worker 配置
+# 适用版本: Khala 7.1.0+ (PowerJob 4.x)
+
+khala:
+  job:
+    # 统一开关：false 时禁用所有定时任务
+    enabled: true
+
+powerjob:
+  worker:
+    # 应用名称，需在 PowerJob Server 中注册
+    app-name: khala-job-app
+    # PowerJob Server 地址
+    server-address: 127.0.0.1:7700
+    # Worker 通信端口
+    port: 27777
+    # 协议类型：HTTP（Khala 默认排除 Akka 依赖）
+    protocol: http

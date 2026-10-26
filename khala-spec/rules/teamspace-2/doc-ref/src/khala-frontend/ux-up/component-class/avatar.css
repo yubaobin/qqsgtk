@@ -1,0 +1,10 @@
+/* component: avatar */
+
+.ux-avatar { --ux-avatar-text-color:var(--ux-color-white);--ux-avatar-bg-color:var(--ux-text-color-disabled);--ux-avatar-text-size:14px;--ux-avatar-icon-size:18px;--ux-avatar-border-radius:4px;--ux-avatar-size:32px;align-items:center;background:var(--ux-avatar-bg-color);box-sizing:border-box;color:var(--ux-avatar-text-color);display:inline-flex;font-size:var(--ux-avatar-text-size);height:var(--ux-avatar-size);justify-content:center;outline:none;overflow:hidden;text-align:center;width:var(--ux-avatar-size) }
+.ux-avatar--circle { border-radius:50% }
+.ux-avatar--icon { font-size:var(--ux-avatar-icon-size) }
+.ux-avatar--large { --ux-avatar-size:40px }
+.ux-avatar--mini { --ux-avatar-size:24px }
+.ux-avatar--small { --ux-avatar-size:28px }
+.ux-avatar--square { border-radius:var(--ux-avatar-border-radius) }
+.ux-avatar&gt;img { display:block;height:100%;width:100% }

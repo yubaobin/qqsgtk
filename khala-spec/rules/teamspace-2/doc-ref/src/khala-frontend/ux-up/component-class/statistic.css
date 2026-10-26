@@ -1,0 +1,8 @@
+/* component: statistic */
+
+.ux-statistic { --ux-statistic-title-font-weight:400;--ux-statistic-title-font-size:var(--ux-font-size-extra-small);--ux-statistic-title-color:var(--ux-text-color-regular);--ux-statistic-title-height:24px;--ux-statistic-title-margin:4px;--ux-statistic-content-font-weight:400;--ux-statistic-content-font-size:var(--ux-font-size-extra-large);--ux-statistic-content-color:var(--ux-text-color-primary) }
+.ux-statistic__content { color:var(--ux-statistic-content-color);font-size:var(--ux-statistic-content-font-size);font-weight:var(--ux-statistic-content-font-weight) }
+.ux-statistic__head { color:var(--ux-statistic-title-color);font-size:var(--ux-statistic-title-font-size);font-weight:var(--ux-statistic-title-font-weight);line-height:var(--ux-statistic-title-height);margin-bottom:var(--ux-statistic-title-margin) }
+.ux-statistic__prefix { display:inline-block;margin-right:4px }
+.ux-statistic__suffix { display:inline-block;margin-left:4px }
+.ux-statistic__value { display:inline-block }

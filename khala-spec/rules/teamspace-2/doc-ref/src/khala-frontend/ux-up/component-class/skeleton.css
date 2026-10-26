@@ -1,0 +1,7 @@
+/* component: skeleton */
+
+.ux-skeleton { --ux-skeleton-color:var(--ux-fill-color);--ux-skeleton-to-color:var(--ux-fill-color-darker) }
+.ux-skeleton__first-line,.ux-skeleton__paragraph { background:var(--ux-skeleton-color);height:16px;margin-top:16px }
+.ux-skeleton.is-animated .ux-skeleton__item { animation:ux-skeleton-loading 1.4s ease infinite;background:linear-gradient(90deg,var(--ux-skeleton-color) 25%,var(--ux-skeleton-to-color) 37%,var(--ux-skeleton-color) 63%);background-size:400% 100% }
+}.ux-skeleton { width:100% }
+to { background-position:0 50% }

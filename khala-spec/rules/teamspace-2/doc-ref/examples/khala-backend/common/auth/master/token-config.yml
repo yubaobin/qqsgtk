@@ -1,0 +1,31 @@
+# Token 配置示例
+
+khala:
+  security:
+    auth:
+      enabled-auth: true              # 是否启用鉴权，默认 true
+      enabled-rpc-auth: false         # RPC 调用是否鉴权，默认 false
+      is-single-login: true           # 是否单点登录互踢
+      is-share-token: true            # 是否多账号共享 Token
+      renew:
+        enabled: true                 # 是否开启 Token 自动续签
+        time-ratio: 0.5               # 续签时间比例（剩余时间 < 50% 时续签）
+    ignore:
+      authority-ignores:              # 匿名访问白名单
+        - /public/**
+        - /health
+        - /captcha/**
+    url-permission:
+      enabled: true                   # 是否开启 URL 级别权限
+      authorization-strategy: central # 鉴权策略：central / method
+      ignore-admin-permission: true   # admin 角色是否忽略权限校验
+
+  token:
+    store: redis                      # Token 存储方式：redis / db
+    type: custom                      # Token 类型：custom / jwt
+    authorization-token-type: redis   # 服务验证 Token 方式：redis / rpc
+    revoke-type: invalidate           # Token 失效处理方式：invalidate / remove
+
+  security:
+    jwt:
+      signing-key: khala              # JWT 签名密钥（仅 JWT 模式生效）

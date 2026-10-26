@@ -1,0 +1,10 @@
+/* component: descriptions-item */
+
+.ux-descriptions { --ux-descriptions-item-label-margin-right:16px;--ux-descriptions-item-vertical-label-padding-bottom:6px }
+.ux-descriptions__content:not(.is-bordered-label) { color:var(--ux-descriptions-text-color) }
+.ux-descriptions__content.ux-descriptions__cell.is-bordered-content { color:var(--ux-descriptions-borderd-text-color) }
+.ux-descriptions__label:not(.is-bordered-label) { color:var(--ux-descriptions-label-color);margin-right:var(--ux-descriptions-item-label-margin-right) }
+.ux-descriptions__label.ux-descriptions__cell:not(.is-bordered-label).is-vertical-label { padding-bottom:var(--ux-descriptions-item-vertical-label-padding-bottom) }
+.ux-descriptions__label.ux-descriptions__cell.is-bordered-label { background:var(--ux-descriptions-item-bordered-label-background);color:var(--ux-descriptions-borderd-label-color);font-weight:bold }
+.ux-descriptions--large { --ux-descriptions-item-label-margin-right:16px;--ux-descriptions-item-vertical-label-padding-bottom:8px }
+.ux-descriptions--mini,.ux-descriptions--small { --ux-descriptions-item-label-margin-right:12px;--ux-descriptions-item-vertical-label-padding-bottom:4px }

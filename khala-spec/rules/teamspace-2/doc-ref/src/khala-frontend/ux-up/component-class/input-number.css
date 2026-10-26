@@ -1,0 +1,39 @@
+/* component: input-number */
+
+.ux-input-number { --ux-input-number-op-bg-color:var(--ux-fill-color-light);--ux-input-number-op-text-color:var(--ux-text-color-regular);--ux-input-number-width:150px;display:inline-flex;line-height:30px;position:relative;vertical-align:middle;width:var(--ux-input-number-width) }
+.ux-input-number .ux-input__inner { -webkit-appearance:none;-moz-appearance:textfield;line-height:1;text-align:center }
+.ux-input-number .ux-input__inner::-webkit-inner-spin-button,.ux-input-number .ux-input__inner::-webkit-outer-spin-button { -webkit-appearance:none;margin:0 }
+.ux-input-number .ux-input__wrapper { padding-left:39px;padding-right:39px }
+.ux-input-number__decrease { border-radius:var(--ux-border-radius-base) 0 0 var(--ux-border-radius-base);border-right:var(--ux-border);left:1px }
+.ux-input-number__decrease,.ux-input-number__increase { align-items:center;background:var(--ux-input-number-op-bg-color);bottom:1px;color:var(--ux-input-number-op-text-color);cursor:pointer;display:flex;font-size:14px;height:auto;justify-content:center;position:absolute;top:1px;-webkit-user-select:none;-moz-user-select:none;user-select:none;width:32px;z-index:1 }
+.ux-input-number__decrease:hover,.ux-input-number__increase:hover { color:var(--ux-color-primary) }
+.ux-input-number__decrease:hover~.ux-input:not(.is-disabled) .ux-input__wrapper,.ux-input-number__increase:hover~.ux-input:not(.is-disabled) .ux-input__wrapper { box-shadow:0 0 0 1px var(--ux-input-focus-border-color,var(--ux-color-primary)) inset }
+.ux-input-number__decrease.is-disabled,.ux-input-number__increase.is-disabled { color:var(--ux-disabled-text-color);cursor:not-allowed }
+.ux-input-number__increase { border-left:var(--ux-border);border-radius:0 var(--ux-border-radius-base) var(--ux-border-radius-base) 0;right:1px }
+.ux-input-number--large { --ux-input-number-width:180px;line-height:38px }
+.ux-input-number--large .ux-input--large .ux-input__wrapper { padding-left:47px;padding-right:47px }
+.ux-input-number--large .ux-input-number__decrease,.ux-input-number--large .ux-input-number__increase { font-size:14px;width:40px }
+.ux-input-number--large.is-controls-right .ux-input--large .ux-input__wrapper { padding-right:47px }
+.ux-input-number--mini { --ux-input-number-width:120px;line-height:22px }
+.ux-input-number--mini .ux-input--mini .ux-input__wrapper { padding-left:31px;padding-right:31px }
+.ux-input-number--mini .ux-input-number__decrease,.ux-input-number--mini .ux-input-number__increase { font-size:12px;width:24px }
+.ux-input-number--mini.is-controls-right .ux-input--mini .ux-input__wrapper { padding-right:31px }
+.ux-input-number--small { --ux-input-number-width:120px;line-height:26px }
+.ux-input-number--small .ux-input--small .ux-input__wrapper { padding-left:35px;padding-right:35px }
+.ux-input-number--small .ux-input-number__decrease [class*=ux-icon],.ux-input-number--small .ux-input-number__increase [class*=ux-icon] { transform:scale(.9) }
+.ux-input-number--small .ux-input-number__decrease,.ux-input-number--small .ux-input-number__increase { font-size:13px;width:28px }
+.ux-input-number--small.is-controls-right .ux-input--small .ux-input__wrapper { padding-right:35px }
+.ux-input-number.is-center .ux-input__inner { text-align:center }
+.ux-input-number.is-controls-right .ux-input__wrapper { padding-left:15px;padding-right:42px }
+.ux-input-number.is-controls-right .ux-input-number__decrease { border-left:var(--ux-border);border-radius:0 0 var(--ux-border-radius-base) 0;border-right:none;left:auto;right:1px;top:auto }
+.ux-input-number.is-controls-right .ux-input-number__decrease [class*=ux-icon],.ux-input-number.is-controls-right .ux-input-number__increase [class*=ux-icon] { transform:scale(.8) }
+.ux-input-number.is-controls-right .ux-input-number__decrease,.ux-input-number.is-controls-right .ux-input-number__increase { --ux-input-number-controls-height:15px;height:var(--ux-input-number-controls-height);line-height:var(--ux-input-number-controls-height) }
+.ux-input-number.is-controls-right .ux-input-number__increase { border-bottom:var(--ux-border);border-radius:0 var(--ux-border-radius-base) 0 0;bottom:auto;left:auto }
+.ux-input-number.is-controls-right[class*=large] [class*=decrease],.ux-input-number.is-controls-right[class*=large] [class*=increase] { --ux-input-number-controls-height:19px }
+.ux-input-number.is-controls-right[class*=mini] [class*=decrease],.ux-input-number.is-controls-right[class*=mini] [class*=increase] { --ux-input-number-controls-height:11px }
+.ux-input-number.is-controls-right[class*=small] [class*=decrease],.ux-input-number.is-controls-right[class*=small] [class*=increase] { --ux-input-number-controls-height:13px }
+.ux-input-number.is-disabled .ux-input-number__decrease,.ux-input-number.is-disabled .ux-input-number__increase { border-color:var(--ux-disabled-border-color);color:var(--ux-disabled-border-color) }
+.ux-input-number.is-disabled .ux-input-number__decrease:hover,.ux-input-number.is-disabled .ux-input-number__increase:hover { color:var(--ux-disabled-border-color);cursor:not-allowed }
+.ux-input-number.is-left .ux-input__inner { text-align:left }
+.ux-input-number.is-right .ux-input__inner { text-align:right }
+.ux-input-number.is-without-controls .ux-input__wrapper { padding-left:15px;padding-right:15px }

@@ -1,0 +1,39 @@
+/* component: message-box */
+
+:root { --ux-popup-modal-bg-color:var(--ux-color-black);--ux-popup-modal-opacity:0.5 }
+.fade-in-linear-enter-active .ux-overlay-message-box { animation:msgbox-fade-in var(--ux-transition-duration) }
+.fade-in-linear-leave-active .ux-overlay-message-box { animation:msgbox-fade-in var(--ux-transition-duration) reverse }
+.ux-message-box { --ux-messagebox-title-color:var(--ux-text-color-primary);--ux-messagebox-width:420px;--ux-messagebox-border-radius:4px;--ux-messagebox-box-shadow:var(--ux-box-shadow);--ux-messagebox-font-size:var(--ux-font-size-large);--ux-messagebox-content-font-size:var(--ux-font-size-base);--ux-messagebox-content-color:var(--ux-text-color-regular);--ux-messagebox-error-font-size:12px;--ux-messagebox-padding-primary:16px;--ux-messagebox-font-line-height:var(--ux-font-line-height-primary);--ux-messagebox-status-icon-size:24px;backface-visibility:hidden;background-color:var(--ux-bg-color);border-radius:var(--ux-messagebox-border-radius);box-shadow:var(--ux-messagebox-box-shadow);box-sizing:border-box;display:inline-block;font-size:var(--ux-messagebox-font-size);max-width:var(--ux-messagebox-width);overflow:hidden;overflow-wrap:break-word;padding:var(--ux-messagebox-padding-primary);position:relative;text-align:left;vertical-align:middle;width:100% }
+.ux-message-box__btns { align-items:center;display:flex;flex-wrap:wrap;justify-content:flex-end;padding-top:var(--ux-messagebox-padding-primary) }
+.ux-message-box__container { align-items:center;display:flex;gap:8px }
+.ux-message-box__content { color:var(--ux-messagebox-content-color);font-size:var(--ux-messagebox-content-font-size) }
+.ux-message-box__errormsg { color:var(--ux-color-error);font-size:var(--ux-messagebox-error-font-size);line-height:var(--ux-messagebox-font-line-height) }
+.ux-message-box__header { padding-bottom:var(--ux-messagebox-padding-primary) }
+.ux-message-box__header.show-close { padding-right:calc(var(--ux-messagebox-padding-primary) + var(--ux-message-close-size, 16px)) }
+.ux-message-box__headerbtn { background:transparent;border:none;cursor:pointer;font-size:var(--ux-message-close-size,16px);outline:none;padding:0;position:absolute;right:var(--ux-messagebox-padding-primary);top:var(--ux-messagebox-padding-primary) }
+.ux-message-box__headerbtn .ux-message-box__close { color:var(--ux-color-info);font-size:inherit }
+.ux-message-box__headerbtn:focus .ux-message-box__close,.ux-message-box__headerbtn:hover .ux-message-box__close { color:var(--ux-color-primary) }
+.ux-message-box__input { padding-top:12px }
+.ux-message-box__input div.invalid&gt;input,.ux-message-box__input div.invalid&gt;input:focus { border-color:var(--ux-color-error) }
+.ux-message-box__message { margin:0;min-width:0 }
+.ux-message-box__message p { line-height:var(--ux-messagebox-font-line-height);margin:0 }
+.ux-message-box__status { font-size:var(--ux-messagebox-status-icon-size) }
+.ux-message-box__status.ux-message-box-icon--error { --ux-messagebox-color:var(--ux-color-error);color:var(--ux-messagebox-color) }
+.ux-message-box__status.ux-message-box-icon--info { --ux-messagebox-color:var(--ux-color-info);color:var(--ux-messagebox-color) }
+.ux-message-box__status.ux-message-box-icon--primary { --ux-messagebox-color:var(--ux-color-primary);color:var(--ux-messagebox-color) }
+.ux-message-box__status.ux-message-box-icon--success { --ux-messagebox-color:var(--ux-color-success);color:var(--ux-messagebox-color) }
+.ux-message-box__status.ux-message-box-icon--warning { --ux-messagebox-color:var(--ux-color-warning);color:var(--ux-messagebox-color) }
+.ux-message-box__title { color:var(--ux-messagebox-title-color);font-size:var(--ux-messagebox-font-size);line-height:var(--ux-messagebox-font-line-height) }
+.ux-message-box--center .ux-message-box__btns,.ux-message-box--center .ux-message-box__container { justify-content:center }
+.ux-message-box--center .ux-message-box__status { font-size:inherit }
+.ux-message-box--center .ux-message-box__title { align-items:center;display:flex;gap:6px;justify-content:center }
+.ux-message-box:focus { outline:none!important }
+.ux-message-box.is-draggable .ux-message-box__header { cursor:move;-webkit-user-select:none;-moz-user-select:none;user-select:none }
+.ux-overlay.is-message-box .ux-overlay-message-box { bottom:0;left:0;overflow:auto;padding:16px;position:fixed;right:0;text-align:center;top:0 }
+.ux-overlay.is-message-box .ux-overlay-message-box:after { content:&quot;&quot;;display:inline-block;height:100%;vertical-align:middle;width:0 }
+.ux-popup-parent--hidden { overflow:hidden }
+.v-modal-enter { animation:v-modal-in var(--ux-transition-duration-fast) ease }
+.v-modal-leave { animation:v-modal-out var(--ux-transition-duration-fast) ease forwards }
+}.v-modal { background:var(--ux-popup-modal-bg-color);height:100%;left:0;opacity:var(--ux-popup-modal-opacity);position:fixed;top:0;width:100% }
+}@keyframes v-modal-out { to{opacity:0 }
+to { opacity:1;transform:translateZ(0) }

@@ -1,0 +1,25 @@
+# 用户数据翻译配置
+# 适用版本: Khala 7.x+
+
+# 启用翻译功能
+khala:
+  trans:
+    enabled: true
+
+---
+# 模式 1：本地数据库模式（直接查询当前库的用户/租户表）
+spring:
+  config:
+    activate:
+      on-profile: database
+khala:
+  datasource: database
+
+---
+# 模式 2：RPC 模式（通过 Feign 调用用户/租户服务，默认）
+spring:
+  config:
+    activate:
+      on-profile: rpc
+khala:
+  datasource: rpc

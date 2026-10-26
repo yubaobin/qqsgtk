@@ -1,0 +1,7 @@
+/* component: anchor-link */
+
+.ux-anchor .ux-anchor__list .ux-anchor__item a { display:inline-block }
+.ux-anchor__item { display:flex;flex-direction:column;overflow:hidden }
+.ux-anchor__link { cursor:pointer;font-size:var(--ux-anchor-font-size);line-height:var(--ux-anchor-line-height);max-width:100%;outline:none;overflow:hidden;padding:var(--ux-anchor-link-padding-vertical) 0;text-decoration:none;text-overflow:ellipsis;transition:color var(--ux-transition-duration);white-space:nowrap }
+.ux-anchor__link,.ux-anchor__link:focus,.ux-anchor__link:hover { color:var(--ux-anchor-color) }
+.ux-anchor__link.is-active { color:var(--ux-anchor-active-color) }

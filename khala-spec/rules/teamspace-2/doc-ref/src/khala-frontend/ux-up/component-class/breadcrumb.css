@@ -1,0 +1,14 @@
+/* component: breadcrumb */
+
+.ux-breadcrumb { --ux-breadcrumb-text-color:var(--ux-text-color-regular);--ux-breadcrumb-active-text-color:var(--ux-color-primary);--ux-breadcrumb-font-size:var(--ux-font-size-base);--ux-breadcrumb-separator-margin:8px;--ux-breadcrumb-icon-margin:6px;font-size:var(--ux-breadcrumb-font-size);line-height:1 }
+.ux-breadcrumb__inner { color:var(--ux-breadcrumb-text-color) }
+.ux-breadcrumb__inner a,.ux-breadcrumb__inner.is-link { color:var(--ux-breadcrumb-text-color);text-decoration:none;transition:var(--ux-transition-color) }
+.ux-breadcrumb__inner a:hover,.ux-breadcrumb__inner.is-link:hover { color:var(--ux-breadcrumb-active-text-color);cursor:pointer }
+.ux-breadcrumb__item { align-items:center;display:inline-flex;float:left }
+.ux-breadcrumb__item:last-child .ux-breadcrumb__inner,.ux-breadcrumb__item:last-child .ux-breadcrumb__inner a,.ux-breadcrumb__item:last-child .ux-breadcrumb__inner a:hover,.ux-breadcrumb__item:last-child .ux-breadcrumb__inner:hover { color:var(--ux-breadcrumb-text-color);cursor:text;font-weight:normal }
+.ux-breadcrumb__item:last-child .ux-breadcrumb__separator { display:none }
+.ux-breadcrumb__separator { color:var(--ux-breadcrumb-text-color);margin:0 var(--ux-breadcrumb-separator-margin) }
+.ux-breadcrumb__separator.ux-icon { font-weight:normal;margin:0 var(--ux-breadcrumb-icon-margin) }
+.ux-breadcrumb__separator.ux-icon svg { vertical-align:middle }
+.ux-breadcrumb:after { clear:both }
+.ux-breadcrumb:after,.ux-breadcrumb:before { content:&quot;&quot;;display:table }

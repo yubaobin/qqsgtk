@@ -1,0 +1,17 @@
+/* component: calendar */
+
+.ux-calendar { --ux-calendar-bg-color:var(--ux-fill-color-blank);--ux-calendar-title-color:var(--ux-text-color-primary);--ux-calendar-border:var(--ux-table-border,1px solid var(--ux-border-color-lighter));--ux-calendar-header-padding:12px 16px;--ux-calendar-body-padding:12px 16px 16px;--ux-calendar-header-border-bottom:var(--ux-calendar-border);--ux-calendar-selected-bg-color:var(--ux-color-primary-light-9);--ux-calendar-cell-width:85px;--ux-calendar-table-header-text-color:var(--ux-text-color-regular);--ux-calendar-disabled-color:var(--ux-text-color-placeholder);--ux-calendar-active-color:var(--ux-color-primary);background-color:var(--ux-calendar-bg-color) }
+.ux-calendar__body { padding:var(--ux-calendar-body-padding) }
+.ux-calendar__header { border-bottom:var(--ux-calendar-header-border-bottom);display:flex;justify-content:space-between;padding:var(--ux-calendar-header-padding) }
+.ux-calendar__title { align-self:center;color:var(--ux-calendar-title-color) }
+.ux-calendar-table { table-layout:fixed;width:100% }
+.ux-calendar-table .ux-calendar-day { box-sizing:border-box;height:var(--ux-calendar-cell-width);padding:8px }
+.ux-calendar-table .ux-calendar-day:hover { background-color:var(--ux-calendar-selected-bg-color);cursor:pointer }
+.ux-calendar-table td { border-bottom:var(--ux-calendar-border);border-right:var(--ux-calendar-border);transition:background-color var(--ux-transition-duration-fast) ease;vertical-align:top }
+.ux-calendar-table td.is-selected { background-color:var(--ux-calendar-selected-bg-color) }
+.ux-calendar-table td.is-today { color:var(--ux-calendar-active-color) }
+.ux-calendar-table thead th { color:var(--ux-calendar-table-header-text-color);font-weight:normal;padding:12px 0 }
+.ux-calendar-table tr td:first-child { border-left:var(--ux-calendar-border) }
+.ux-calendar-table tr:first-child td { border-top:var(--ux-calendar-border) }
+.ux-calendar-table tr.ux-calendar-table__row--hide-border td { border-top:none }
+.ux-calendar-table:not(.is-range) td.next,.ux-calendar-table:not(.is-range) td.prev { color:var(--ux-calendar-disabled-color) }

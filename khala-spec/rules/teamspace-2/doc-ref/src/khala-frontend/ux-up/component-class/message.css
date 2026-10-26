@@ -1,0 +1,27 @@
+/* component: message */
+
+.ux-message { --ux-message-bg-color:var(--ux-color-info-light-9);--ux-message-border-color:var(--ux-border-color-lighter);--ux-message-border-radius:var(--ux-border-radius-base);--ux-message-padding:12px 16px;--ux-message-close-size:16px;--ux-message-close-icon-color:var(--ux-text-color-secondary);--ux-message-close-hover-color:var(--ux-text-color-placeholder);--ux-message-font-size:var(--ux-font-size-base);align-items:center;background-color:var(--ux-message-bg-color);border-color:var(--ux-message-border-color);border-radius:var(--ux-message-border-radius);border-style:var(--ux-border-style);border-width:var(--ux-border-width);box-sizing:border-box;display:flex;gap:8px;left:50%;max-width:calc(100% - 32px);padding:var(--ux-message-padding);position:fixed;top:24px;transform:translateX(-50%);transition:opacity var(--ux-transition-duration),transform .4s,top .4s;width:-moz-fit-content;width:fit-content }
+.ux-message .ux-message__badge { position:absolute;right:-8px;top:-8px }
+.ux-message .ux-message__closeBtn { color:var(--ux-message-close-icon-color);cursor:pointer;font-size:var(--ux-message-close-size) }
+.ux-message .ux-message__closeBtn:focus { outline-width:0 }
+.ux-message .ux-message__closeBtn:hover { color:var(--ux-message-close-hover-color) }
+.ux-message .ux-message-icon--error { color:var(--ux-message-text-color) }
+.ux-message .ux-message-icon--info { color:var(--ux-message-text-color) }
+.ux-message .ux-message-icon--primary { color:var(--ux-message-text-color) }
+.ux-message .ux-message-icon--success { color:var(--ux-message-text-color) }
+.ux-message .ux-message-icon--warning { color:var(--ux-message-text-color) }
+.ux-message p { margin:0 }
+.ux-message__content { font-size:var(--ux-message-font-size);line-height:1;padding:0 }
+.ux-message__content:focus { outline-width:0 }
+.ux-message--error { --ux-message-bg-color:var(--ux-color-error-light-9);--ux-message-border-color:var(--ux-color-error-light-8);--ux-message-text-color:var(--ux-color-error) }
+.ux-message--error .ux-message__content { color:var(--ux-message-text-color);overflow-wrap:break-word }
+.ux-message--info { --ux-message-bg-color:var(--ux-color-info-light-9);--ux-message-border-color:var(--ux-color-info-light-8);--ux-message-text-color:var(--ux-color-info) }
+.ux-message--info .ux-message__content { color:var(--ux-message-text-color);overflow-wrap:break-word }
+.ux-message--primary { --ux-message-bg-color:var(--ux-color-primary-light-9);--ux-message-border-color:var(--ux-color-primary-light-8);--ux-message-text-color:var(--ux-color-primary) }
+.ux-message--primary .ux-message__content { color:var(--ux-message-text-color);overflow-wrap:break-word }
+.ux-message--success { --ux-message-bg-color:var(--ux-color-success-light-9);--ux-message-border-color:var(--ux-color-success-light-8);--ux-message-text-color:var(--ux-color-success) }
+.ux-message--success .ux-message__content { color:var(--ux-message-text-color);overflow-wrap:break-word }
+.ux-message--warning { --ux-message-bg-color:var(--ux-color-warning-light-9);--ux-message-border-color:var(--ux-color-warning-light-8);--ux-message-text-color:var(--ux-color-warning) }
+.ux-message--warning .ux-message__content { color:var(--ux-message-text-color);overflow-wrap:break-word }
+.ux-message-fade-enter-from,.ux-message-fade-leave-to { opacity:0;transform:translate(-50%,-100%) }
+.ux-message.is-plain { background-color:var(--ux-bg-color-overlay);border-color:var(--ux-bg-color-overlay);box-shadow:var(--ux-box-shadow-light) }

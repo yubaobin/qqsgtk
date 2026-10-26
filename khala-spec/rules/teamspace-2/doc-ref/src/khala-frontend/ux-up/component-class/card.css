@@ -1,0 +1,7 @@
+/* component: card */
+
+.ux-card { --ux-card-text-color:var(--ux-text-color-primary);--ux-card-border-color:var(--ux-border-color-light);--ux-card-border-radius:4px;--ux-card-padding:20px;--ux-card-bg-color:var(--ux-fill-color-blank);--ux-card-box-shadow:var(--ux-box-shadow-light);background-color:var(--ux-card-bg-color);border:1px solid var(--ux-card-border-color);border-radius:var(--ux-card-border-radius);color:var(--ux-card-text-color);overflow:hidden;transition:var(--ux-transition-duration) }
+.ux-card__body { padding:var(--ux-card-padding) }
+.ux-card__footer { border-top:1px solid var(--ux-card-border-color);box-sizing:border-box;padding:calc(var(--ux-card-padding) - 2px) var(--ux-card-padding) }
+.ux-card__header { border-bottom:1px solid var(--ux-card-border-color);box-sizing:border-box;padding:calc(var(--ux-card-padding) - 2px) var(--ux-card-padding) }
+.ux-card.is-always-shadow,.ux-card.is-hover-shadow:focus,.ux-card.is-hover-shadow:hover { box-shadow:var(--ux-card-box-shadow) }

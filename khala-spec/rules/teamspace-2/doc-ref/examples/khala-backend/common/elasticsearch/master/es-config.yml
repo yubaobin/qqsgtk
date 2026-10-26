@@ -1,0 +1,29 @@
+# ========================================
+# Elasticsearch 配置
+# ========================================
+
+spring:
+  elasticsearch:
+    uris: http://localhost:9200
+    # 认证配置（可选）
+    username: elastic
+    password: changeme
+    # 连接超时（毫秒）
+    connection-timeout: 1000
+    # Socket 超时（毫秒）
+    socket-timeout: 30000
+
+# --- Khala ES 连接池扩展配置 ---
+khala:
+  elasticsearch:
+    rest-pool:
+      # 链接建立超时时间（毫秒），默认 1000
+      connect-time-out: 1000
+      # 等待数据超时时间（毫秒），默认 30000
+      socket-time-out: 30000
+      # 连接池获取连接的超时时间（毫秒），默认 500
+      connection-request-time-out: 500
+      # 最大连接数，默认 30
+      max-connect-num: 30
+      # 最大路由连接数，默认 10
+      max-connect-per-route: 10

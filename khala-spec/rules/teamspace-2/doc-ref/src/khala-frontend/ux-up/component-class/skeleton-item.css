@@ -1,0 +1,16 @@
+/* component: skeleton-item */
+
+.ux-skeleton { --ux-skeleton-circle-size:var(--ux-avatar-size) }
+.ux-skeleton__button { border-radius:4px;height:40px;width:64px }
+.ux-skeleton__caption { height:var(--ux-font-size-extra-small) }
+.ux-skeleton__circle { border-radius:50%;height:var(--ux-skeleton-circle-size);line-height:var(--ux-skeleton-circle-size);width:var(--ux-skeleton-circle-size) }
+.ux-skeleton__h1 { height:var(--ux-font-size-extra-large) }
+.ux-skeleton__h3 { height:var(--ux-font-size-large) }
+.ux-skeleton__h5 { height:var(--ux-font-size-medium) }
+.ux-skeleton__image { align-items:center;border-radius:0;display:flex;justify-content:center;width:unset }
+.ux-skeleton__image svg { color:var(--ux-svg-monochrome-grey);fill:currentColor;height:22%;width:22% }
+.ux-skeleton__item { background:var(--ux-skeleton-color);border-radius:var(--ux-border-radius-base);display:inline-block;height:16px;width:100% }
+.ux-skeleton__p { width:100% }
+.ux-skeleton__p.is-first { width:33% }
+.ux-skeleton__p.is-last { width:61% }
+.ux-skeleton__text { height:var(--ux-font-size-small);width:100% }

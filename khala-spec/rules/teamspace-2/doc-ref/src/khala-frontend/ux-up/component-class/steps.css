@@ -1,0 +1,6 @@
+/* component: steps */
+
+.ux-steps { display:flex }
+.ux-steps--horizontal { white-space:nowrap }
+.ux-steps--simple { background:var(--ux-fill-color-light);border-radius:4px;padding:12px 8% }
+.ux-steps--vertical { flex-flow:column;height:100% }

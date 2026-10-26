@@ -1,0 +1,5 @@
+/* component: backtop */
+
+.ux-backtop { --ux-backtop-bg-color:var(--ux-bg-color-overlay);--ux-backtop-font-size:18px;--ux-backtop-icon-size:18px;--ux-backtop-text-color:var(--ux-color-primary);--ux-backtop-hover-bg-color:var(--ux-border-color-extra-light);--ux-backtop-width:40px;--ux-backtop-height:40px;align-items:center;background-color:var(--ux-backtop-bg-color);border-radius:50%;box-shadow:var(--ux-box-shadow-lighter);color:var(--ux-backtop-text-color);cursor:pointer;display:flex;font-size:var(--ux-backtop-font-size);height:var(--ux-backtop-height);justify-content:center;position:fixed;width:var(--ux-backtop-width);z-index:5 }
+.ux-backtop__icon { font-size:var(--ux-backtop-icon-size) }
+.ux-backtop:hover { background-color:var(--ux-backtop-hover-bg-color) }

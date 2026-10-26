@@ -1,0 +1,37 @@
+# ========================================
+# 短信发送配置
+# ========================================
+
+khala:
+  sms:
+    # 是否启用短信组件，默认 true
+    enabled: true
+    # 短信配置来源：config（配置文件）| database（数据库），默认 config
+    datasource: config
+    # 当前激活的短信供应商：guangxin | zhiheng | huawei | aliyun | tencent | caih
+    active: huawei
+    # 供应商渠道配置
+    type:
+      huawei:
+        api-key: your-api-key
+        api-secret: your-api-secret
+        spid: your-spid
+        endpoint: https://smsapi.cn-south-1.myhuaweicloud.com:443
+        signature: 你的签名
+      aliyun:
+        api-key: your-access-key-id
+        api-secret: your-access-key-secret
+        endpoint: dysmsapi.aliyuncs.com
+        signature: 你的签名
+    # 模板配置
+    template:
+      login:
+        api-template-id: 33c7a839ba5740cfa846540e4905f0b0
+        content: 您本次登录的验证码:{code}，5分钟内有效，非本人操作请忽略。
+        params:
+          - code
+      notify:
+        api-template-id: your-template-id
+        content: 您有一条新通知：{content}
+        params:
+          - content

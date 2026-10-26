@@ -1,0 +1,11 @@
+# 全局日期格式配置
+# 适用版本: Khala 7.x+
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      adjust-dates-to-context-time-zone: true

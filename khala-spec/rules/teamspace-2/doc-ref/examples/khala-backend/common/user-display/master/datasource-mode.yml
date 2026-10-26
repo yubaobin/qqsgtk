@@ -1,0 +1,55 @@
+# 双数据源模式切换配置
+# 适用版本: Khala 7.x+
+
+# ============================================
+# 模式 A：database（本地数据库直连）
+# 适用场景：单体应用或用户/租户数据在当前服务数据库中
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: database-mode
+khala:
+  trans:
+    enabled: true
+  datasource: database
+
+---
+# ============================================
+# 模式 B：rpc（Feign 远程调用）
+# 适用场景：微服务架构，用户/租户数据在独立服务中
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: rpc-mode
+khala:
+  trans:
+    enabled: true
+  datasource: rpc
+
+# RPC 模式下需确保用户服务已注册到注册中心
+# Feign 客户端会自动调用用户服务的批量查询接口
+
+---
+# ============================================
+# 模式 C：混合模式（开发环境使用 database，生产使用 rpc）
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+khala:
+  trans:
+    enabled: true
+  datasource: database
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+khala:
+  trans:
+    enabled: true
+  datasource: rpc

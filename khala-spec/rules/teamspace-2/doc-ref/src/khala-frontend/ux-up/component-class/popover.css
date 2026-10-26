@@ -1,0 +1,9 @@
+/* component: popover */
+
+.ux-popover { --ux-popover-bg-color:var(--ux-bg-color-overlay);--ux-popover-font-size:var(--ux-font-size-base);--ux-popover-text-color:var(--ux-text-color-regular);--ux-popover-border-color:var(--ux-border-color-lighter);--ux-popover-dark-text-color:var(--ux-bg-color);--ux-popover-padding:16px;--ux-popover-padding-large:18px 20px;--ux-popover-title-font-size:16px;--ux-popover-title-text-color:var(--ux-text-color-primary);--ux-popover-border-radius:4px;--ux-popover-box-shadow:var(--ux-box-shadow-light) }
+.ux-popover__reference:focus:hover,.ux-popover__reference:focus:not(.focusing) { outline-width:0 }
+.ux-popover__title { color:var(--ux-popover-title-text-color);font-size:var(--ux-popover-title-font-size);line-height:1;margin-bottom:12px }
+.ux-popover.ux-popper { background:var(--ux-popover-bg-color);border:1px solid var(--ux-popover-border-color);border-radius:var(--ux-popover-border-radius);box-shadow:var(--ux-popover-box-shadow);box-sizing:border-box;color:var(--ux-popover-text-color);font-size:var(--ux-popover-font-size);line-height:1.4;min-width:150px;overflow-wrap:break-word;padding:var(--ux-popover-padding);z-index:var(--ux-index-popper) }
+.ux-popover.ux-popper--plain { padding:var(--ux-popover-padding-large) }
+.ux-popover.ux-popper:focus,.ux-popover.ux-popper:focus:active { outline-width:0 }
+.ux-popover.ux-popper.is-dark { --ux-popover-bg-color:var(--ux-text-color-primary);--ux-popover-border-color:var(--ux-text-color-primary);--ux-popover-title-text-color:var(--ux-bg-color);color:var(--ux-popover-dark-text-color) }

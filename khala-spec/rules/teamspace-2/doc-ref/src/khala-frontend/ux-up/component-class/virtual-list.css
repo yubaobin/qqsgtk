@@ -1,0 +1,9 @@
+/* component: virtual-list */
+
+.ux-vg__wrapper { position:relative }
+.ux-virtual-scrollbar { opacity:0;transition:opacity .34s ease-out }
+.ux-virtual-scrollbar.always-on { opacity:1 }
+.ux-vl__window { scrollbar-width:none }
+.ux-vl__window::-webkit-scrollbar { display:none }
+.ux-vl__wrapper { position:relative }
+.ux-vl__wrapper.always-on .ux-virtual-scrollbar,.ux-vl__wrapper:hover .ux-virtual-scrollbar { opacity:1 }

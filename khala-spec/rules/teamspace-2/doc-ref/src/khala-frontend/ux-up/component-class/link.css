@@ -1,0 +1,17 @@
+/* component: link */
+
+.ux-link { --ux-link-font-size:var(--ux-font-size-base);--ux-link-font-weight:normal;--ux-link-text-color:var(--ux-text-color-regular);--ux-link-hover-text-color:var(--ux-color-primary);--ux-link-disabled-text-color:var(--ux-text-color-placeholder);align-items:center;color:var(--ux-link-text-color);cursor:pointer;display:inline-flex;flex-direction:row;font-size:var(--ux-link-font-size);font-weight:var(--ux-link-font-weight);justify-content:center;outline:none;padding:0;position:relative;text-decoration:none;vertical-align:middle }
+.ux-link [class*=ux-icon-]+span { margin-left:4px }
+.ux-link__inner { align-items:center;display:inline-flex;justify-content:center }
+.ux-link:hover { color:var(--ux-link-hover-text-color) }
+.ux-link:hover:after { border-color:var(--ux-link-hover-text-color) }
+.ux-link.is-disabled { color:var(--ux-link-disabled-text-color);cursor:not-allowed }
+.ux-link.is-disabled:after { border-color:var(--ux-link-disabled-text-color) }
+.ux-link.is-hover-underline:hover:after { border-bottom:1px solid var(--ux-link-hover-text-color);bottom:0;content:&quot;&quot;;height:0;left:0;position:absolute;right:0 }
+.ux-link.is-underline:after { border-bottom:1px solid var(--ux-link-text-color);bottom:0;content:&quot;&quot;;height:0;left:0;position:absolute;right:0 }
+.ux-link.ux-link--danger { --ux-link-text-color:var(--ux-color-danger);--ux-link-hover-text-color:var(--ux-color-danger-light-3);--ux-link-disabled-text-color:var(--ux-color-danger-light-5) }
+.ux-link.ux-link--error { --ux-link-text-color:var(--ux-color-error);--ux-link-hover-text-color:var(--ux-color-error-light-3);--ux-link-disabled-text-color:var(--ux-color-error-light-5) }
+.ux-link.ux-link--info { --ux-link-text-color:var(--ux-color-info);--ux-link-hover-text-color:var(--ux-color-info-light-3);--ux-link-disabled-text-color:var(--ux-color-info-light-5) }
+.ux-link.ux-link--primary { --ux-link-text-color:var(--ux-color-primary);--ux-link-hover-text-color:var(--ux-color-primary-light-3);--ux-link-disabled-text-color:var(--ux-color-primary-light-5) }
+.ux-link.ux-link--success { --ux-link-text-color:var(--ux-color-success);--ux-link-hover-text-color:var(--ux-color-success-light-3);--ux-link-disabled-text-color:var(--ux-color-success-light-5) }
+.ux-link.ux-link--warning { --ux-link-text-color:var(--ux-color-warning);--ux-link-hover-text-color:var(--ux-color-warning-light-3);--ux-link-disabled-text-color:var(--ux-color-warning-light-5) }
