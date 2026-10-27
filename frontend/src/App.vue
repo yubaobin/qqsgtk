@@ -134,14 +134,12 @@ onUnmounted(() => {
         border
         stripe
       >
-        <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="question" label="问题" min-width="300" />
         <el-table-column prop="answer" label="答案" min-width="400">
           <template #default="{ row }">
             <div class="answer-cell">{{ row.answer }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="indexes" label="索引" width="200" />
       </el-table>
 
       <!-- 空状态 -->

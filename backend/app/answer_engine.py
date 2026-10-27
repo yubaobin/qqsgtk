@@ -31,13 +31,14 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
     在 question.json 中模糊匹配问题，返回所有匹配的列表。
 
     匹配策略（按优先级，结果去重合并）:
-    1. 精确匹配（原始文本相等）
-    2. 归一化后精确匹配（忽略标点和大小写）
-    3. 包含匹配（query 归一化文本是 question 归一化文本的子串，或反过来）
-    4. 相似度匹配（最长公共子串比例 >= 50%），按相似度排序
+    1. 索引匹配（query 是拼音首字母，匹配 indexes 字段）
+    2. 精确匹配（原始文本相等）
+    3. 归一化后精确匹配（忽略标点和大小写）
+    4. 包含匹配（query 归一化文本是 question 归一化文本的子串，或反过来）
+    5. 相似度匹配（最长公共子串比例 >= 50%），按相似度排序
 
     Args:
-        query: 查询文本
+        query: 查询文本（中文或拼音首字母）
         limit: 最多返回的结果数量
 
     Returns:
@@ -45,8 +46,10 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
     """
     data = get_qa_data()
     normalized_query = _normalize(query)
+    # 将查询转换为小写拼音首字母格式（去除非字母字符）
+    query_indexes = re.sub(r'[^a-zA-Z]', '', query).lower()
 
-    if not normalized_query:
+    if not normalized_query and not query_indexes:
         return []
 
     results: list[dict] = []
@@ -63,17 +66,24 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
                 "indexes": item.get("indexes"),
             })
 
-    # 1. 精确匹配
+    # 1. 索引匹配（拼音首字母匹配）- 最高优先级
+    if query_indexes:
+        for item in data:
+            item_indexes = item.get("indexes", "").lower()
+            if item_indexes and query_indexes in item_indexes:
+                add(item)
+
+    # 2. 精确匹配
     for item in data:
         if item["question"] == query:
             add(item)
 
-    # 2. 归一化后精确匹配
+    # 3. 归一化后精确匹配
     for item in data:
         if _normalize(item["question"]) == normalized_query:
             add(item)
 
-    # 3. 包含匹配（双向）
+    # 4. 包含匹配（双向）
     for item in data:
         nq = _normalize(item["question"])
         if not nq:
@@ -81,7 +91,7 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
         if normalized_query in nq or nq in normalized_query:
             add(item)
 
-    # 4. 相似度匹配（按分数排序，取 top-N）
+    # 5. 相似度匹配（按分数排序，取 top-N）
     scored: list[tuple[float, dict]] = []
     for item in data:
         nq = _normalize(item["question"])
