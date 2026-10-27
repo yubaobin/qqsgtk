@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Search, Loading, Camera, Picture } from '@element-plus/icons-vue'
+import { Camera } from '@element-plus/icons-vue'
 import { useOCR } from './composables/useOCR'
 import { useAnswer } from './composables/useAnswer'
 
-const { recognize, loading: ocrLoading, error: ocrError } = useOCR()
+const { recognize, error: ocrError } = useOCR()
 const { searchAnswer, results, loading: answerLoading, error: answerError } = useAnswer()
 
 const questionText = ref('')
 const imagePreview = ref<string | null>(null)
-const fileInputRef = ref<HTMLInputElement | null>(null)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
-
-// 触发文件选择
-function triggerFileInput() {
-  fileInputRef.value?.click()
-}
 
 // 中英文标点符号替换为空格
 function cleanPunctuation(text: string): string {
@@ -57,29 +51,20 @@ async function handleImageFile(file: File) {
   try {
     const result = await recognize(file)
     questionText.value = cleanPunctuation(result.text)
-    // 自动触发搜索
-    searchAnswer(questionText.value)
     ElMessage.success('图片识别完成')
   } catch {
     ElMessage.error(ocrError.value || '图片识别失败')
   }
 }
 
-// 手动点击搜索
-function handleSearch() {
-  if (questionText.value.trim()) {
-    searchAnswer(questionText.value)
-  }
-}
-
-// 输入框变化防抖查询（可选，保留自动搜索）
+// 输入框变化防抖查询
 watch(questionText, (newText) => {
   if (debounceTimer) {
     clearTimeout(debounceTimer)
   }
   debounceTimer = setTimeout(() => {
     searchAnswer(newText)
-  }, 500)
+  }, 300)
 })
 
 onMounted(() => {
@@ -108,24 +93,11 @@ onUnmounted(() => {
         class="search-input"
         placeholder="请输入您的问题..."
         clearable
-        @keyup.enter="handleSearch"
       >
         <template #prefix>
           <el-icon><Camera /></el-icon>
         </template>
       </el-input>
-      <el-button
-        type="primary"
-        :loading="answerLoading || ocrLoading"
-        @click="handleSearch"
-      >
-        <el-icon><Search /></el-icon>
-        搜索
-      </el-button>
-      <el-button @click="triggerFileInput">
-        <el-icon><Picture /></el-icon>
-        上传图片
-      </el-button>
     </div>
 
     <!-- 图片预览（如果有） -->
@@ -182,26 +154,11 @@ onUnmounted(() => {
         :image-size="80"
       />
     </div>
-
-    <!-- 隐藏的上传 input -->
-    <input
-      ref="fileInputRef"
-      type="file"
-      accept="image/*"
-      style="display: none"
-      @change="(e: Event) => {
-        const target = e.target as HTMLInputElement
-        if (target.files?.[0]) {
-          handleImageFile(target.files[0])
-        }
-      }"
-    />
   </div>
 </template>
 
 <style scoped>
 .app {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
   font-family: system-ui, -apple-system, sans-serif;
