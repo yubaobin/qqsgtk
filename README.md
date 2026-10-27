@@ -44,16 +44,23 @@ docker-compose logs -f
 默认情况下，应用部署在根路径 `/`。如需部署在子路径（如 `/qqsgtk`）：
 
 ```bash
-# 方法 1：使用环境变量
-VITE_BASE_PATH=/qqsgtk ./start.sh docker
+# 方法 1：修改 .env 文件（推荐）
+echo "VITE_BASE_PATH=/qqsgtk" > .env
+./start.sh docker
 
-# 方法 2：编辑 docker-compose.yml
-# 在 frontend 服务的 build.args 中设置 VITE_BASE_PATH=/qqsgtk
+# 方法 2：临时覆盖环境变量
+VITE_BASE_PATH=/qqsgtk ./start.sh docker
 ```
 
 部署后访问：
 - 前端页面：http://localhost/qqsgtk
 - API 自动代理：http://localhost/qqsgtk/api/answer → http://localhost:8000/answer
+
+**恢复默认（根路径）：**
+```bash
+echo "VITE_BASE_PATH=/" > .env
+./start.sh docker
+```
 
 ### 方式二：本地开发模式
 
