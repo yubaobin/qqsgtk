@@ -1,9 +1,0 @@
-/* component: empty */
-
-.ux-empty { --ux-empty-padding:24px 0;--ux-empty-image-width:64px;--ux-empty-description-margin-top:16px;--ux-empty-description-font-size:var(--ux-font-size-base);--ux-empty-description-text-color:var(--ux-text-color-secondary);--ux-empty-bottom-margin-top:16px;--ux-empty-fill-color-0:var(--ux-color-white);--ux-empty-fill-color-1:#fcfcfd;--ux-empty-fill-color-2:#f8f9fb;--ux-empty-fill-color-3:#f7f8fc;--ux-empty-fill-color-4:#eeeff3;--ux-empty-fill-color-5:#edeef2;--ux-empty-fill-color-6:#e9ebef;--ux-empty-fill-color-7:#e5e7e9;--ux-empty-fill-color-8:#e0e3e9;--ux-empty-fill-color-9:#d5d7de;align-items:center;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:var(--ux-empty-padding);text-align:center }
-.ux-empty__bottom { margin-top:var(--ux-empty-bottom-margin-top) }
-.ux-empty__description { margin-top:var(--ux-empty-description-margin-top) }
-.ux-empty__description p { color:var(--ux-empty-description-text-color);font-size:var(--ux-empty-description-font-size);margin:0 }
-.ux-empty__image { width:var(--ux-empty-image-width) }
-.ux-empty__image img { height:100%;-o-object-fit:contain;object-fit:contain;-webkit-user-select:none;-moz-user-select:none;user-select:none;vertical-align:top;width:100% }
-.ux-empty__image svg { color:var(--ux-svg-monochrome-grey);fill:currentColor;height:100%;vertical-align:top;width:100% }

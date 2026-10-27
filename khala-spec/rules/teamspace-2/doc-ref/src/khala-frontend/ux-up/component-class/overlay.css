@@ -1,4 +1,0 @@
-/* component: overlay */
-
-.ux-overlay { background-color:var(--ux-overlay-color-lighter);bottom:0;height:100%;left:0;overflow:auto;position:fixed;right:0;top:0;z-index:2000 }
-.ux-overlay .ux-overlay-root { height:0 }

@@ -1,8 +1,0 @@
-/* component: icon */
-
-.ux-icon svg { height:1em;width:1em }
-.ux-icon--left { margin-right:var(--ux-icon-margin) }
-.ux-icon--right { margin-left:var(--ux-icon-margin) }
-.ux-icon.is-loading { animation:rotating 2s linear infinite }
-}.ux-icon { --ux-icon-margin:var(--ux-sys-space-small);--color:inherit;align-items:center;color:var(--color);display:inline-flex;fill:currentColor;font-size:inherit;height:1em;justify-content:center;line-height:1em;position:relative;width:1em }
-to { transform:rotate(1turn) }

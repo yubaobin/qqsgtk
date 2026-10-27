@@ -1,3 +1,0 @@
-/* component: header */
-
-.ux-header { --ux-header-padding:0 20px;--ux-header-height:60px;box-sizing:border-box;flex-shrink:0;height:var(--ux-header-height);padding:var(--ux-header-padding) }

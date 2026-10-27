@@ -1,6 +1,0 @@
-/* component: space */
-
-.ux-space { display:inline-flex;vertical-align:top }
-.ux-space__item { display:flex;flex-wrap:wrap }
-.ux-space__item&gt;* { flex:1 }
-.ux-space--vertical { flex-direction:column }

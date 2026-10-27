@@ -1,9 +1,0 @@
-# 国际化配置
-# 适用版本: Khala 7.x+
-
-spring:
-  messages:
-    basename: i18n/messages
-    encoding: UTF-8
-    cache-duration: 3600
-    fallback-to-system-locale: false
