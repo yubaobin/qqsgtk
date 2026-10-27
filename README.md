@@ -2,12 +2,30 @@
 
 基于 PaddleOCR 的图片文字识别和问题答案匹配系统。
 
+## 部署后重要提示
+
+**修改代码后必须重启后端服务！**
+
+```bash
+# Docker 部署 - 重启容器
+./start.sh docker-restart
+
+# 或本地部署 - 重启进程
+./start.sh restart
+
+# 或手动重启（Docker）
+docker-compose restart backend
+
+# 验证新版本已加载
+curl http://localhost:8000/answer -X POST -H "Content-Type: application/json" -d '{"question":"zsxozmzcchtsdmztzjms"}'
+```
+
 ## 功能特性
 
 - **图片 OCR 识别**：支持 PNG/JPG/JPEG 格式，粘贴或直接上传
 - **智能标点过滤**：自动将中英文标点替换为空格，不影响匹配
-- **优先远程 API 查询**：调用 `https://api.qqsgtk.cn/qqsgtkApi/findByQuestion` 获取标准答案
-- **本地模糊匹配备用**：远程 API 失败时自动回退到本地 `question.json`
+- **拼音首字母匹配**：输入拼音首字母（如 `zsx`）即可匹配答案（最高优先级）
+- **模糊匹配答案**：支持索引、精确、归一化、包含、相似度五级匹配
 - **多结果返回**：一次返回最多 10 条匹配答案
 - **实时搜索**：输入框内容变化 300ms 后自动查询
 
@@ -106,6 +124,7 @@ echo "VITE_BASE_PATH=/" > .env
 │   └── nginx.conf
 ├── docker-compose.yml      # Docker 编排
 ├── start.sh                # 一键启动脚本
+├── .env                    # 环境变量配置
 └── question.json           # 题库 (4955 条 Q&A)
 ```
 
@@ -133,17 +152,23 @@ curl -X POST http://localhost:8000/ocr \
 根据问题文本模糊匹配答案
 
 ```bash
+# 中文查询
 curl -X POST http://localhost:8000/answer \
   -H "Content-Type: application/json" \
   -d '{"question": "三国演义是谁的著作"}'
+
+# 拼音首字母查询（优先级最高）
+curl -X POST http://localhost:8000/answer \
+  -H "Content-Type: application/json" \
+  -d '{"question": "sgyy"}'
 ```
 
 响应：
 ```json
 {
   "results": [
-    {"question": "三国演义是谁的著作", "answer": "罗贯中"},
-    {"question": "《三国演义》共有多少回", "answer": "一百二十回"}
+    {"id": 1, "question": "三国演义是谁的著作", "answer": "罗贯中", "indexes": "sgyy"},
+    {"id": 2, "question": "三国演义共有多少回", "answer": "一百二十回", "indexes": "sgyyg"}
   ]
 }
 ```
@@ -161,73 +186,17 @@ curl http://localhost:8000/health
 {"status": "ok"}
 ```
 
-## 答案查询逻辑
+## 匹配策略
 
-`/answer` 接口使用两级查询策略：
+`/answer` 接口使用五级模糊匹配（按优先级）：
 
-### 1. 优先：远程 API 查询
+1. **索引匹配**：拼音首字母匹配 `indexes` 字段（如 `zsx` 匹配 `abczsxdef`）
+2. **精确匹配**：原始文本完全相等
+3. **归一化匹配**：忽略标点、大小写后相等
+4. **包含匹配**：双向子串包含
+5. **相似度匹配**：最长公共子串 (LCS) 占比 ≥ 50%
 
-调用 `https://api.qqsgtk.cn/qqsgtkApi/findByQuestion` 获取标准答案。
-
-**请求格式：**
-```json
-POST https://api.qqsgtk.cn/qqsgtkApi/findByQuestion
-{
-  "question": "孔明是指",
-  "answer": ""
-}
-```
-
-**响应格式：**
-```json
-{
-  "code": 200,
-  "data": [
-    {
-      "answer": "诸葛亮",
-      "id": 7,
-      "indexes": "kmsz",
-      "question": "孔明是指"
-    }
-  ],
-  "message": "请求成功",
-  "success": true
-}
-```
-
-### 2. 备用：本地模糊匹配
-
-当远程 API 出现以下情况时，自动回退到本地 `question.json`：
-- 网络请求失败或超时（5 秒）
-- 返回状态码非 200
-- `success: false` 或 `code != 200`
-- `data` 为空数组
-
-本地匹配策略（四级优先级）：
-1. **精确匹配**：原始文本完全相等
-2. **归一化匹配**：忽略标点、大小写后相等
-3. **包含匹配**：双向子串包含
-4. **相似度匹配**：最长公共子串 (LCS) 占比 ≥ 50%
-
-### 配置远程 API
-
-在 `.env` 文件中配置：
-
-```bash
-# 使用远程 API（默认）
-REMOTE_API_URL=https://api.qqsgtk.cn/qqsgtkApi/findByQuestion
-
-# 禁用远程 API，只使用本地
-REMOTE_API_URL=
-
-# 自定义远程 API 地址
-REMOTE_API_URL=https://your-custom-api.com/answer
-```
-
-重新部署生效：
-```bash
-./start.sh docker
-```
+结果去重后返回最多 10 条。
 
 ## 技术栈
 
@@ -274,6 +243,7 @@ npm run build
 2. **端口占用**：确保 8000（后端）、80/5173（前端）未被占用
 3. **Docker 内存**：建议至少分配 2GB 内存给 Docker
 4. **题道路径**：`question.json` 需位于项目根目录
+5. **代码修改后重启**：修改后端代码后必须重启服务才能生效
 
 ## License
 
