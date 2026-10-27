@@ -14,7 +14,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    # PaddleOCR 模型缓存目录持久化
     volumes:
       - paddle-models:/root/.paddleocr
 
@@ -23,7 +22,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_BASE_PATH=${VITE_BASE_PATH-/}
+        VITE_BASE_PATH: ${VITE_BASE_PATH}
     container_name: ocr-frontend
     ports:
       - "80:80"
