@@ -30,8 +30,7 @@ services:
       - "80:80"
     restart: unless-stopped
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     networks:
       - ocr-network
     healthcheck:
