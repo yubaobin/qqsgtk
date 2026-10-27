@@ -7,6 +7,8 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
+    networks:
+      - ocr-network
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
@@ -27,11 +29,17 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    networks:
+      - ocr-network
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/"]
       interval: 30s
       timeout: 5s
       retries: 3
+
+networks:
+  ocr-network:
+    driver: bridge
 
 volumes:
   paddle-models:
