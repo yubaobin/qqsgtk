@@ -120,9 +120,8 @@ show_status() {
     done
 }
 
-# Docker 相关命令
+# Docker 相关命令（兼容 docker-compose v1.23+）
 docker_deploy() {
-    check_cmd docker
     check_cmd docker-compose
     
     log "开始构建并启动 Docker 容器..."
@@ -141,7 +140,6 @@ docker_deploy() {
 }
 
 docker_stop() {
-    check_cmd docker
     check_cmd docker-compose
     
     log "停止 Docker 容器..."
@@ -151,7 +149,6 @@ docker_stop() {
 }
 
 docker_restart() {
-    check_cmd docker
     check_cmd docker-compose
     
     log "重启 Docker 容器..."
@@ -161,7 +158,6 @@ docker_restart() {
 }
 
 docker_status() {
-    check_cmd docker
     check_cmd docker-compose
     
     echo "=== Docker 容器状态 ==="
