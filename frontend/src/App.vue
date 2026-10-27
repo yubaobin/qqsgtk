@@ -12,6 +12,11 @@ const questionText = ref('')
 const imagePreview = ref<string | null>(null)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
+// 中英文标点符号替换为空格
+function cleanPunctuation(text: string): string {
+  return text.replace(/[<|《》,,。.!！?？;；:：、""''（）()\[\]【】{}…—\-~～·'']/g, ' ')
+}
+
 // 粘贴图片：全局监听 paste 事件
 function onPaste(e: ClipboardEvent) {
   const clipboardData = e.clipboardData
@@ -45,7 +50,7 @@ async function handleImageFile(file: File) {
 
   try {
     const result = await recognize(file)
-    questionText.value = result.text
+    questionText.value = cleanPunctuation(result.text)
     ElMessage.success('图片识别完成')
   } catch {
     ElMessage.error(ocrError.value || '图片识别失败')
