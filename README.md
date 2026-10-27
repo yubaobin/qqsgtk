@@ -31,10 +31,12 @@ docker-compose logs -f
 ./start.sh docker-stop
 ```
 
-访问：
-- 前端页面：http://localhost:80
-- 后端 API：http://localhost:8000
-- API 文档：http://localhost:8000/docs
+访问方式（支持多种）：
+- **本地访问**：http://localhost
+- **局域网 IP**：http://192.168.x.x（你的电脑局域网 IP）
+- **域名访问**：http://your-domain.com（需配置 DNS 指向服务器 IP）
+- **后端 API**：http://localhost:8000
+- **API 文档**：http://localhost:8000/docs
 
 ### 方式二：本地开发模式
 
