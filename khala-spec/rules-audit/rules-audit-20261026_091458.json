@@ -1,0 +1,23 @@
+{
+  "kind": "rules-audit",
+  "audits": [
+    {
+      "rule_id": "rule:khala-security-guide",
+      "verdict": "violation",
+      "confidence": 0.8,
+      "note": "使用 alert 提示用户错误信息属于反模式，不符合安全与用户体验规范。应采用统一的错误提示组件进行展示。"
+    },
+    {
+      "rule_id": "rule:vue",
+      "verdict": "violation",
+      "confidence": 0.75,
+      "note": "在组件内部直接调用 alert 方法进行错误提示，违背了框架规范中的交互处理要求。"
+    },
+    {
+      "rule_id": "rule:code-quality",
+      "verdict": "violation",
+      "confidence": 0.65,
+      "note": "前端组件中直接使用 alert 弹窗处理错误，代码实现粗糙且不符合高质量的交互标准。"
+    }
+  ]
+}
