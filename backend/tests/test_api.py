@@ -114,35 +114,40 @@ def test_ocr_corrupt_image(client):
 
 
 def test_answer_success(client):
-    """POST /answer with a valid question returns matched answer."""
+    """POST /answer with a valid question returns matched answers list."""
     from unittest.mock import patch
-    with patch("app.main.find_answer") as mock_find:
-        mock_find.return_value = {"question": "三国演义是谁的著作", "answer": "罗贯中"}
+    with patch("app.main.find_answers") as mock_find:
+        mock_find.return_value = [
+            {"question": "三国演义是谁的著作", "answer": "罗贯中"},
+            {"question": "三国演义共有多少回", "answer": "一百二十回"},
+        ]
 
         response = client.post(
             "/answer",
-            json={"question": "三国演义是谁的著作"},
+            json={"question": "三国演义"},
         )
 
     assert response.status_code == 200
     data = response.json()
-    assert data["question"] == "三国演义是谁的著作"
-    assert data["answer"] == "罗贯中"
+    assert "results" in data
+    assert len(data["results"]) == 2
+    assert data["results"][0]["answer"] == "罗贯中"
 
 
-def test_answer_not_found(client):
-    """POST /answer with unmatched question returns 404."""
+def test_answer_no_match(client):
+    """POST /answer with unmatched question returns empty results list."""
     from unittest.mock import patch
-    with patch("app.main.find_answer") as mock_find:
-        mock_find.return_value = None
+    with patch("app.main.find_answers") as mock_find:
+        mock_find.return_value = []
 
         response = client.post(
             "/answer",
-            json={"question": "完全不相关的问题"},
+            json={"question": "完全不相关的问题xyz"},
         )
 
-    assert response.status_code == 404
-    assert "未找到" in response.json()["detail"]
+    assert response.status_code == 200
+    data = response.json()
+    assert data["results"] == []
 
 
 def test_answer_empty_question(client):

@@ -13,3 +13,7 @@ class HealthResponse(BaseModel):
 class AnswerResponse(BaseModel):
     question: str
     answer: str
+
+
+class AnswerListResponse(BaseModel):
+    results: list[AnswerResponse]

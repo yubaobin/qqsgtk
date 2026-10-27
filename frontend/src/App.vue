@@ -1,34 +1,63 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import ImageUploader from './components/ImageUploader.vue'
-import ResultDisplay from './components/ResultDisplay.vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { Search, Picture, Loading } from '@element-plus/icons-vue'
 import { useOCR } from './composables/useOCR'
 import { useAnswer } from './composables/useAnswer'
-import type { OCRResponse } from './types/ocr'
 
-const selectedFile = ref<File | null>(null)
-const result = ref<OCRResponse | null>(null)
+const { recognize, loading: ocrLoading, error: ocrError } = useOCR()
+const { searchAnswer, results, loading: answerLoading, error: answerError } = useAnswer()
 
-const { recognize, loading, error } = useOCR()
-const { searchAnswer, answer, loading: answerLoading, error: answerError } = useAnswer()
-
-// 输入框文本
 const questionText = ref('')
-// 防抖 timer
+const imagePreview = ref<string | null>(null)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
-async function handleRecognize() {
-  if (!selectedFile.value) return
-  try {
-    result.value = await recognize(selectedFile.value)
-    // OCR 结果填入输入框
-    questionText.value = result.value.text
-  } catch {
-    // error is set in composable
+// 粘贴图片：全局监听 paste 事件
+function onPaste(e: ClipboardEvent) {
+  const clipboardData = e.clipboardData
+  if (!clipboardData) return
+
+  for (const file of clipboardData.files) {
+    if (file.type.startsWith('image/')) {
+      handleImageFile(file)
+      e.preventDefault()
+      return
+    }
+  }
+
+  for (const item of clipboardData.items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile()
+      if (file) {
+        handleImageFile(file)
+        e.preventDefault()
+        return
+      }
+    }
   }
 }
 
-// 输入框变化时防抖调用 /answer 接口
+async function handleImageFile(file: File) {
+  if (imagePreview.value) {
+    URL.revokeObjectURL(imagePreview.value)
+  }
+  imagePreview.value = URL.createObjectURL(file)
+
+  try {
+    const result = await recognize(file)
+    questionText.value = result.text
+    ElMessage.success('图片识别完成')
+  } catch {
+    ElMessage.error(ocrError.value || '图片识别失败')
+  }
+}
+
+// 文件选择
+function onFileChange(file: { raw: File }) {
+  handleImageFile(file.raw)
+}
+
+// 输入框变化防抖查询
 watch(questionText, (newText) => {
   if (debounceTimer) {
     clearTimeout(debounceTimer)
@@ -37,185 +66,230 @@ watch(questionText, (newText) => {
     searchAnswer(newText)
   }, 500)
 })
+
+onMounted(() => {
+  window.addEventListener('paste', onPaste)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('paste', onPaste)
+  if (imagePreview.value) {
+    URL.revokeObjectURL(imagePreview.value)
+  }
+})
 </script>
 
 <template>
   <div class="app">
-    <header>
-      <h1>OCR 图片识别</h1>
-      <p>上传图片识别文字，自动匹配答案</p>
-    </header>
+    <el-card class="main-card" shadow="hover">
+      <template #header>
+        <div class="card-header">
+          <el-icon :size="24"><Picture /></el-icon>
+          <span>OCR 图片识别 & 答案查找</span>
+        </div>
+      </template>
 
-    <main>
-      <ImageUploader
-        :disabled="loading"
-        @update:file="selectedFile = $event"
-      />
-
-      <button
-        class="recognize-btn"
-        :disabled="!selectedFile || loading"
-        @click="handleRecognize"
+      <!-- 图片上传区域 -->
+      <el-upload
+        class="upload-area"
+        drag
+        :auto-upload="false"
+        :show-file-list="false"
+        accept="image/*"
+        :on-change="onFileChange"
+        :disabled="ocrLoading"
       >
-        {{ loading ? '识别中...' : '识别' }}
-      </button>
-
-      <ResultDisplay
-        :result="result"
-        :loading="loading"
-        :error="error"
-      />
+        <el-icon v-if="!imagePreview && !ocrLoading" :size="48" class="upload-icon">
+          <Picture />
+        </el-icon>
+        <el-icon v-if="ocrLoading" :size="48" class="upload-icon loading-icon">
+          <Loading />
+        </el-icon>
+        <div v-if="imagePreview" class="preview-wrapper">
+          <img :src="imagePreview" class="preview-img" alt="预览" />
+        </div>
+        <div v-else class="upload-text">
+          <p class="upload-title">点击选择图片或直接粘贴 (Ctrl+V)</p>
+          <p class="upload-hint">支持 PNG / JPG / JPEG</p>
+        </div>
+      </el-upload>
 
       <!-- 问题输入框 -->
       <div class="question-section">
-        <label class="question-label">问题文本</label>
-        <textarea
+        <el-input
           v-model="questionText"
-          class="question-input"
-          placeholder="输入问题或识别图片后自动填入..."
-          rows="3"
-        ></textarea>
+          type="textarea"
+          :rows="3"
+          placeholder="输入问题、粘贴图片自动识别填入..."
+          clearable
+        >
+        </el-input>
       </div>
 
-      <!-- 答案展示 -->
-      <div v-if="answerLoading" class="answer-box loading">
-        查找答案中...
+      <!-- 答案列表 -->
+      <div class="answer-section">
+        <div v-if="answerLoading" class="answer-loading">
+          <el-icon class="is-loading"><Loading /></el-icon>
+          <span>查找答案中...</span>
+        </div>
+
+        <el-alert
+          v-else-if="answerError"
+          :title="answerError"
+          type="error"
+          :closable="false"
+          show-icon
+        />
+
+        <div v-else-if="results.length > 0">
+          <div class="answer-count">
+            <el-tag type="success" size="small">找到 {{ results.length }} 条匹配</el-tag>
+          </div>
+          <div
+            v-for="(item, index) in results"
+            :key="index"
+            class="answer-item"
+          >
+            <div class="answer-item-question">
+              <el-icon :size="14"><Search /></el-icon>
+              <span>{{ item.question }}</span>
+            </div>
+            <div class="answer-item-answer">
+              {{ item.answer }}
+            </div>
+          </div>
+        </div>
+
+        <el-empty
+          v-else-if="questionText.trim()"
+          description="未找到匹配的答案"
+          :image-size="60"
+        />
+
+        <el-empty
+          v-else
+          description="输入问题或粘贴图片开始查找"
+          :image-size="60"
+        />
       </div>
-      <div v-else-if="answerError" class="answer-box error">
-        {{ answerError }}
-      </div>
-      <div v-else-if="answer" class="answer-box">
-        <div class="answer-label">答案</div>
-        <div class="answer-text">{{ answer.answer }}</div>
-        <div class="answer-source">匹配问题：{{ answer.question }}</div>
-      </div>
-      <div v-else-if="questionText.trim()" class="answer-box empty">
-        未找到匹配的答案
-      </div>
-    </main>
+    </el-card>
   </div>
 </template>
 
 <style scoped>
 .app {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 24px 16px;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 32px;
+.main-card {
+  border-radius: 12px;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 1.8em;
-}
-
-header p {
-  color: #666;
-  margin: 8px 0 0;
-}
-
-main {
+.card-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
 }
 
-.recognize-btn {
-  padding: 10px 32px;
-  border: none;
+.upload-area {
+  margin-bottom: 20px;
+}
+
+.upload-area :deep(.el-upload-dragger) {
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.upload-icon {
+  color: #c0c4cc;
+}
+
+.loading-icon {
+  animation: rotating 1.5s linear infinite;
+}
+
+@keyframes rotating {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.preview-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 200px;
   border-radius: 6px;
-  background: #4a90d9;
-  color: white;
+}
+
+.upload-text {
+  text-align: center;
+  color: #909399;
+}
+
+.upload-title {
   font-size: 1em;
-  cursor: pointer;
-  transition: background 0.2s;
+  margin: 8px 0 4px;
 }
 
-.recognize-btn:hover:not(:disabled) {
-  background: #357abd;
-}
-
-.recognize-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.upload-hint {
+  font-size: 0.85em;
+  color: #c0c4cc;
 }
 
 .question-section {
-  width: 100%;
-  max-width: 500px;
+  margin-bottom: 20px;
 }
 
-.question-label {
-  display: block;
-  font-size: 0.9em;
-  color: #555;
-  margin-bottom: 6px;
+.answer-section {
+  min-height: 120px;
 }
 
-.question-input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1em;
-  font-family: inherit;
-  resize: vertical;
-  outline: none;
-  transition: border-color 0.2s;
-  box-sizing: border-box;
+.answer-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  color: #909399;
+  padding: 40px 0;
 }
 
-.question-input:focus {
-  border-color: #4a90d9;
+.answer-count {
+  margin-bottom: 12px;
 }
 
-.answer-box {
-  width: 100%;
-  max-width: 500px;
-  padding: 16px;
+.answer-item {
+  padding: 12px 16px;
+  border: 1px solid #ebeef5;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  background: #f8f9fa;
+  margin-bottom: 8px;
+  background: #fafafa;
+  transition: border-color 0.2s;
 }
 
-.answer-box.loading {
-  text-align: center;
-  color: #666;
+.answer-item:hover {
+  border-color: #409eff;
 }
 
-.answer-box.error {
-  color: #d32f2f;
-  border-color: #ffcdd2;
-  background: #fff5f5;
-}
-
-.answer-box.empty {
-  text-align: center;
-  color: #999;
-}
-
-.answer-label {
+.answer-item-question {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.85em;
-  color: #4a90d9;
-  font-weight: 600;
+  color: #909399;
   margin-bottom: 6px;
 }
 
-.answer-text {
-  font-size: 1.3em;
+.answer-item-answer {
+  font-size: 1.15em;
   font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 8px;
-}
-
-.answer-source {
-  font-size: 0.8em;
-  color: #888;
+  color: #303133;
 }
 </style>

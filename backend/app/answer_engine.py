@@ -26,59 +26,70 @@ def _normalize(text: str) -> str:
     return re.sub(r"[^\w\u4e00-\u9fff]", "", text).lower()
 
 
-def find_answer(query: str) -> dict[str, str] | None:
+def find_answers(query: str, limit: int = 10) -> list[dict[str, str]]:
     """
-    在 question.json 中模糊匹配问题，返回最佳匹配的 {question, answer}。
+    在 question.json 中模糊匹配问题，返回所有匹配的 {question, answer} 列表。
 
-    匹配策略（按优先级）:
+    匹配策略（按优先级，结果去重合并）:
     1. 精确匹配（原始文本相等）
     2. 归一化后精确匹配（忽略标点和大小写）
     3. 包含匹配（query 归一化文本是 question 归一化文本的子串，或反过来）
-    4. 最长公共子串比例最高者（相似度 > 50%）
+    4. 相似度匹配（最长公共子串比例 >= 50%），按相似度排序
+
+    Args:
+        query: 查询文本
+        limit: 最多返回的结果数量
 
     Returns:
-        {"question": str, "answer": str} 或 None（无匹配）
+        匹配的 [{"question": str, "answer": str}, ...] 列表，可能为空
     """
     data = get_qa_data()
-
     normalized_query = _normalize(query)
+
+    if not normalized_query:
+        return []
+
+    results: list[dict[str, str]] = []
+    seen_questions: set[str] = set()
+
+    def add(item: dict[str, str]) -> None:
+        key = _normalize(item["question"])
+        if key not in seen_questions:
+            seen_questions.add(key)
+            results.append(item)
 
     # 1. 精确匹配
     for item in data:
         if item["question"] == query:
-            return item
+            add(item)
 
     # 2. 归一化后精确匹配
     for item in data:
         if _normalize(item["question"]) == normalized_query:
-            return item
+            add(item)
 
     # 3. 包含匹配（双向）
     for item in data:
         nq = _normalize(item["question"])
-        if not nq or not normalized_query:
+        if not nq:
             continue
         if normalized_query in nq or nq in normalized_query:
-            return item
+            add(item)
 
-    # 4. 相似度匹配（最长公共子串占比）
-    best_item: dict[str, str] | None = None
-    best_score = 0.0
-    threshold = 0.5
-
+    # 4. 相似度匹配（按分数排序，取 top-N）
+    scored: list[tuple[float, dict[str, str]]] = []
     for item in data:
         nq = _normalize(item["question"])
-        if not nq or not normalized_query:
+        if not nq:
             continue
         score = _lcs_ratio(normalized_query, nq)
-        if score > best_score:
-            best_score = score
-            best_item = item
+        if score >= 0.5:
+            scored.append((score, item))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    for _, item in scored:
+        add(item)
 
-    if best_item and best_score >= threshold:
-        return best_item
-
-    return None
+    return results[:limit]
 
 
 def _lcs_ratio(a: str, b: str) -> float:
