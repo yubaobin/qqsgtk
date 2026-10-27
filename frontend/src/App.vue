@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Search, Picture, Loading } from '@element-plus/icons-vue'
+import { Search, Loading, Camera, Picture } from '@element-plus/icons-vue'
 import { useOCR } from './composables/useOCR'
 import { useAnswer } from './composables/useAnswer'
 
@@ -10,11 +10,17 @@ const { searchAnswer, results, loading: answerLoading, error: answerError } = us
 
 const questionText = ref('')
 const imagePreview = ref<string | null>(null)
+const fileInputRef = ref<HTMLInputElement | null>(null)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+// 触发文件选择
+function triggerFileInput() {
+  fileInputRef.value?.click()
+}
 
 // 中英文标点符号替换为空格
 function cleanPunctuation(text: string): string {
-  return text.replace(/[<|《》,,。.!！?？;；:：、""''（）()\[\]【】{}…—\-~～·'']/g, ' ')
+  return text.replace(/[<|《》,,。.!！?？;；:：、""''（）()\[\]【】{}…—\-~～·']/g, ' ')
 }
 
 // 粘贴图片：全局监听 paste 事件
@@ -51,18 +57,22 @@ async function handleImageFile(file: File) {
   try {
     const result = await recognize(file)
     questionText.value = cleanPunctuation(result.text)
+    // 自动触发搜索
+    searchAnswer(questionText.value)
     ElMessage.success('图片识别完成')
   } catch {
     ElMessage.error(ocrError.value || '图片识别失败')
   }
 }
 
-// 文件选择
-function onFileChange(file: { raw: File }) {
-  handleImageFile(file.raw)
+// 手动点击搜索
+function handleSearch() {
+  if (questionText.value.trim()) {
+    searchAnswer(questionText.value)
+  }
 }
 
-// 输入框变化防抖查询
+// 输入框变化防抖查询（可选，保留自动搜索）
 watch(questionText, (newText) => {
   if (debounceTimer) {
     clearTimeout(debounceTimer)
@@ -86,215 +96,184 @@ onUnmounted(() => {
 
 <template>
   <div class="app">
-    <el-card class="main-card" shadow="hover">
-      <template #header>
-        <div class="card-header">
-          <el-icon :size="24"><Picture /></el-icon>
-          <span>OCR 图片识别 & 答案查找</span>
-        </div>
-      </template>
+    <!-- 顶部标题 -->
+    <header class="page-header">
+      <h1>问题答案搜索</h1>
+    </header>
 
-      <!-- 图片上传区域 -->
-      <el-upload
-        class="upload-area"
-        drag
-        :auto-upload="false"
-        :show-file-list="false"
-        accept="image/*"
-        :on-change="onFileChange"
-        :disabled="ocrLoading"
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <el-input
+        v-model="questionText"
+        class="search-input"
+        placeholder="请输入您的问题..."
+        clearable
+        @keyup.enter="handleSearch"
       >
-        <el-icon v-if="!imagePreview && !ocrLoading" :size="48" class="upload-icon">
-          <Picture />
-        </el-icon>
-        <el-icon v-if="ocrLoading" :size="48" class="upload-icon loading-icon">
-          <Loading />
-        </el-icon>
-        <div v-if="imagePreview" class="preview-wrapper">
-          <img :src="imagePreview" class="preview-img" alt="预览" />
-        </div>
-        <div v-else class="upload-text">
-          <p class="upload-title">点击选择图片或直接粘贴 (Ctrl+V)</p>
-          <p class="upload-hint">支持 PNG / JPG / JPEG</p>
-        </div>
-      </el-upload>
+        <template #prefix>
+          <el-icon><Camera /></el-icon>
+        </template>
+      </el-input>
+      <el-button
+        type="primary"
+        :loading="answerLoading || ocrLoading"
+        @click="handleSearch"
+      >
+        <el-icon><Search /></el-icon>
+        搜索
+      </el-button>
+      <el-button @click="triggerFileInput">
+        <el-icon><Picture /></el-icon>
+        上传图片
+      </el-button>
+    </div>
 
-      <!-- 问题输入框 -->
-      <div class="question-section">
-        <el-input
-          v-model="questionText"
-          type="textarea"
-          :rows="3"
-          placeholder="输入问题、粘贴图片自动识别填入..."
-          clearable
-        >
-        </el-input>
+    <!-- 图片预览（如果有） -->
+    <div v-if="imagePreview" class="preview-section">
+      <el-tag type="info" size="small">已选择图片</el-tag>
+      <img :src="imagePreview" class="preview-img" alt="预览" />
+    </div>
+
+    <!-- 搜索结果区域 -->
+    <div class="results-section">
+      <h2 class="section-title">搜索结果</h2>
+
+      <!-- 加载中 -->
+      <div v-if="answerLoading" class="loading-state">
+        <el-icon class="is-loading" :size="24"><Loading /></el-icon>
+        <span>查找答案中...</span>
       </div>
 
-      <!-- 答案列表 -->
-      <div class="answer-section">
-        <div v-if="answerLoading" class="answer-loading">
-          <el-icon class="is-loading"><Loading /></el-icon>
-          <span>查找答案中...</span>
-        </div>
+      <!-- 错误 -->
+      <el-alert
+        v-else-if="answerError"
+        :title="answerError"
+        type="error"
+        :closable="false"
+        show-icon
+      />
 
-        <el-alert
-          v-else-if="answerError"
-          :title="answerError"
-          type="error"
-          :closable="false"
-          show-icon
-        />
+      <!-- 结果表格 -->
+      <el-table
+        v-else-if="results.length > 0"
+        :data="results"
+        style="width: 100%"
+        border
+        stripe
+      >
+        <el-table-column prop="question" label="问题" min-width="300" />
+        <el-table-column prop="answer" label="答案" min-width="400">
+          <template #default="{ row }">
+            <div class="answer-cell">{{ row.answer }}</div>
+          </template>
+        </el-table-column>
+      </el-table>
 
-        <div v-else-if="results.length > 0">
-          <div class="answer-count">
-            <el-tag type="success" size="small">找到 {{ results.length }} 条匹配</el-tag>
-          </div>
-          <div
-            v-for="(item, index) in results"
-            :key="index"
-            class="answer-item"
-          >
-            <div class="answer-item-question">
-              <el-icon :size="14"><Search /></el-icon>
-              <span>{{ item.question }}</span>
-            </div>
-            <div class="answer-item-answer">
-              {{ item.answer }}
-            </div>
-          </div>
-        </div>
+      <!-- 空状态 -->
+      <el-empty
+        v-else-if="questionText.trim()"
+        description="未找到匹配的答案"
+        :image-size="80"
+      />
 
-        <el-empty
-          v-else-if="questionText.trim()"
-          description="未找到匹配的答案"
-          :image-size="60"
-        />
+      <el-empty
+        v-else
+        description="输入问题或粘贴图片开始查找"
+        :image-size="80"
+      />
+    </div>
 
-        <el-empty
-          v-else
-          description="输入问题或粘贴图片开始查找"
-          :image-size="60"
-        />
-      </div>
-    </el-card>
+    <!-- 隐藏的上传 input -->
+    <input
+      ref="fileInputRef"
+      type="file"
+      accept="image/*"
+      style="display: none"
+      @change="(e: Event) => {
+        const target = e.target as HTMLInputElement
+        if (target.files?.[0]) {
+          handleImageFile(target.files[0])
+        }
+      }"
+    />
   </div>
 </template>
 
 <style scoped>
 .app {
-  max-width: 640px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
   font-family: system-ui, -apple-system, sans-serif;
+  background: #f5f7fa;
+  min-height: 100vh;
 }
 
-.main-card {
-  border-radius: 12px;
+.page-header {
+  margin-bottom: 24px;
 }
 
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.1em;
-  font-weight: 600;
-}
-
-.upload-area {
-  margin-bottom: 20px;
-}
-
-.upload-area :deep(.el-upload-dragger) {
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.upload-icon {
-  color: #c0c4cc;
-}
-
-.loading-icon {
-  animation: rotating 1.5s linear infinite;
-}
-
-@keyframes rotating {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.preview-wrapper {
-  display: flex;
-  justify-content: center;
-}
-
-.preview-img {
-  max-width: 100%;
-  max-height: 200px;
-  border-radius: 6px;
-}
-
-.upload-text {
-  text-align: center;
-  color: #909399;
-}
-
-.upload-title {
-  font-size: 1em;
-  margin: 8px 0 4px;
-}
-
-.upload-hint {
-  font-size: 0.85em;
-  color: #c0c4cc;
-}
-
-.question-section {
-  margin-bottom: 20px;
-}
-
-.answer-section {
-  min-height: 120px;
-}
-
-.answer-loading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
-  color: #909399;
-  padding: 40px 0;
-}
-
-.answer-count {
-  margin-bottom: 12px;
-}
-
-.answer-item {
-  padding: 12px 16px;
-  border: 1px solid #ebeef5;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  background: #fafafa;
-  transition: border-color 0.2s;
-}
-
-.answer-item:hover {
-  border-color: #409eff;
-}
-
-.answer-item-question {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.85em;
-  color: #909399;
-  margin-bottom: 6px;
-}
-
-.answer-item-answer {
-  font-size: 1.15em;
+.page-header h1 {
+  font-size: 1.5em;
   font-weight: 600;
   color: #303133;
+  margin: 0;
+}
+
+.search-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.search-input {
+  flex: 1;
+}
+
+.preview-section {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.preview-section img {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.results-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 1em;
+  font-weight: 600;
+  color: #303133;
+  margin: 0 0 16px 0;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 0;
+  color: #909399;
+}
+
+.answer-cell {
+  white-space: pre-wrap;
+  line-height: 1.6;
 }
 </style>
