@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Camera } from '@element-plus/icons-vue'
+import { Camera, Loading } from '@element-plus/icons-vue'
 import { useOCR } from './composables/useOCR'
 import { useAnswer } from './composables/useAnswer'
 
@@ -14,7 +14,8 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 // 中英文标点符号替换为空格
 function cleanPunctuation(text: string): string {
-  return text.replace(/[<|《》,,。.!！?？;；:：、""''（）()\[\]【】{}…—\-~～·']/g, ' ')
+  // \u3000-\u303F: CJK 标点符号 | \uFF00-\uFFEF: 全角 ASCII 和标点 | ，= \uFF0C 已包含在 \uFF00-\uFFEF 中
+  return text.replace(/[\u3000-\u303F\uFF00-\uFFEF<>|,\u2026\u2014\-~·]/g, ' ')
 }
 
 // 粘贴图片：全局监听 paste 事件
