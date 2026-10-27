@@ -6,7 +6,8 @@
 
 - **图片 OCR 识别**：支持 PNG/JPG/JPEG 格式，粘贴或直接上传
 - **智能标点过滤**：自动将中英文标点替换为空格，不影响匹配
-- **模糊匹配答案**：支持精确、归一化、包含、相似度（LCS）四级匹配
+- **优先远程 API 查询**：调用 `https://api.qqsgtk.cn/qqsgtkApi/findByQuestion` 获取标准答案
+- **本地模糊匹配备用**：远程 API 失败时自动回退到本地 `question.json`
 - **多结果返回**：一次返回最多 10 条匹配答案
 - **实时搜索**：输入框内容变化 300ms 后自动查询
 
@@ -160,16 +161,73 @@ curl http://localhost:8000/health
 {"status": "ok"}
 ```
 
-## 匹配策略
+## 答案查询逻辑
 
-`/answer` 接口使用四级模糊匹配（按优先级）：
+`/answer` 接口使用两级查询策略：
 
+### 1. 优先：远程 API 查询
+
+调用 `https://api.qqsgtk.cn/qqsgtkApi/findByQuestion` 获取标准答案。
+
+**请求格式：**
+```json
+POST https://api.qqsgtk.cn/qqsgtkApi/findByQuestion
+{
+  "question": "孔明是指",
+  "answer": ""
+}
+```
+
+**响应格式：**
+```json
+{
+  "code": 200,
+  "data": [
+    {
+      "answer": "诸葛亮",
+      "id": 7,
+      "indexes": "kmsz",
+      "question": "孔明是指"
+    }
+  ],
+  "message": "请求成功",
+  "success": true
+}
+```
+
+### 2. 备用：本地模糊匹配
+
+当远程 API 出现以下情况时，自动回退到本地 `question.json`：
+- 网络请求失败或超时（5 秒）
+- 返回状态码非 200
+- `success: false` 或 `code != 200`
+- `data` 为空数组
+
+本地匹配策略（四级优先级）：
 1. **精确匹配**：原始文本完全相等
 2. **归一化匹配**：忽略标点、大小写后相等
 3. **包含匹配**：双向子串包含
 4. **相似度匹配**：最长公共子串 (LCS) 占比 ≥ 50%
 
-结果去重后返回最多 10 条。
+### 配置远程 API
+
+在 `.env` 文件中配置：
+
+```bash
+# 使用远程 API（默认）
+REMOTE_API_URL=https://api.qqsgtk.cn/qqsgtkApi/findByQuestion
+
+# 禁用远程 API，只使用本地
+REMOTE_API_URL=
+
+# 自定义远程 API 地址
+REMOTE_API_URL=https://your-custom-api.com/answer
+```
+
+重新部署生效：
+```bash
+./start.sh docker
+```
 
 ## 技术栈
 
