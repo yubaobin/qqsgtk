@@ -46,8 +46,8 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
     """
     data = get_qa_data()
     normalized_query = _normalize(query)
-    # 将查询转换为小写拼音首字母格式（去除非字母字符）
-    query_indexes = re.sub(r'[^a-zA-Z]', '', query).lower()
+    # 将查询转换为小写格式，保留字母和数字（indexes 可能包含数字）
+    query_indexes = re.sub(r'[^a-zA-Z0-9]', '', query).lower()
 
     if not normalized_query and not query_indexes:
         return []
@@ -67,12 +67,18 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
             })
 
     # 1. 索引匹配（拼音首字母模糊匹配）- 最高优先级
-    # 支持部分匹配：如 "zsx" 可匹配 "abczsxdefg"
+    # 支持部分匹配：如 "zsx" 可匹配 "abczsxdefg"，"184" 可匹配 "ab184cd"
     if query_indexes:
         for item in data:
             item_indexes = item.get("indexes", "").lower()
             if item_indexes and query_indexes in item_indexes:
                 add(item)
+    
+    # 如果索引匹配已找到结果，且查询是纯字母数字（索引格式），则不再进行文本匹配
+    skip_text_matching = bool(query_indexes) and len(results) > 0 and not any('\u4e00' <= c <= '\u9fff' for c in query)
+    
+    if skip_text_matching:
+        return results[:limit]
 
     # 2. 精确匹配
     for item in data:
