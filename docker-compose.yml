@@ -22,7 +22,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_BASE_PATH: ${VITE_BASE_PATH}
+        - VITE_BASE_PATH=${VITE_BASE_PATH}
     container_name: ocr-frontend
     ports:
       - "80:80"
