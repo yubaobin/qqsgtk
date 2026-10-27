@@ -87,7 +87,7 @@ def _find_by_remote_api(query: str) -> list[dict[str, str]]:
             # 尝试解析 JSON
             try:
                 data = response.json()
-            except httpx.JSONDecodeError as e:
+            except (httpx.JSONDecodeError, json.JSONDecodeError) as e:
                 logger.warning(f"Remote API returned invalid JSON: {e}. Response: {response.text[:200]}")
                 return []
             
