@@ -1,53 +1,177 @@
-# OCR 图片识别系统
+# OCR 图片识别 & 答案查找系统
 
-基于 PaddleOCR 的图片文字识别系统，前后端分离架构。
+基于 PaddleOCR 的图片文字识别和问题答案匹配系统。
 
-## 项目结构
+## 功能特性
 
-- `backend/` — Python FastAPI 后端，PaddleOCR 中文识别
-- `frontend/` — Vue 3 前端，图片上传与结果展示
-- `start.sh` — 一键启动脚本（本地开发）
-- `docker-compose.yml` — Docker 一键启动
+- **图片 OCR 识别**：支持 PNG/JPG/JPEG 格式，粘贴或直接上传
+- **智能标点过滤**：自动将中英文标点替换为空格，不影响匹配
+- **模糊匹配答案**：支持精确、归一化、包含、相似度（LCS）四级匹配
+- **多结果返回**：一次返回最多 10 条匹配答案
+- **实时搜索**：输入框内容变化 300ms 后自动查询
 
 ## 快速开始
 
-### 方式一：启动脚本（本地开发）
+### 方式一：Docker 部署（推荐）
 
 ```bash
+# 构建并启动容器
+./start.sh docker
+
+# 查看容器状态
+./start.sh docker-status
+
+# 查看日志
+docker-compose logs -f
+
+# 重启容器
+./start.sh docker-restart
+
+# 停止容器
+./start.sh docker-stop
+```
+
+访问：
+- 前端页面：http://localhost:80
+- 后端 API：http://localhost:8000
+- API 文档：http://localhost:8000/docs
+
+### 方式二：本地开发模式
+
+```bash
+# 启动服务（前后端）
 ./start.sh
+
+# 重启服务
+./start.sh restart
+
+# 停止服务
+./start.sh stop
+
+# 查看状态
+./start.sh status
 ```
 
-首次运行会自动创建虚拟环境并安装依赖。启动后：
+访问：
+- 前端页面：http://localhost:5173
+- 后端 API：http://localhost:8000
+- API 文档：http://localhost:8000/docs
 
-- 前端页面: http://localhost:5173
-- 后端 API: http://localhost:8000
-- API 文档: http://localhost:8000/docs
+## 项目结构
 
-其他命令：
+```
+.
+├── backend/                 # FastAPI 后端
+│   ├── app/
+│   │   ├── main.py         # API 路由
+│   │   ├── ocr_engine.py   # PaddleOCR 引擎
+│   │   ├── answer_engine.py # 答案匹配引擎
+│   │   └── schemas.py      # Pydantic 模型
+│   ├── tests/              # 单元测试
+│   ├── Dockerfile
+│   └── pyproject.toml
+├── frontend/               # Vue 3 + Element Plus 前端
+│   ├── src/
+│   │   ├── App.vue        # 主页面
+│   │   ├── composables/   # useOCR, useAnswer
+│   │   └── types/         # TypeScript 类型
+│   ├── Dockerfile
+│   └── nginx.conf
+├── docker-compose.yml      # Docker 编排
+├── start.sh                # 一键启动脚本
+└── question.json           # 题库 (4955 条 Q&A)
+```
+
+## API 接口
+
+### POST /ocr
+
+上传图片识别文字
 
 ```bash
-./start.sh stop     # 停止所有服务
-./start.sh status   # 查看服务状态
+curl -X POST http://localhost:8000/ocr \
+  -F "file=@image.png"
 ```
 
-### 方式二：手动启动
+响应：
+```json
+{
+  "text": "三国演义是谁的著作",
+  "lines": ["三国演义是谁的著作"]
+}
+```
 
-#### 后端
+### POST /answer
+
+根据问题文本模糊匹配答案
+
+```bash
+curl -X POST http://localhost:8000/answer \
+  -H "Content-Type: application/json" \
+  -d '{"question": "三国演义是谁的著作"}'
+```
+
+响应：
+```json
+{
+  "results": [
+    {"question": "三国演义是谁的著作", "answer": "罗贯中"},
+    {"question": "《三国演义》共有多少回", "answer": "一百二十回"}
+  ]
+}
+```
+
+### GET /health
+
+健康检查
+
+```bash
+curl http://localhost:8000/health
+```
+
+响应：
+```json
+{"status": "ok"}
+```
+
+## 匹配策略
+
+`/answer` 接口使用四级模糊匹配（按优先级）：
+
+1. **精确匹配**：原始文本完全相等
+2. **归一化匹配**：忽略标点、大小写后相等
+3. **包含匹配**：双向子串包含
+4. **相似度匹配**：最长公共子串 (LCS) 占比 ≥ 50%
+
+结果去重后返回最多 10 条。
+
+## 技术栈
+
+| 组件 | 技术 |
+|------|------|
+| 后端 | Python 3.10, FastAPI, PaddleOCR, PaddlePaddle |
+| 前端 | Vue 3, TypeScript, Element Plus, Vite |
+| 部署 | Docker, Docker Compose, Nginx |
+| 测试 | pytest, vitest |
+
+## 开发
+
+### 后端
 
 ```bash
 cd backend
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-
-# 首次运行需要下载 PaddleOCR 模型（约 17MB）
-# 如果网络无法访问 paddleocr.bj.bcebos.com，使用此脚本手动下载
-./download_models.sh
-
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --reload
 ```
 
-#### 前端
+运行测试：
+```bash
+pytest
+```
+
+### 前端
 
 ```bash
 cd frontend
@@ -55,41 +179,18 @@ npm install
 npm run dev
 ```
 
-打开 http://localhost:5173 即可使用。
-
-开发环境下，前端通过 Vite 代理将 `/api/` 请求转发到后端 `http://localhost:8000`。
-
-### 方式三：Docker Compose
-
+构建：
 ```bash
-docker compose up -d --build
+npm run build
 ```
 
-启动后：
+## 注意事项
 
-- 前端页面: http://localhost
-- 后端 API: http://localhost:8000
-- API 文档: http://localhost:8000/docs
+1. **PaddleOCR 模型下载**：首次运行会自动下载模型到 `~/.paddleocr/whl/`
+2. **端口占用**：确保 8000（后端）、80/5173（前端）未被占用
+3. **Docker 内存**：建议至少分配 2GB 内存给 Docker
+4. **题道路径**：`question.json` 需位于项目根目录
 
-停止：
+## License
 
-```bash
-docker compose down
-```
-
-> PaddleOCR 模型会在首次启动时自动下载，通过 Docker volume `paddle-models` 持久化缓存。
-
-## API
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | /ocr | 上传图片，返回识别文本 |
-| GET | /health | 健康检查 |
-
-## 配置
-
-前端通过环境变量 `VITE_API_BASE_URL` 自定义后端地址（默认 `/api`，使用 Vite 代理或 nginx 代理）。如需直连后端，在 `frontend/.env` 中设置：
-
-```
-VITE_API_BASE_URL=http://localhost:8000
-```
+MIT

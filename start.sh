@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 # 一键启动前后端服务
-# 用法: ./start.sh          — 启动前后端（前台运行，Ctrl+C 停止）
-#       ./start.sh stop     — 停止所有服务
-#       ./start.sh restart  — 重启所有服务
-#       ./start.sh status   — 查看服务状态
+# 用法：./start.sh            — 启动前后端（前台运行，Ctrl+C 停止）
+#       ./start.sh stop       — 停止所有服务
+#       ./start.sh restart    — 重启所有服务
+#       ./start.sh status     — 查看服务状态
+#       ./start.sh docker     — 使用 Docker 部署（构建并启动容器）
+#       ./start.sh docker-stop  — 停止 Docker 容器
+#       ./start.sh docker-restart — 重启 Docker 容器
+#       ./start.sh docker-status  — 查看 Docker 容器状态
 
 set -euo pipefail
 
@@ -28,7 +32,7 @@ error() { echo -e "${RED}[start.sh]${NC} $1"; }
 # 检查命令是否存在
 check_cmd() {
     if ! command -v "$1" &>/dev/null; then
-        error "未找到命令: $1，请先安装"
+        error "未找到命令：$1，请先安装"
         exit 1
     fi
 }
@@ -116,6 +120,54 @@ show_status() {
     done
 }
 
+# Docker 相关命令
+docker_deploy() {
+    check_cmd docker
+    check_cmd docker-compose
+    
+    log "开始构建并启动 Docker 容器..."
+    cd "$ROOT_DIR"
+    docker-compose build
+    docker-compose up -d
+    
+    log ""
+    log "✅ Docker 容器已启动："
+    log "   后端 API:  http://localhost:8000"
+    log "   前端页面：http://localhost:80"
+    log "   API 文档：http://localhost:8000/docs"
+    log ""
+    log "查看日志：docker-compose logs -f"
+    log "停止服务：./start.sh docker-stop"
+}
+
+docker_stop() {
+    check_cmd docker
+    check_cmd docker-compose
+    
+    log "停止 Docker 容器..."
+    cd "$ROOT_DIR"
+    docker-compose down
+    log "Docker 容器已停止"
+}
+
+docker_restart() {
+    check_cmd docker
+    check_cmd docker-compose
+    
+    log "重启 Docker 容器..."
+    cd "$ROOT_DIR"
+    docker-compose restart
+    log "Docker 容器已重启"
+}
+
+docker_status() {
+    check_cmd docker
+    check_cmd docker-compose
+    
+    echo "=== Docker 容器状态 ==="
+    docker-compose ps
+}
+
 cleanup() {
     log "正在停止所有服务..."
     stop_service "backend" "$BACKEND_PID_FILE"
@@ -131,8 +183,8 @@ case "${1:-start}" in
         log ""
         log "✅ 服务已启动："
         log "   后端 API:  http://localhost:8000"
-        log "   前端页面:  http://localhost:5173"
-        log "   API 文档:  http://localhost:8000/docs"
+        log "   前端页面：http://localhost:5173"
+        log "   API 文档：http://localhost:8000/docs"
         log ""
         log "按 Ctrl+C 停止所有服务"
         wait
@@ -153,7 +205,7 @@ case "${1:-start}" in
         log ""
         log "✅ 服务已重启："
         log "   后端 API:  http://localhost:8000"
-        log "   前端页面:  http://localhost:5173"
+        log "   前端页面：http://localhost:5173"
         log ""
         log "按 Ctrl+C 停止所有服务"
         wait
@@ -161,8 +213,20 @@ case "${1:-start}" in
     status)
         show_status
         ;;
+    docker)
+        docker_deploy
+        ;;
+    docker-stop)
+        docker_stop
+        ;;
+    docker-restart)
+        docker_restart
+        ;;
+    docker-status)
+        docker_status
+        ;;
     *)
-        echo "用法: $0 {start|stop|restart|status}"
+        echo "用法：$0 {start|stop|restart|status|docker|docker-stop|docker-restart|docker-status}"
         exit 1
         ;;
 esac
