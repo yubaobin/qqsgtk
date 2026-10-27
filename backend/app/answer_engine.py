@@ -66,7 +66,8 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
                 "indexes": item.get("indexes"),
             })
 
-    # 1. 索引匹配（拼音首字母匹配）- 最高优先级
+    # 1. 索引匹配（拼音首字母模糊匹配）- 最高优先级
+    # 支持部分匹配：如 "zsx" 可匹配 "abczsxdefg"
     if query_indexes:
         for item in data:
             item_indexes = item.get("indexes", "").lower()
