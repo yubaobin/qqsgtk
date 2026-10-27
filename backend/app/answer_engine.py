@@ -1,13 +1,19 @@
 import json
 import logging
+import os
 import re
 from pathlib import Path
+
+import httpx
 
 logger = logging.getLogger(__name__)
 
 _qa_data: list[dict[str, str]] | None = None
 
 QUESTION_JSON_PATH = Path(__file__).resolve().parent.parent.parent / "question.json"
+
+# 远程 API 配置
+REMOTE_API_URL = os.getenv("REMOTE_API_URL", "https://api.qqsgtk.cn/qqsgtkApi/findByQuestion")
 
 
 def get_qa_data() -> list[dict[str, str]]:
@@ -28,7 +34,79 @@ def _normalize(text: str) -> str:
 
 def find_answers(query: str, limit: int = 10) -> list[dict[str, str]]:
     """
-    在 question.json 中模糊匹配问题，返回所有匹配的 {question, answer} 列表。
+    查找答案：优先调用远程 API，失败时回退到本地 question.json。
+
+    远程 API: POST https://api.qqsgtk.cn/qqsgtkApi/findByQuestion
+    Body: {"question": "...", "answer": "..."}
+    
+    Args:
+        query: 查询文本
+        limit: 最多返回的结果数量
+
+    Returns:
+        匹配的 [{"question": str, "answer": str}, ...] 列表，可能为空
+    """
+    # 1. 优先尝试远程 API
+    try:
+        remote_results = _find_by_remote_api(query)
+        if remote_results:
+            logger.info(f"Remote API found {len(remote_results)} results for query: {query[:20]}...")
+            return remote_results[:limit]
+    except Exception as e:
+        logger.warning(f"Remote API failed for query '{query[:20]}...': {e}. Falling back to local.")
+
+    # 2. 远程 API 失败或无结果，回退到本地 question.json
+    logger.info(f"Falling back to local question.json for query: {query[:20]}...")
+    return _find_by_local_json(query, limit)
+
+
+def _find_by_remote_api(query: str) -> list[dict[str, str]]:
+    """
+    调用远程 API 查找答案。
+    
+    Returns:
+        匹配结果列表，空列表表示无结果或请求失败
+    """
+    try:
+        with httpx.Client(timeout=5.0) as client:
+            response = client.post(
+                REMOTE_API_URL,
+                json={"question": query, "answer": ""},
+                headers={"Content-Type": "application/json"},
+            )
+            
+            if response.status_code != 200:
+                logger.warning(f"Remote API returned status {response.status_code}")
+                return []
+            
+            data = response.json()
+            
+            # 检查响应格式
+            if not data.get("success") or data.get("code") != 200:
+                logger.warning(f"Remote API returned unsuccessful response: {data}")
+                return []
+            
+            results = data.get("data", [])
+            if not results:
+                return []
+            
+            # 转换格式：[{question, answer}, ...]
+            return [{"question": item["question"], "answer": item["answer"]} for item in results]
+            
+    except httpx.TimeoutException:
+        logger.warning("Remote API timeout")
+        return []
+    except httpx.RequestError as e:
+        logger.warning(f"Remote API request error: {e}")
+        return []
+    except Exception as e:
+        logger.warning(f"Remote API unexpected error: {e}")
+        return []
+
+
+def _find_by_local_json(query: str, limit: int = 10) -> list[dict[str, str]]:
+    """
+    在本地 question.json 中模糊匹配问题。
 
     匹配策略（按优先级，结果去重合并）:
     1. 精确匹配（原始文本相等）

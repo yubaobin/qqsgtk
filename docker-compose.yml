@@ -11,6 +11,8 @@ services:
     restart: unless-stopped
     networks:
       - ocr-network
+    environment:
+      - REMOTE_API_URL=${REMOTE_API_URL:-https://api.qqsgtk.cn/qqsgtkApi/findByQuestion}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s

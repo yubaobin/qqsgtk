@@ -27,6 +27,9 @@ COPY app/ ./app/
 
 EXPOSE 8000
 
+# 环境变量：远程 API 地址（可选，默认使用内置地址）
+ENV REMOTE_API_URL=https://api.qqsgtk.cn/qqsgtkApi/findByQuestion
+
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
