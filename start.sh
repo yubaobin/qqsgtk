@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # 一键启动前后端服务
-# 用法: ./start.sh        — 启动前后端（前台运行，Ctrl+C 停止）
-#       ./start.sh stop   — 停止所有服务
-#       ./start.sh status — 查看服务状态
+# 用法: ./start.sh          — 启动前后端（前台运行，Ctrl+C 停止）
+#       ./start.sh stop     — 停止所有服务
+#       ./start.sh restart  — 重启所有服务
+#       ./start.sh status   — 查看服务状态
 
 set -euo pipefail
 
@@ -141,11 +142,27 @@ case "${1:-start}" in
         stop_service "frontend" "$FRONTEND_PID_FILE"
         log "所有服务已停止"
         ;;
+    restart)
+        log "正在重启服务..."
+        stop_service "backend" "$BACKEND_PID_FILE"
+        stop_service "frontend" "$FRONTEND_PID_FILE"
+        sleep 1
+        trap cleanup INT TERM
+        start_backend
+        start_frontend
+        log ""
+        log "✅ 服务已重启："
+        log "   后端 API:  http://localhost:8000"
+        log "   前端页面:  http://localhost:5173"
+        log ""
+        log "按 Ctrl+C 停止所有服务"
+        wait
+        ;;
     status)
         show_status
         ;;
     *)
-        echo "用法: $0 {start|stop|status}"
+        echo "用法: $0 {start|stop|restart|status}"
         exit 1
         ;;
 esac
