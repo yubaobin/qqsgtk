@@ -1,13 +1,15 @@
 # 多阶段构建：先构建，再用 nginx 部署静态文件
 FROM node:20-slim AS build
 
+ARG VITE_BASE_PATH=/
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+RUN VITE_BASE_PATH=$VITE_BASE_PATH npm run build
 
 # --- 生产阶段 ---
 FROM nginx:alpine
