@@ -11,8 +11,10 @@ class HealthResponse(BaseModel):
 
 
 class AnswerResponse(BaseModel):
+    id: int | None = None
     question: str
     answer: str
+    indexes: str | None = None
 
 
 class AnswerListResponse(BaseModel):

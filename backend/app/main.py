@@ -63,7 +63,15 @@ async def answer(request: Request):
 
     results = find_answers(question)
     return AnswerListResponse(
-        results=[AnswerResponse(question=r["question"], answer=r["answer"]) for r in results]
+        results=[
+            AnswerResponse(
+                id=r.get("id"),
+                question=r["question"],
+                answer=r["answer"],
+                indexes=r.get("indexes"),
+            )
+            for r in results
+        ]
     )
 
 
