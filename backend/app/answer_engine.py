@@ -69,17 +69,27 @@ def _find_by_remote_api(query: str) -> list[dict[str, str]]:
     """
     try:
         with httpx.Client(timeout=5.0) as client:
+            payload = {"question": query, "answer": ""}
+            logger.debug(f"Calling remote API: {REMOTE_API_URL} with payload: {payload}")
+            
             response = client.post(
                 REMOTE_API_URL,
-                json={"question": query, "answer": ""},
+                json=payload,
                 headers={"Content-Type": "application/json"},
             )
+            
+            logger.debug(f"Remote API response status: {response.status_code}, body: {response.text[:200]}")
             
             if response.status_code != 200:
                 logger.warning(f"Remote API returned status {response.status_code}")
                 return []
             
-            data = response.json()
+            # 尝试解析 JSON
+            try:
+                data = response.json()
+            except httpx.JSONDecodeError as e:
+                logger.warning(f"Remote API returned invalid JSON: {e}. Response: {response.text[:200]}")
+                return []
             
             # 检查响应格式
             if not data.get("success") or data.get("code") != 200:
