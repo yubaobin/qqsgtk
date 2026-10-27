@@ -35,8 +35,25 @@ docker-compose logs -f
 - **本地访问**：http://localhost
 - **局域网 IP**：http://192.168.x.x（你的电脑局域网 IP）
 - **域名访问**：http://your-domain.com（需配置 DNS 指向服务器 IP）
+- **带路径前缀**：http://localhost/qqsgtk（见下方"自定义路径前缀"）
 - **后端 API**：http://localhost:8000
 - **API 文档**：http://localhost:8000/docs
+
+### 自定义路径前缀
+
+默认情况下，应用部署在根路径 `/`。如需部署在子路径（如 `/qqsgtk`）：
+
+```bash
+# 方法 1：使用环境变量
+VITE_BASE_PATH=/qqsgtk ./start.sh docker
+
+# 方法 2：编辑 docker-compose.yml
+# 在 frontend 服务的 build.args 中设置 VITE_BASE_PATH=/qqsgtk
+```
+
+部署后访问：
+- 前端页面：http://localhost/qqsgtk
+- API 自动代理：http://localhost/qqsgtk/api/answer → http://localhost:8000/answer
 
 ### 方式二：本地开发模式
 
