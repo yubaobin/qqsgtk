@@ -1,0 +1,211 @@
+/* ===== Design System 主题覆盖 ===== */
+/* 基于 design-tokens.md 和 design-rules.md */
+
+:root {
+  /* 主色 - 薄荷绿 */
+  --el-color-primary: #19c8b9;
+  --el-color-primary-light-3: #3dd4c6;
+  --el-color-primary-light-5: #5cdcd0;
+  --el-color-primary-light-7: #a4ebe4;
+  --el-color-primary-light-8: #d0f5f1;
+  --el-color-primary-light-9: #e6f9f6;
+  --el-color-primary-dark-2: #11a89b;
+
+  /* 文字 - 暖棕色系 */
+  --el-text-color-primary: #794f27;
+  --el-text-color-regular: #725d42;
+  --el-text-color-secondary: #9f927d;
+  --el-text-color-placeholder: #c4b89e;
+  --el-text-color-disabled: #c4b89e;
+
+  /* 边框 */
+  --el-border-color: #9f927d;
+  --el-border-color-light: #c4b89e;
+  --el-border-color-lighter: #d4c9b4;
+  --el-border-color-hover: #a89878;
+
+  /* 背景 - 奶油纸色 */
+  --el-bg-color: rgb(247, 243, 223);
+  --el-bg-color-page: #f8f8f0;
+  --el-bg-color-overlay: rgb(247, 243, 223);
+  --el-fill-color-blank: #fffbe7;
+  --el-fill-color: #f0e8d8;
+  --el-fill-color-light: #f0ece2;
+  --el-fill-color-lighter: #f8f8f0;
+  --el-fill-color-disabled: #ece8dc;
+
+  /* 状态色 */
+  --el-color-success: #6fba2c;
+  --el-color-success-light-9: #f0fae6;
+  --el-color-warning: #f5c31c;
+  --el-color-warning-light-9: #fef5d6;
+  --el-color-danger: #e05a5a;
+  --el-color-danger-light-9: #fdeaea;
+  --el-color-error: #e05a5a;
+  --el-color-error-light-9: #fdeaea;
+
+  /* 圆角 */
+  --el-border-radius-base: 12px;
+  --el-border-radius-small: 12px;
+  --el-border-radius-round: 50px;
+
+  /* 字体 */
+  --el-font-family: 'Nunito', 'Noto Sans SC', system-ui, sans-serif;
+
+  /* 阴影 */
+  --el-box-shadow: 0 3px 10px 0 rgba(61, 52, 40, 0.1);
+  --el-box-shadow-light: 0 2px 4px 0 rgba(61, 52, 40, 0.06);
+}
+
+/* ===== 全局基础样式 ===== */
+
+body {
+  font-family: var(--el-font-family);
+  background-color: #f8f8f0;
+  color: #794f27;
+  font-weight: 500;
+}
+
+/* ===== Element Plus 组件覆盖 ===== */
+
+/* 按钮 - 药丸形 */
+.el-button {
+  border-radius: 50px !important;
+  font-weight: 600;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 主色按钮 - 3D 阴影 */
+.el-button--primary {
+  box-shadow: 0 5px 0 0 #bdaea0;
+  border-color: var(--el-color-primary);
+}
+
+.el-button--primary:hover {
+  box-shadow: 0 6px 0 0 #bdaea0;
+  transform: translateY(-1px);
+}
+
+.el-button--primary:active {
+  box-shadow: 0 1px 0 0 #bdaea0;
+  transform: translateY(2px);
+}
+
+/* 危险按钮 - 3D 阴影 */
+.el-button--danger {
+  box-shadow: 0 5px 0 0 #c94444;
+}
+
+.el-button--danger:hover {
+  box-shadow: 0 6px 0 0 #c94444;
+  transform: translateY(-1px);
+}
+
+.el-button--danger:active {
+  box-shadow: 0 1px 0 0 #c94444;
+  transform: translateY(2px);
+}
+
+/* 默认按钮 - 软阴影 */
+.el-button--default {
+  box-shadow: 0 2px 4px 0 rgba(61, 52, 40, 0.06);
+}
+
+.el-button--default:hover {
+  box-shadow: 0 3px 10px 0 rgba(61, 52, 40, 0.1);
+  transform: translateY(-1px);
+}
+
+/* 输入框 - 药丸形 */
+.el-input__wrapper {
+  border-radius: 50px !important;
+  background-color: #fffbe7 !important;
+  border-color: #c4b89e !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.el-input__wrapper:hover {
+  border-color: #a89878 !important;
+}
+
+.el-input__wrapper.is-focus {
+  border-color: #19c8b9 !important;
+  box-shadow: 0 0 0 2px #ffcc00 !important;
+}
+
+/* 表格 */
+.el-table {
+  border-radius: 12px;
+  overflow: hidden;
+  --el-table-border-color: #d4c9b4;
+  --el-table-header-bg-color: #f0e8d8;
+  --el-table-header-text-color: #794f27;
+  --el-table-text-color: #725d42;
+  --el-table-row-hover-bg-color: #f8f8f0;
+}
+
+.el-table th.el-table__cell {
+  font-weight: 600;
+}
+
+/* 卡片容器 */
+.el-card {
+  border-radius: 20px;
+  border: 2px solid #d4c9b4;
+}
+
+/* 弹窗 */
+.el-dialog {
+  border-radius: 20px;
+  background-color: rgb(247, 243, 223);
+}
+
+.el-dialog__header {
+  border-bottom: 2px solid #f0e8d8;
+}
+
+.el-dialog__title {
+  color: #794f27;
+  font-weight: 600;
+}
+
+/* 标签 */
+.el-tag {
+  border-radius: 50px;
+  font-weight: 600;
+}
+
+/* 空状态 */
+.el-empty__description p {
+  color: #9f927d;
+}
+
+/* 提示 Alert */
+.el-alert {
+  border-radius: 12px;
+}
+
+/* 分页 */
+.el-pagination .el-pagination__button {
+  border-radius: 12px;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0e8d8;
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4b89e;
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a89878;
+}

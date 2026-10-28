@@ -171,10 +171,10 @@ onMounted(() => {
 
 <style scoped>
 .list-section {
-  background: #fff;
-  border-radius: 8px;
+  background: rgb(247, 243, 223);
+  border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  border: 2px solid #d4c9b4;
 }
 
 .list-header {
@@ -190,8 +190,8 @@ onMounted(() => {
 
 .section-title {
   font-size: 1em;
-  font-weight: 600;
-  color: #303133;
+  font-weight: 700;
+  color: #794f27;
   margin: 0;
 }
 
@@ -202,11 +202,12 @@ onMounted(() => {
 }
 
 .dup-q {
-  color: #606266;
+  color: #725d42;
 }
 
 .dup-a {
-  color: #409eff;
+  color: #19c8b9;
   margin-left: 8px;
+  font-weight: 600;
 }
 </style>

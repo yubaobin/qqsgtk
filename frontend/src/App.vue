@@ -20,8 +20,8 @@ import { RouterView, RouterLink } from 'vue-router'
 .app {
   margin: 0 auto;
   padding: 24px 16px;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #f5f7fa;
+  font-family: var(--el-font-family);
+  background: #f8f8f0;
   min-height: 100vh;
 }
 
@@ -34,8 +34,8 @@ import { RouterView, RouterLink } from 'vue-router'
 
 .page-header h1 {
   font-size: 1.5em;
-  font-weight: 600;
-  color: #303133;
+  font-weight: 700;
+  color: #794f27;
   margin: 0;
 }
 
@@ -46,19 +46,22 @@ import { RouterView, RouterLink } from 'vue-router'
 
 .nav-link {
   padding: 6px 16px;
-  border-radius: 6px;
+  border-radius: 50px;
   text-decoration: none;
-  color: #606266;
+  color: #725d42;
   font-size: 14px;
-  transition: all 0.2s;
+  font-weight: 600;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-link:hover {
-  background: #ecf0f1;
+  background: #f0e8d8;
+  transform: translateY(-1px);
 }
 
 .nav-link.active {
-  background: #409eff;
+  background: #19c8b9;
   color: #fff;
+  box-shadow: 0 3px 0 0 #bdaea0;
 }
 </style>
