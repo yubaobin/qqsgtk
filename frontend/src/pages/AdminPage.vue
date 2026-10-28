@@ -75,7 +75,7 @@ onMounted(() => {
       <el-table-column prop="question" label="问题" min-width="300" />
       <el-table-column prop="answer" label="答案" min-width="200" />
       <el-table-column prop="indexes" label="索引（拼音首字母）" min-width="200" />
-      <el-table-column label="操作" width="150" fixed="right">
+      <el-table-column label="操作" width="200" fixed="right">
         <template #default="{ row }">
           <el-button size="small" :icon="Edit" @click="openEdit(row)">编辑</el-button>
           <el-button size="small" type="danger" :icon="Delete" @click="handleDelete(row)">删除</el-button>
