@@ -1,3 +1,6 @@
 .pids/
 .opencode
 .superpowers
+
+# SQLite 数据库（通过 volume 持久化，不入库）
+backend/data/*.db

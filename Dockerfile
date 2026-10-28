@@ -45,6 +45,9 @@ RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -e ".
 # 复制后端源码
 COPY backend/app/ ./backend/app/
 
+# 创建 SQLite 数据目录
+RUN mkdir -p /app/backend/data
+
 # 复制题库
 COPY question.json ./question.json
 

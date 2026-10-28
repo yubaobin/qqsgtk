@@ -3,6 +3,8 @@ import logging
 import re
 from pathlib import Path
 
+from app import db
+
 logger = logging.getLogger(__name__)
 
 _qa_data: list[dict[str, str]] | None = None
@@ -111,7 +113,71 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
     for _, item in scored:
         add(item)
 
+    # 6. 如果 json 结果不足 limit，补充查询数据库
+    if len(results) < limit:
+        db_data = db.get_all_questions()
+        _match_in_data(db_data, query, normalized_query, query_indexes, results, seen_questions)
+
     return results[:limit]
+
+
+def _match_in_data(
+    data: list[dict],
+    query: str,
+    normalized_query: str,
+    query_indexes: str,
+    results: list[dict],
+    seen_questions: set[str],
+) -> None:
+    """对给定数据执行匹配策略 2-5，补充到 results 中。"""
+    def add(item: dict) -> None:
+        key = _normalize(item["question"])
+        if key not in seen_questions:
+            seen_questions.add(key)
+            results.append({
+                "id": item.get("id"),
+                "question": item["question"],
+                "answer": item["answer"],
+                "indexes": item.get("indexes"),
+            })
+
+    # 索引匹配
+    if query_indexes:
+        for item in data:
+            item_indexes = item.get("indexes", "").lower()
+            if item_indexes and query_indexes in item_indexes:
+                add(item)
+
+    # 精确匹配
+    for item in data:
+        if item["question"] == query:
+            add(item)
+
+    # 归一化匹配
+    for item in data:
+        if _normalize(item["question"]) == normalized_query:
+            add(item)
+
+    # 包含匹配
+    for item in data:
+        nq = _normalize(item["question"])
+        if not nq:
+            continue
+        if normalized_query in nq or nq in normalized_query:
+            add(item)
+
+    # 相似度匹配
+    scored: list[tuple[float, dict]] = []
+    for item in data:
+        nq = _normalize(item["question"])
+        if not nq:
+            continue
+        score = _lcs_ratio(normalized_query, nq)
+        if score >= 0.5:
+            scored.append((score, item))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    for _, item in scored:
+        add(item)
 
 
 def _lcs_ratio(a: str, b: str) -> float:

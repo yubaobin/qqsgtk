@@ -18,6 +18,7 @@ services:
       retries: 3
     volumes:
       - paddle-models:/root/.paddleocr
+      - ./backend/data:/app/backend/data
 
 volumes:
   paddle-models:
