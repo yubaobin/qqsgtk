@@ -228,10 +228,6 @@ body {
   font-weight: 600;
 }
 
-.el-dialog__body {
-  padding-top: 20px;
-}
-
 /* 标签 */
 .el-tag {
   border-radius: var(--ds-radius-pill);
