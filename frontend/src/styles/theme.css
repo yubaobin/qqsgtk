@@ -162,11 +162,17 @@ body {
 
 .el-dialog__header {
   border-bottom: 2px solid #f0e8d8;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
 }
 
 .el-dialog__title {
   color: #794f27;
   font-weight: 600;
+}
+
+.el-dialog__body {
+  padding-top: 20px;
 }
 
 /* 标签 */
