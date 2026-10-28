@@ -60,6 +60,15 @@ async function handleSubmit() {
 }
 
 async function handleDelete(row: QuestionItem) {
+  try {
+    await ElMessageBox.confirm('确定删除该题目吗？', '提示', {
+      type: 'warning',
+      confirmButtonText: '删除',
+      cancelButtonText: '取消',
+    })
+  } catch {
+    return
+  }
   await remove(row.id)
 }
 
