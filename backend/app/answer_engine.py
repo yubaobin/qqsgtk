@@ -30,9 +30,9 @@ def _normalize(text: str) -> str:
 
 def find_answers(query: str, limit: int = 10) -> list[dict]:
     """
-    在 question.json 中模糊匹配问题，返回所有匹配的列表。
+    在 question.json 和数据库中模糊匹配问题，合并去重后返回。
 
-    匹配策略（按优先级，结果去重合并）:
+    两个数据源平等，不区分先后。匹配策略（按优先级，结果去重合并）:
     1. 索引匹配（query 是拼音首字母，匹配 indexes 字段）
     2. 精确匹配（原始文本相等）
     3. 归一化后精确匹配（忽略标点和大小写）
@@ -46,7 +46,8 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
     Returns:
         匹配的 [{id, question, answer, indexes}, ...] 列表，可能为空
     """
-    data = get_qa_data()
+    # 合并 json 和数据库数据
+    data = get_qa_data() + db.get_all_questions()
     normalized_query = _normalize(query)
     # 将查询转换为小写格式，保留字母和数字（indexes 可能包含数字）
     query_indexes = re.sub(r'[^a-zA-Z0-9]', '', query).lower()
@@ -75,10 +76,10 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
             item_indexes = item.get("indexes", "").lower()
             if item_indexes and query_indexes in item_indexes:
                 add(item)
-    
+
     # 如果索引匹配已找到结果，且查询是纯字母数字（索引格式），则不再进行文本匹配
     skip_text_matching = bool(query_indexes) and len(results) > 0 and not any('\u4e00' <= c <= '\u9fff' for c in query)
-    
+
     if skip_text_matching:
         return results[:limit]
 
@@ -113,71 +114,7 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
     for _, item in scored:
         add(item)
 
-    # 6. 如果 json 结果不足 limit，补充查询数据库
-    if len(results) < limit:
-        db_data = db.get_all_questions()
-        _match_in_data(db_data, query, normalized_query, query_indexes, results, seen_questions)
-
     return results[:limit]
-
-
-def _match_in_data(
-    data: list[dict],
-    query: str,
-    normalized_query: str,
-    query_indexes: str,
-    results: list[dict],
-    seen_questions: set[str],
-) -> None:
-    """对给定数据执行匹配策略 2-5，补充到 results 中。"""
-    def add(item: dict) -> None:
-        key = _normalize(item["question"])
-        if key not in seen_questions:
-            seen_questions.add(key)
-            results.append({
-                "id": item.get("id"),
-                "question": item["question"],
-                "answer": item["answer"],
-                "indexes": item.get("indexes"),
-            })
-
-    # 索引匹配
-    if query_indexes:
-        for item in data:
-            item_indexes = item.get("indexes", "").lower()
-            if item_indexes and query_indexes in item_indexes:
-                add(item)
-
-    # 精确匹配
-    for item in data:
-        if item["question"] == query:
-            add(item)
-
-    # 归一化匹配
-    for item in data:
-        if _normalize(item["question"]) == normalized_query:
-            add(item)
-
-    # 包含匹配
-    for item in data:
-        nq = _normalize(item["question"])
-        if not nq:
-            continue
-        if normalized_query in nq or nq in normalized_query:
-            add(item)
-
-    # 相似度匹配
-    scored: list[tuple[float, dict]] = []
-    for item in data:
-        nq = _normalize(item["question"])
-        if not nq:
-            continue
-        score = _lcs_ratio(normalized_query, nq)
-        if score >= 0.5:
-            scored.append((score, item))
-    scored.sort(key=lambda x: x[0], reverse=True)
-    for _, item in scored:
-        add(item)
 
 
 def _lcs_ratio(a: str, b: str) -> float:
