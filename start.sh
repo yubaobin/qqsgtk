@@ -169,8 +169,17 @@ case "${1:-start}" in
     status)
         show_status
         ;;
-    docker|docker-stop|docker-restart|docker-status)
-        $0 "$1"
+    docker)
+        docker_deploy
+        ;;
+    docker-stop)
+        docker_stop
+        ;;
+    docker-restart)
+        docker_restart
+        ;;
+    docker-status)
+        docker_status
         ;;
     *)
         echo "用法：$0 {start|stop|restart|status|docker|docker-stop|docker-restart|docker-status}"
