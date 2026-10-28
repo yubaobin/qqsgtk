@@ -24,6 +24,8 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ImageUploader: typeof import('./src/components/ImageUploader.vue')['default']
     ResultDisplay: typeof import('./src/components/ResultDisplay.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
   export interface GlobalDirectives {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

@@ -1,26 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import SearchPage from './pages/SearchPage.vue'
-import AdminPage from './pages/AdminPage.vue'
-
-const route = ref(window.location.hash)
-
-function onHashChange() {
-  route.value = window.location.hash
-}
-
-onMounted(() => {
-  window.addEventListener('hashchange', onHashChange)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('hashchange', onHashChange)
-})
-
-const currentPage = computed(() => {
-  if (route.value === '#/admin') return 'admin'
-  return 'search'
-})
+import { RouterView, RouterLink } from 'vue-router'
 </script>
 
 <template>
@@ -28,21 +7,12 @@ const currentPage = computed(() => {
     <header class="page-header">
       <h1>问题答案搜索</h1>
       <nav class="nav">
-        <a
-          href="#/"
-          class="nav-link"
-          :class="{ active: currentPage === 'search' }"
-        >搜索</a>
-        <a
-          href="#/admin"
-          class="nav-link"
-          :class="{ active: currentPage === 'admin' }"
-        >录入</a>
+        <RouterLink to="/" class="nav-link" active-class="active">搜索</RouterLink>
+        <RouterLink to="/admin" class="nav-link" active-class="active">录入</RouterLink>
       </nav>
     </header>
 
-    <SearchPage v-if="currentPage === 'search'" />
-    <AdminPage v-else />
+    <RouterView />
   </div>
 </template>
 
