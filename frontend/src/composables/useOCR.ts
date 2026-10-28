@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { OCRResponse } from '../types/ocr'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || `${import.meta.env.BASE_URL}api`
 
 export function useOCR() {
   const loading = ref(false)
