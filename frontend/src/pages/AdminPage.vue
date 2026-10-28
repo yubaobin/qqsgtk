@@ -171,10 +171,10 @@ onMounted(() => {
 
 <style scoped>
 .list-section {
-  background: rgb(247, 243, 223);
-  border-radius: 20px;
+  background: var(--ds-bg-content);
+  border-radius: var(--ds-radius-lg);
   padding: 20px;
-  border: 2px solid #d4c9b4;
+  border: 2px solid var(--ds-border-lighter);
 }
 
 .list-header {
@@ -191,7 +191,7 @@ onMounted(() => {
 .section-title {
   font-size: 1em;
   font-weight: 700;
-  color: #794f27;
+  color: var(--ds-text);
   margin: 0;
 }
 
@@ -202,11 +202,11 @@ onMounted(() => {
 }
 
 .dup-q {
-  color: #725d42;
+  color: var(--ds-text-body);
 }
 
 .dup-a {
-  color: #19c8b9;
+  color: var(--ds-primary);
   margin-left: 8px;
   font-weight: 600;
 }
