@@ -72,8 +72,8 @@ VITE_BASE_PATH=/qqsgtk ./start.sh docker
 ```
 
 部署后访问：
-- 前端页面：http://localhost/qqsgtk
-- API 自动代理：http://localhost/qqsgtk/api/answer → http://localhost:8000/answer
+- 前端页面：http://localhost:8001/qqsgtk
+- API 自动代理：http://localhost:8001/qqsgtk/api/answer → 容器内 http://127.0.0.1:8000/answer
 
 **恢复默认（根路径）：**
 ```bash

@@ -22,7 +22,7 @@ LABEL description="OCR Q&A - frontend + backend in one container"
 RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources \
     && sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
 
-# 安装系统依赖：PaddlePaddle 运行库 + Nginx + supervisord
+# 安装系统依赖：PaddlePaddle 运行库 + Nginx + supervisord + gettext(envsubst)
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libgomp1 \
         libglib2.0-0 \
@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libgl1 \
         nginx \
         supervisor \
+        gettext-base \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -51,8 +52,20 @@ COPY question.json ./question.json
 # 复制前端构建产物到 Nginx 目录
 COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 
-# 复制 Nginx 配置
-COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+# 复制 Nginx 配置模板，根据 VITE_BASE_PATH 生成最终配置
+ARG VITE_BASE_PATH=/
+COPY deploy/nginx.conf.template /etc/nginx/conf.d/default.conf.template
+RUN if [ "$VITE_BASE_PATH" != "/" ]; then \
+      BASE_PATH="${VITE_BASE_PATH%/}/"; \
+      ROOT_REDIRECT="location = / { return 302 ${VITE_BASE_PATH%/}/; }"; \
+    else \
+      BASE_PATH="/"; \
+      ROOT_REDIRECT=""; \
+    fi && \
+    envsubst '${BASE_PATH} ${ROOT_REDIRECT}' \
+      < /etc/nginx/conf.d/default.conf.template \
+      > /etc/nginx/conf.d/default.conf && \
+    rm /etc/nginx/conf.d/default.conf.template
 
 # 删除 Nginx 默认站点配置（避免冲突）
 RUN rm -f /etc/nginx/sites-enabled/default
