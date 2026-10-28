@@ -6,6 +6,10 @@ LABEL description="PaddleOCR backend API"
 
 WORKDIR /app
 
+# 使用阿里云 Debian 镜像源加速 apt
+RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources \
+    && sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
+
 # 安装系统依赖（PaddlePaddle/PaddleOCR 运行所需）
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libgomp1 \
@@ -19,8 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # 先复制依赖文件，利用 Docker 层缓存
 COPY pyproject.toml ./
 
-# 安装 Python 依赖
-RUN pip install --no-cache-dir -e ".[dev]"
+# 安装 Python 依赖（使用清华 PyPI 镜像加速）
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -e ".[dev]"
 
 # 复制源码
 COPY app/ ./app/

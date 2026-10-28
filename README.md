@@ -51,12 +51,12 @@ docker-compose logs -f
 ```
 
 访问方式（支持多种）：
-- **本地访问**：http://localhost
-- **局域网 IP**：http://192.168.x.x（你的电脑局域网 IP）
-- **域名访问**：http://your-domain.com（需配置 DNS 指向服务器 IP）
-- **带路径前缀**：http://localhost/qqsgtk（见下方"自定义路径前缀"）
-- **后端 API**：http://localhost:8000
-- **API 文档**：http://localhost:8000/docs
+- **本地访问**：http://localhost:8001
+- **局域网 IP**：http://192.168.x.x:8001（你的电脑局域网 IP）
+- **域名访问**：http://your-domain.com:8001（需配置 DNS 指向服务器 IP）
+- **带路径前缀**：http://localhost:8001/qqsgtk（见下方"自定义路径前缀"）
+- **API 文档**：http://localhost:8001/api/docs
+- **健康检查**：http://localhost:8001/api/health
 
 ### 自定义路径前缀
 
@@ -113,16 +113,18 @@ echo "VITE_BASE_PATH=/" > .env
 │   │   ├── answer_engine.py # 答案匹配引擎
 │   │   └── schemas.py      # Pydantic 模型
 │   ├── tests/              # 单元测试
-│   ├── Dockerfile
 │   └── pyproject.toml
 ├── frontend/               # Vue 3 + Element Plus 前端
 │   ├── src/
 │   │   ├── App.vue        # 主页面
 │   │   ├── composables/   # useOCR, useAnswer
 │   │   └── types/         # TypeScript 类型
-│   ├── Dockerfile
-│   └── nginx.conf
-├── docker-compose.yml      # Docker 编排
+│   └── nginx.conf          # 旧配置（已弃用，见 deploy/）
+├── deploy/                 # Docker 单容器部署配置
+│   ├── nginx.conf          # Nginx 配置（前端 + API 代理）
+│   └── supervisord.conf    # 进程管理（Nginx + Uvicorn）
+├── Dockerfile              # 多阶段构建：前端编译 + 后端 + Nginx 合一
+├── docker-compose.yml      # Docker 编排（单容器）
 ├── start.sh                # 一键启动脚本
 ├── .env                    # 环境变量配置
 └── question.json           # 题库 (4955 条 Q&A)

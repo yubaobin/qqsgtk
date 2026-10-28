@@ -103,9 +103,9 @@ docker_deploy() {
     docker-compose up -d
     log ""
     log "✅ Docker 容器已启动："
-    log "   后端 API:  http://localhost:8000"
-    log "   前端页面：http://localhost:80"
-    log "   API 文档：http://localhost:8000/docs"
+    log "   前端页面：http://localhost:8001"
+    log "   API 文档：http://localhost:8001/api/docs"
+    log "   健康检查：http://localhost:8001/api/health"
 }
 
 docker_stop() {

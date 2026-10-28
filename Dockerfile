@@ -1,0 +1,65 @@
+# ===== 阶段 1：前端构建 =====
+FROM node:20-slim AS frontend-build
+
+ARG VITE_BASE_PATH=/
+
+WORKDIR /app/frontend
+
+COPY frontend/package.json frontend/package-lock.json ./
+# 使用淘宝 npm 镜像加速
+RUN npm config set registry https://registry.npmmirror.com && npm ci
+
+COPY frontend/ ./
+RUN VITE_BASE_PATH=$VITE_BASE_PATH npm run build
+
+# ===== 阶段 2：最终镜像（后端 + Nginx） =====
+FROM python:3.10-slim
+
+LABEL maintainer="OCR System"
+LABEL description="OCR Q&A - frontend + backend in one container"
+
+# 使用阿里云 Debian 镜像源加速 apt
+RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources \
+    && sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
+
+# 安装系统依赖：PaddlePaddle 运行库 + Nginx + supervisord
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libgomp1 \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender-dev \
+        libgl1 \
+        nginx \
+        supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# 先复制依赖文件，利用 Docker 层缓存
+COPY backend/pyproject.toml ./backend/
+
+# 安装 Python 依赖（使用清华 PyPI 镜像加速）
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -e "./backend[dev]"
+
+# 复制后端源码
+COPY backend/app/ ./backend/app/
+
+# 复制题库
+COPY question.json ./question.json
+
+# 复制前端构建产物到 Nginx 目录
+COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
+
+# 复制 Nginx 配置
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+
+# 删除 Nginx 默认站点配置（避免冲突）
+RUN rm -f /etc/nginx/sites-enabled/default
+
+# 复制 supervisord 配置
+COPY deploy/supervisord.conf /etc/supervisor/conf.d/app.conf
+
+EXPOSE 80
+
+CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

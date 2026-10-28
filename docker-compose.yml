@@ -1,16 +1,16 @@
 version: '3.7'
 
 services:
-  backend:
+  app:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
-    container_name: ocr-backend
+      args:
+        - VITE_BASE_PATH=${VITE_BASE_PATH:-/}
+    container_name: ocr-app
     ports:
-      - "8000:8000"
+      - "8001:80"
     restart: unless-stopped
-    networks:
-      - ocr-network
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
@@ -18,30 +18,6 @@ services:
       retries: 3
     volumes:
       - paddle-models:/root/.paddleocr
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        - VITE_BASE_PATH=${VITE_BASE_PATH}
-    container_name: ocr-frontend
-    ports:
-      - "80:80"
-    restart: unless-stopped
-    depends_on:
-      - backend
-    networks:
-      - ocr-network
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-networks:
-  ocr-network:
-    driver: bridge
 
 volumes:
   paddle-models:

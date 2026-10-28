@@ -1,0 +1,26 @@
+# 前端
+frontend/node_modules
+frontend/dist
+
+# 后端
+backend/.venv
+backend/__pycache__
+backend/**/__pycache__
+backend/.pytest_cache
+backend/*.egg-info
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Git & 杂项
+.git
+.gitignore
+.pids
+.opencode
+.superpowers
+docs
+*.md
+.env

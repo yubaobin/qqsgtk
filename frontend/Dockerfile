@@ -6,7 +6,9 @@ ARG VITE_BASE_PATH=/
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+
+# 使用淘宝 npm 镜像加速
+RUN npm config set registry https://registry.npmmirror.com && npm ci
 
 COPY . .
 RUN VITE_BASE_PATH=$VITE_BASE_PATH npm run build
