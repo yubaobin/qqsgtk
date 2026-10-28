@@ -96,7 +96,6 @@ show_status() {
 }
 
 docker_deploy() {
-    check_cmd docker-compose
     log "开始构建并启动 Docker 容器..."
     cd "$ROOT_DIR"
     docker-compose build
