@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
-import { Plus, Edit, Delete } from '@element-plus/icons-vue'
+import { Plus, Edit, Delete, Search } from '@element-plus/icons-vue'
 import { useQuestions, type QuestionItem } from '../composables/useQuestions'
 import { useAnswer } from '../composables/useAnswer'
 
 const { loading, list, fetchList, create, update, remove } = useQuestions()
 const { searchAnswer, results } = useAnswer()
+
+// 搜索状态
+const searchText = ref('')
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(searchText, (text) => {
+  if (searchTimer) clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    fetchList(text)
+  }, 300)
+})
 
 // 表单状态
 const dialogVisible = ref(false)
@@ -64,6 +75,17 @@ onMounted(() => {
       <h2 class="section-title">已录入题目（{{ list.length }}）</h2>
       <el-button type="primary" :icon="Plus" @click="openCreate">新增题目</el-button>
     </div>
+
+    <el-input
+      v-model="searchText"
+      class="search-input"
+      placeholder="搜索已录入的题目..."
+      clearable
+    >
+      <template #prefix>
+        <el-icon><Search /></el-icon>
+      </template>
+    </el-input>
 
     <el-table
       v-loading="loading"
@@ -150,6 +172,10 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 16px;
+}
+
+.search-input {
   margin-bottom: 16px;
 }
 

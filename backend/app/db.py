@@ -34,13 +34,21 @@ def init_db() -> None:
 # ===== CRUD 操作 =====
 
 
-def list_questions(limit: int = 100, offset: int = 0) -> list[dict]:
-    """列出数据库中的题目（分页）。"""
+def list_questions(limit: int = 100, offset: int = 0, search: str = "") -> list[dict]:
+    """列出数据库中的题目（分页，支持搜索）。"""
     with get_connection() as conn:
-        rows = conn.execute(
-            "SELECT id, question, answer, indexes FROM questions ORDER BY id DESC LIMIT ? OFFSET ?",
-            (limit, offset),
-        ).fetchall()
+        if search:
+            rows = conn.execute(
+                "SELECT id, question, answer, indexes FROM questions "
+                "WHERE question LIKE ? OR answer LIKE ? OR indexes LIKE ? "
+                "ORDER BY id DESC LIMIT ? OFFSET ?",
+                (f"%{search}%", f"%{search}%", f"%{search}%", limit, offset),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT id, question, answer, indexes FROM questions ORDER BY id DESC LIMIT ? OFFSET ?",
+                (limit, offset),
+            ).fetchall()
     return [dict(r) for r in rows]
 
 

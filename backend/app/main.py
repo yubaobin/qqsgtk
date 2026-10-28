@@ -89,9 +89,9 @@ async def answer(request: Request):
 
 
 @app.get("/questions", response_model=QuestionListResponse)
-async def list_questions(limit: int = 100, offset: int = 0):
-    """列出数据库中的题目。"""
-    results = db.list_questions(limit, offset)
+async def list_questions(limit: int = 100, offset: int = 0, search: str = ""):
+    """列出数据库中的题目，支持搜索。"""
+    results = db.list_questions(limit, offset, search)
     return QuestionListResponse(results=[QuestionResponse(**r) for r in results])
 
 

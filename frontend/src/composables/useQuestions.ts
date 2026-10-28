@@ -13,11 +13,12 @@ export function useQuestions() {
   const error = ref<string | null>(null)
   const list = ref<QuestionItem[]>([])
 
-  async function fetchList() {
+  async function fetchList(search: string = "") {
     loading.value = true
     error.value = null
     try {
-      const data = await request<{ results: QuestionItem[] }>('/questions')
+      const query = search ? `?search=${encodeURIComponent(search)}` : ''
+      const data = await request<{ results: QuestionItem[] }>(`/questions${query}`)
       list.value = data.results ?? []
     } catch (e) {
       error.value = e instanceof Error ? e.message : '未知错误'
