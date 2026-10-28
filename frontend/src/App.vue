@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { ElMessage } from 'element-plus'
 import { Camera, Loading } from '@element-plus/icons-vue'
 import { useOCR } from './composables/useOCR'
 import { useAnswer } from './composables/useAnswer'
