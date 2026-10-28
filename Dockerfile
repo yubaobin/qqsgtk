@@ -53,19 +53,18 @@ COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 
 # 复制 Nginx 配置模板，根据 VITE_BASE_PATH 生成最终配置
 ARG VITE_BASE_PATH=/
-COPY deploy/nginx.conf.template /etc/nginx/conf.d/default.conf.template
-RUN if [ "$VITE_BASE_PATH" != "/" ]; then \
-      BASE_PATH="${VITE_BASE_PATH%/}/"; \
-      REDIRECT="location = / { return 302 ${VITE_BASE_PATH%/}/; }"; \
-    else \
-      BASE_PATH="/"; \
-      REDIRECT=""; \
+COPY deploy/nginx.conf.template /tmp/nginx.conf.template
+RUN BASE_PATH="/" && \
+    REDIRECT="" && \
+    if [ "$VITE_BASE_PATH" != "/" ] && [ -n "$VITE_BASE_PATH" ]; then \
+      BASE_PATH="$(echo "$VITE_BASE_PATH" | sed 's|/*$||')/"; \
+      REDIRECT="location = / { return 302 ${BASE_PATH}; }"; \
     fi && \
-    sed -i \
-      -e "s|__BASE_PATH__|${BASE_PATH}|g" \
-      -e "s|__ROOT_REDIRECT__|${REDIRECT}|" \
-      /etc/nginx/conf.d/default.conf.template && \
-    mv /etc/nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf
+    sed -e "s|__BASE_PATH__|${BASE_PATH}|g" \
+        -e "s|__ROOT_REDIRECT__|${REDIRECT}|" \
+        /tmp/nginx.conf.template > /etc/nginx/conf.d/default.conf && \
+    rm /tmp/nginx.conf.template && \
+    cat /etc/nginx/conf.d/default.conf
 
 # 删除 Nginx 默认站点配置（避免冲突）
 RUN rm -f /etc/nginx/sites-enabled/default
