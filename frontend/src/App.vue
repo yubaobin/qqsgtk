@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { RouterView, RouterLink } from 'vue-router'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import SettingsButton from './components/SettingsButton.vue'
 </script>
 
 <template>
   <el-config-provider :locale="zhCn" class="app">
     <header class="page-header">
       <h1>问题答案搜索</h1>
-      <nav class="nav">
-        <RouterLink to="/" class="nav-link" active-class="active">搜索</RouterLink>
-        <RouterLink to="/admin" class="nav-link" active-class="active">录入</RouterLink>
-      </nav>
+      <div class="header-right">
+        <nav class="nav">
+          <RouterLink to="/" class="nav-link" active-class="active">搜索</RouterLink>
+          <RouterLink to="/admin" class="nav-link" active-class="active">录入</RouterLink>
+        </nav>
+        <SettingsButton />
+      </div>
     </header>
 
     <RouterView />
@@ -43,6 +47,12 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 .nav {
   display: flex;
   gap: 8px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .nav-link {

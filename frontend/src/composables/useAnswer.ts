@@ -1,11 +1,13 @@
 import { ref } from 'vue'
 import type { AnswerItem } from '../types/answer'
 import { request } from '../utils/request'
+import { useSettings } from './useSettings'
 
 export function useAnswer() {
   const loading = ref(false)
   const error = ref<string | null>(null)
   const results = ref<AnswerItem[]>([])
+  const { settings } = useSettings()
 
   async function searchAnswer(question: string): Promise<void> {
     if (!question.trim()) {
@@ -20,7 +22,10 @@ export function useAnswer() {
     try {
       const data = await request<{ results: AnswerItem[] }>('/answer', {
         method: 'POST',
-        body: { question },
+        body: {
+          question,
+          similarity_threshold: settings.value.similarityThreshold,
+        },
       })
       results.value = data.results ?? []
     } catch (e) {

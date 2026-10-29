@@ -71,7 +71,14 @@ async def answer(request: Request):
     if not question:
         raise HTTPException(status_code=400, detail="问题不能为空")
 
-    results = find_answers(question)
+    similarity_threshold = body.get("similarity_threshold", 0.6)
+    try:
+        similarity_threshold = float(similarity_threshold)
+    except (TypeError, ValueError):
+        similarity_threshold = 0.6
+    similarity_threshold = max(0.0, min(1.0, similarity_threshold))
+
+    results = find_answers(question, similarity_threshold=similarity_threshold)
     return AnswerListResponse(
         results=[
             AnswerResponse(

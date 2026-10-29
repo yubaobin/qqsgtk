@@ -28,7 +28,7 @@ def _normalize(text: str) -> str:
     return re.sub(r"[^\w\u4e00-\u9fff]", "", text).lower()
 
 
-def find_answers(query: str, limit: int = 10) -> list[dict]:
+def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6) -> list[dict]:
     """
     在 question.json 和数据库中模糊匹配问题，返回所有匹配结果。
 
@@ -38,11 +38,12 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
     2. 精确匹配（原始文本相等）
     3. 归一化后精确匹配（忽略标点和大小写）
     4. 包含匹配（query 归一化文本是 question 归一化文本的子串，或反过来）
-    5. 相似度匹配（最长公共子串比例 >= 50%），按相似度排序
+    5. 相似度匹配（最长公共子串比例 >= similarity_threshold），按相似度排序
 
     Args:
         query: 查询文本（中文或拼音首字母）
         limit: 最多返回的结果数量
+        similarity_threshold: 相似度匹配阈值，0.0-1.0，默认 0.6
 
     Returns:
         匹配的 [{id, question, answer, indexes}, ...] 列表，可能为空
@@ -111,7 +112,7 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
         if not nq:
             continue
         score = _lcs_ratio(normalized_query, nq)
-        if score >= 0.5:
+        if score >= similarity_threshold:
             scored.append((score, item))
     scored.sort(key=lambda x: x[0], reverse=True)
     for _, item in scored:
