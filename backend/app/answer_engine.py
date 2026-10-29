@@ -30,9 +30,10 @@ def _normalize(text: str) -> str:
 
 def find_answers(query: str, limit: int = 10) -> list[dict]:
     """
-    在 question.json 和数据库中模糊匹配问题，合并去重后返回。
+    在 question.json 和数据库中模糊匹配问题，返回所有匹配结果。
 
-    两个数据源平等，不区分先后。匹配策略（按优先级，结果去重合并）:
+    两个数据源平等，不区分先后。相同题目可能因答案不同存在多条，不去重。
+    匹配策略（按优先级）:
     1. 索引匹配（query 是拼音首字母，匹配 indexes 字段）
     2. 精确匹配（原始文本相等）
     3. 归一化后精确匹配（忽略标点和大小写）
@@ -56,12 +57,14 @@ def find_answers(query: str, limit: int = 10) -> list[dict]:
         return []
 
     results: list[dict] = []
-    seen_questions: set[str] = set()
+    # 防止同一条记录在不同匹配策略中被重复添加（按数据源索引去重）
+    seen_keys: set[int] = set()
 
     def add(item: dict) -> None:
-        key = _normalize(item["question"])
-        if key not in seen_questions:
-            seen_questions.add(key)
+        # 用对象 id + question + answer 组合作为唯一键，同题不同答案的都会保留
+        key = id(item)
+        if key not in seen_keys:
+            seen_keys.add(key)
             results.append({
                 "id": item.get("id"),
                 "question": item["question"],
