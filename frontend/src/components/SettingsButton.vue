@@ -35,7 +35,7 @@ function handleReset() {
   />
 
   <el-dialog v-model="dialogVisible" title="全局配置" width="440px">
-    <el-form label-width="140px">
+    <el-form label-width="90px">
       <el-form-item label="相似度阈值">
         <div class="threshold-row">
           <el-slider
