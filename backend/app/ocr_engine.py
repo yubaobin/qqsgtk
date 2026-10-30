@@ -43,10 +43,9 @@ def _preprocess(image: Image.Image) -> np.ndarray:
     步骤:
     1. 转 RGB（排除 RGBA/灰度等格式干扰）
     2. 等比缩放到合适尺寸
-    3. 灰度化（减少颜色干扰）
-    4. 对比度增强
-    5. 锐化（让文字边缘更清晰）
-    6. 中值滤波去噪
+    3. 对比度增强（提升文字与背景反差）
+    4. 锐化（让文字边缘更清晰）
+    5. 中值滤波去噪
     """
     # 1. 转 RGB
     if image.mode != "RGB":
@@ -62,23 +61,17 @@ def _preprocess(image: Image.Image) -> np.ndarray:
         scale = MIN_IMAGE_SIDE / max_side
         image = image.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
 
-    # 3. 灰度化
-    gray = image.convert("L")
+    # 3. 对比度增强（1.5 倍）
+    enhancer = ImageEnhance.Contrast(image)
+    image = enhancer.enhance(1.5)
 
-    # 4. 对比度增强（1.5 倍）
-    enhancer = ImageEnhance.Contrast(gray)
-    gray = enhancer.enhance(1.5)
+    # 4. 锐化
+    image = image.filter(ImageFilter.SHARPEN)
 
-    # 5. 锐化
-    gray = gray.filter(ImageFilter.SHARPEN)
+    # 5. 中值滤波去噪（3x3 窗口）
+    image = image.filter(ImageFilter.MedianFilter(size=3))
 
-    # 6. 中值滤波去噪（3x3 窗口）
-    gray = gray.filter(ImageFilter.MedianFilter(size=3))
-
-    # 转回 RGB（PaddleOCR 期望 3 通道输入）
-    result = gray.convert("RGB")
-
-    return np.array(result)
+    return np.array(image)
 
 
 def recognize(image_bytes: bytes) -> list[str]:
