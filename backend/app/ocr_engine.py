@@ -11,7 +11,11 @@ _ocr_engine = None
 # 最大图片边长，超过则等比缩小（PaddleOCR 对超大图检测精度会下降）
 MAX_IMAGE_SIDE = 2048
 # 最小图片边长，小于则放大（太小文字模糊）
-MIN_IMAGE_SIDE = 400
+MIN_IMAGE_SIDE = 600
+# 对比度增强系数，1.0=不增强，>1=增强，<1=减弱
+CONTRAST_FACTOR = 1.8
+# 锐化强度，0=不锐化，1=标准锐化，>1=更强
+SHARPEN_FACTOR = 1.3
 
 
 def get_ocr_engine():
@@ -61,12 +65,14 @@ def _preprocess(image: Image.Image) -> np.ndarray:
         scale = MIN_IMAGE_SIDE / max_side
         image = image.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
 
-    # 3. 对比度增强（1.5 倍）
+    # 3. 对比度增强
     enhancer = ImageEnhance.Contrast(image)
-    image = enhancer.enhance(1.5)
+    image = enhancer.enhance(CONTRAST_FACTOR)
 
     # 4. 锐化
-    image = image.filter(ImageFilter.SHARPEN)
+    if SHARPEN_FACTOR > 0:
+        for _ in range(int(SHARPEN_FACTOR)):
+            image = image.filter(ImageFilter.SHARPEN)
 
     # 5. 中值滤波去噪（3x3 窗口）
     image = image.filter(ImageFilter.MedianFilter(size=3))
