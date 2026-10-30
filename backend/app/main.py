@@ -7,7 +7,7 @@ from app.schemas import (
     OCRResponse, HealthResponse, AnswerResponse, AnswerListResponse,
     QuestionCreate, QuestionUpdate, QuestionResponse, QuestionListResponse,
 )
-from app.ocr_engine import recognize
+from app.ocr_engine import recognize, correct_ocr_text
 from app.answer_engine import find_answers
 from app import db
 
@@ -56,7 +56,11 @@ async def ocr(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"识别失败: {e}")
 
     text = "\n".join(lines)
-    return OCRResponse(text=text, lines=lines)
+    
+    # OCR 后处理纠错：用题库匹配修正识别错误
+    corrected_text = correct_ocr_text(text)
+    
+    return OCRResponse(text=corrected_text, lines=lines)
 
 
 @app.post("/answer", response_model=AnswerListResponse)
