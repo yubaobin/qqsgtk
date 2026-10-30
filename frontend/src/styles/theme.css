@@ -163,14 +163,19 @@ body {
   transform: translateY(2px);
 }
 
-/* 默认按钮 - 软阴影 */
+/* 默认按钮 - 3D 阴影 */
 .el-button--default {
-  box-shadow: var(--ds-shadow-sm);
+  box-shadow: 0 5px 0 0 var(--ds-shadow-btn);
 }
 
 .el-button--default:hover {
-  box-shadow: var(--ds-shadow-base);
+  box-shadow: 0 6px 0 0 var(--ds-shadow-btn);
   transform: translateY(-1px);
+}
+
+.el-button--default:active {
+  box-shadow: 0 1px 0 0 var(--ds-shadow-btn);
+  transform: translateY(2px);
 }
 
 /* 输入框 - 药丸形 */
@@ -192,8 +197,6 @@ body {
 
 /* 表格 */
 .el-table {
-  border-radius: var(--ds-radius-sm);
-  overflow: hidden;
   --el-table-border-color: var(--ds-border-lighter);
   --el-table-header-bg-color: var(--ds-bg-secondary);
   --el-table-header-text-color: var(--ds-text);
@@ -205,6 +208,13 @@ body {
   font-weight: 600;
 }
 
+.el-table td.el-table__cell {
+  padding: 0;
+}
+.el-table td.el-table__cell .cell {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 /* 卡片容器 */
 .el-card {
   border-radius: var(--ds-radius-lg);
