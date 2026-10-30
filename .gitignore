@@ -4,3 +4,7 @@
 
 # SQLite 数据库（通过 volume 持久化，不入库）
 backend/data/*.db
+
+# 本地测试文件
+test_ocr.py
+test-pic/
