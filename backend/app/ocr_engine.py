@@ -1,11 +1,17 @@
 import io
 import logging
 
-from PIL import Image
+import numpy as np
+from PIL import Image, ImageEnhance, ImageFilter
 
 logger = logging.getLogger(__name__)
 
 _ocr_engine = None
+
+# 最大图片边长，超过则等比缩小（PaddleOCR 对超大图检测精度会下降）
+MAX_IMAGE_SIDE = 2048
+# 最小图片边长，小于则放大（太小文字模糊）
+MIN_IMAGE_SIDE = 400
 
 
 def get_ocr_engine():
@@ -14,9 +20,65 @@ def get_ocr_engine():
     if _ocr_engine is None:
         from paddleocr import PaddleOCR
         logger.info("Initializing PaddleOCR (lang=ch)...")
-        _ocr_engine = PaddleOCR(use_angle_cls=True, lang="ch")
+        # use_angle_cls=True: 识别旋转/倾斜文字
+        # det_db_box_thresh=0.3: 降低检测阈值，捕获更多文字区域（默认 0.5）
+        # det_db_unclip_ratio=1.8: 扩大检测框，避免边缘文字被裁剪（默认 1.5）
+        # det_limit_side_len: 限制检测输入图片边长，提升检测稳定性
+        _ocr_engine = PaddleOCR(
+            use_angle_cls=True,
+            lang="ch",
+            det_db_box_thresh=0.3,
+            det_db_unclip_ratio=1.8,
+            det_limit_side_len=2048,
+            drop_score=0.3,
+        )
         logger.info("PaddleOCR initialized.")
     return _ocr_engine
+
+
+def _preprocess(image: Image.Image) -> np.ndarray:
+    """
+    图片预处理，提升 OCR 识别精度。
+
+    步骤:
+    1. 转 RGB（排除 RGBA/灰度等格式干扰）
+    2. 等比缩放到合适尺寸
+    3. 灰度化（减少颜色干扰）
+    4. 对比度增强
+    5. 锐化（让文字边缘更清晰）
+    6. 中值滤波去噪
+    """
+    # 1. 转 RGB
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+
+    # 2. 等比缩放
+    w, h = image.size
+    max_side = max(w, h)
+    if max_side > MAX_IMAGE_SIDE:
+        scale = MAX_IMAGE_SIDE / max_side
+        image = image.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+    elif max_side < MIN_IMAGE_SIDE:
+        scale = MIN_IMAGE_SIDE / max_side
+        image = image.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+
+    # 3. 灰度化
+    gray = image.convert("L")
+
+    # 4. 对比度增强（1.5 倍）
+    enhancer = ImageEnhance.Contrast(gray)
+    gray = enhancer.enhance(1.5)
+
+    # 5. 锐化
+    gray = gray.filter(ImageFilter.SHARPEN)
+
+    # 6. 中值滤波去噪（3x3 窗口）
+    gray = gray.filter(ImageFilter.MedianFilter(size=3))
+
+    # 转回 RGB（PaddleOCR 期望 3 通道输入）
+    result = gray.convert("RGB")
+
+    return np.array(result)
 
 
 def recognize(image_bytes: bytes) -> list[str]:
@@ -34,12 +96,10 @@ def recognize(image_bytes: bytes) -> list[str]:
         OSError: If the image cannot be opened (corrupt or non-image).
         Exception: For other OCR failures.
     """
-    import numpy as np
-
     engine = get_ocr_engine()
 
     image = Image.open(io.BytesIO(image_bytes))
-    image_array = np.array(image)
+    image_array = _preprocess(image)
 
     result = engine.ocr(image_array, cls=True)
 
