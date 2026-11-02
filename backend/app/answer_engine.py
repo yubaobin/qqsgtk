@@ -30,9 +30,10 @@ def _normalize(text: str) -> str:
 
 def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6) -> list[dict]:
     """
-    在 question.json 和数据库中模糊匹配问题，返回所有匹配结果。
+    在数据库和 question.json 中模糊匹配问题，返回所有匹配结果。
 
-    两个数据源平等，不区分先后。相同题目可能因答案不同存在多条，不去重。
+    数据源优先级：先查 SQLite 数据库，有匹配结果则直接返回；
+    无结果时再查 question.json。相同题目可能因答案不同存在多条，不去重。
     匹配策略（按优先级）:
     纯拼音首字母查询: 索引匹配优先，找到则直接返回
     含中文查询:
@@ -50,8 +51,6 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
     Returns:
         匹配的 [{id, question, answer, indexes}, ...] 列表，可能为空
     """
-    # 合并 json 和数据库数据
-    data = get_qa_data() + db.get_all_questions()
     normalized_query = _normalize(query)
     # 将查询转换为小写格式，保留字母和数字（indexes 可能包含数字）
     query_indexes = re.sub(r'[^a-zA-Z0-9]', '', query).lower()
@@ -59,12 +58,32 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
     if not normalized_query and not query_indexes:
         return []
 
+    # 先查 SQLite 数据库，有结果则直接返回
+    db_data = db.get_all_questions()
+    results = _match_in_data(db_data, query, normalized_query, query_indexes, limit, similarity_threshold)
+    if results:
+        return results
+
+    # 数据库无结果，再查 question.json
+    json_data = get_qa_data()
+    results = _match_in_data(json_data, query, normalized_query, query_indexes, limit, similarity_threshold)
+    return results
+
+
+def _match_in_data(
+    data: list[dict],
+    query: str,
+    normalized_query: str,
+    query_indexes: str,
+    limit: int,
+    similarity_threshold: float,
+) -> list[dict]:
+    """在单个数据源上执行完整匹配流程，返回匹配结果列表。"""
     results: list[dict] = []
-    # 防止同一条记录在不同匹配策略中被重复添加（按数据源索引去重）
     seen_keys: set[int] = set()
 
     def add(item: dict) -> None:
-        # 用对象 id + question + answer 组合作为唯一键，同题不同答案的都会保留
+        # 用对象 id 作为唯一键，同一条记录不被重复添加
         key = id(item)
         if key not in seen_keys:
             seen_keys.add(key)
@@ -88,17 +107,17 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
             return results[:limit]
 
     # 文本匹配（含中文查询时优先，纯索引查询无结果时也执行）
-    # 2. 精确匹配
+    # 1. 精确匹配
     for item in data:
         if item["question"] == query:
             add(item)
 
-    # 3. 归一化后精确匹配
+    # 2. 归一化后精确匹配
     for item in data:
         if _normalize(item["question"]) == normalized_query:
             add(item)
 
-    # 4. 包含匹配（双向）
+    # 3. 包含匹配（双向）
     for item in data:
         nq = _normalize(item["question"])
         if not nq:
@@ -106,7 +125,7 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
         if normalized_query in nq or nq in normalized_query:
             add(item)
 
-    # 5. 相似度匹配（按分数排序，取 top-N）
+    # 4. 相似度匹配（按分数排序，取 top-N）
     scored: list[tuple[float, dict]] = []
     for item in data:
         nq = _normalize(item["question"])
@@ -119,7 +138,7 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
     for _, item in scored:
         add(item)
 
-    # 6. 索引匹配（兜底：含中文查询且文本匹配无结果时，尝试索引匹配）
+    # 5. 索引匹配（兜底：含中文查询且文本匹配无结果时，尝试索引匹配）
     if has_chinese and query_indexes and not results:
         for item in data:
             item_indexes = item.get("indexes", "").lower()
