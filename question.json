@@ -8316,7 +8316,7 @@
 		"id": 18554
 	},
 	{
-		"answer": "3年",
+		"answer": "1年",
 		"indexes": "azgsfgdgfyxgsfqrdgfzgssljnnbnzr",
 		"question": "按照公司法规定，股份有限公司发起人的股份在公司设立几年内不能转让？",
 		"id": 18555
@@ -34606,5 +34606,11 @@
 		"indexes": "xlmjmcgxlbqzydkdsls",
 		"question": "西凉猛将马超归降刘备前，主要对抗的势力是？",
 		"id": 24379
+	},
+	{
+		"answer": "李严",
+		"indexes": "lbzbdctgsclzglwhtflnwdcfzls",
+		"question": "刘备在白帝城托孤时，除了诸葛亮外，还托付了哪位大臣辅佐刘禅？",
+		"id": 24380
 	}
 ]
