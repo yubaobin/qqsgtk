@@ -34,11 +34,13 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
 
     两个数据源平等，不区分先后。相同题目可能因答案不同存在多条，不去重。
     匹配策略（按优先级）:
-    1. 索引匹配（query 是拼音首字母，匹配 indexes 字段）
-    2. 精确匹配（原始文本相等）
-    3. 归一化后精确匹配（忽略标点和大小写）
-    4. 包含匹配（query 归一化文本是 question 归一化文本的子串，或反过来）
-    5. 相似度匹配（最长公共子串比例 >= similarity_threshold），按相似度排序
+    纯拼音首字母查询: 索引匹配优先，找到则直接返回
+    含中文查询:
+      1. 精确匹配（原始文本相等）
+      2. 归一化后精确匹配（忽略标点和大小写）
+      3. 包含匹配（query 归一化文本是 question 归一化文本的子串，或反过来）
+      4. 相似度匹配（最长公共子串比例 >= similarity_threshold），按相似度排序
+      5. 索引匹配（兜底：文本匹配无结果时，尝试拼音首字母匹配）
 
     Args:
         query: 查询文本（中文或拼音首字母）
@@ -73,20 +75,19 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
                 "indexes": item.get("indexes"),
             })
 
-    # 1. 索引匹配（拼音首字母模糊匹配）- 最高优先级
-    # 支持部分匹配：如 "zsx" 可匹配 "abczsxdefg"，"184" 可匹配 "ab184cd"
-    if query_indexes:
+    # 判断查询是否包含中文
+    has_chinese = any('\u4e00' <= c <= '\u9fff' for c in query)
+
+    if not has_chinese and query_indexes:
+        # 纯拼音首字母/数字查询：索引匹配优先，找到则直接返回
         for item in data:
             item_indexes = item.get("indexes", "").lower()
             if item_indexes and query_indexes in item_indexes:
                 add(item)
+        if results:
+            return results[:limit]
 
-    # 如果索引匹配已找到结果，且查询是纯字母数字（索引格式），则不再进行文本匹配
-    skip_text_matching = bool(query_indexes) and len(results) > 0 and not any('\u4e00' <= c <= '\u9fff' for c in query)
-
-    if skip_text_matching:
-        return results[:limit]
-
+    # 文本匹配（含中文查询时优先，纯索引查询无结果时也执行）
     # 2. 精确匹配
     for item in data:
         if item["question"] == query:
@@ -117,6 +118,13 @@ def find_answers(query: str, limit: int = 10, similarity_threshold: float = 0.6)
     scored.sort(key=lambda x: x[0], reverse=True)
     for _, item in scored:
         add(item)
+
+    # 6. 索引匹配（兜底：含中文查询且文本匹配无结果时，尝试索引匹配）
+    if has_chinese and query_indexes and not results:
+        for item in data:
+            item_indexes = item.get("indexes", "").lower()
+            if item_indexes and query_indexes in item_indexes:
+                add(item)
 
     return results[:limit]
 
