@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
@@ -31,6 +32,7 @@ def startup():
 
 
 ALLOWED_IMAGE_TYPES = {"image/png", "image/jpeg", "image/jpg", "image/webp", "image/bmp"}
+MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -47,8 +49,12 @@ async def ocr(file: UploadFile = File(...)):
     if not image_bytes:
         raise HTTPException(status_code=400, detail="文件内容为空")
 
+    if len(image_bytes) > MAX_IMAGE_SIZE:
+        raise HTTPException(status_code=400, detail="图片不能超过 10MB")
+
     try:
-        lines = recognize(image_bytes)
+        # OCR 是 CPU 密集型，放入线程池避免阻塞事件循环
+        lines = await asyncio.to_thread(recognize, image_bytes)
     except OSError as e:
         raise HTTPException(status_code=400, detail=f"图片文件损坏或无法读取: {e}")
     except Exception as e:
@@ -56,10 +62,10 @@ async def ocr(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"识别失败: {e}")
 
     text = "\n".join(lines)
-    
+
     # OCR 后处理纠错：用题库匹配修正识别错误
-    corrected_text = correct_ocr_text(text)
-    
+    corrected_text = await asyncio.to_thread(correct_ocr_text, text)
+
     return OCRResponse(text=corrected_text, lines=lines)
 
 

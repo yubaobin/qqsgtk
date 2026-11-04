@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import type { OCRResponse } from '../types/ocr'
 import { request } from '../utils/request'
+import { compressImage } from '../utils/imageCompress'
 
 export function useOCR() {
   const loading = ref(false)
@@ -11,8 +12,9 @@ export function useOCR() {
     error.value = null
 
     try {
+      const compressed = await compressImage(file)
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', compressed)
 
       return await request<OCRResponse>('/ocr', {
         method: 'POST',

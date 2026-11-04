@@ -8,14 +8,14 @@ logger = logging.getLogger(__name__)
 
 _ocr_engine = None
 
-# 最大图片边长，超过则等比缩小（PaddleOCR 对超大图检测精度会下降）
-MAX_IMAGE_SIDE = 2048
+# 最大图片边长，超过则等比缩小（1核2G 服务器需控制处理分辨率）
+MAX_IMAGE_SIDE = 1280
 # 最小图片边长，小于则放大（太小文字模糊）
 MIN_IMAGE_SIDE = 600
 # 对比度增强系数，1.0=不增强，>1=增强，<1=减弱
-CONTRAST_FACTOR = 1.8
+CONTRAST_FACTOR = 1.5
 # 锐化强度，0=不锐化，1=标准锐化，>1=更强
-SHARPEN_FACTOR = 1.3
+SHARPEN_FACTOR = 1
 
 
 def get_ocr_engine():
@@ -24,16 +24,14 @@ def get_ocr_engine():
     if _ocr_engine is None:
         from paddleocr import PaddleOCR
         logger.info("Initializing PaddleOCR (lang=ch)...")
-        # use_angle_cls=True: 识别旋转/倾斜文字
-        # det_db_box_thresh=0.3: 降低检测阈值，捕获更多文字区域（默认 0.5）
-        # det_db_unclip_ratio=1.8: 扩大检测框，避免边缘文字被裁剪（默认 1.5）
-        # det_limit_side_len: 限制检测输入图片边长，提升检测稳定性
+        # use_angle_cls=False: 截图通常正向，关闭角度分类省一次推理
+        # det_limit_side_len=1280: 降低检测分辨率，1核CPU上大幅提速
         _ocr_engine = PaddleOCR(
-            use_angle_cls=True,
+            use_angle_cls=False,
             lang="ch",
             det_db_box_thresh=0.3,
-            det_db_unclip_ratio=1.8,
-            det_limit_side_len=2048,
+            det_db_unclip_ratio=1.6,
+            det_limit_side_len=1280,
             drop_score=0.3,
         )
         logger.info("PaddleOCR initialized.")
@@ -49,7 +47,6 @@ def _preprocess(image: Image.Image) -> np.ndarray:
     2. 等比缩放到合适尺寸
     3. 对比度增强（提升文字与背景反差）
     4. 锐化（让文字边缘更清晰）
-    5. 中值滤波去噪
     """
     # 1. 转 RGB
     if image.mode != "RGB":
@@ -60,10 +57,10 @@ def _preprocess(image: Image.Image) -> np.ndarray:
     max_side = max(w, h)
     if max_side > MAX_IMAGE_SIDE:
         scale = MAX_IMAGE_SIDE / max_side
-        image = image.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+        image = image.resize((int(w * scale), int(h * scale)), Image.BILINEAR)
     elif max_side < MIN_IMAGE_SIDE:
         scale = MIN_IMAGE_SIDE / max_side
-        image = image.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+        image = image.resize((int(w * scale), int(h * scale)), Image.BILINEAR)
 
     # 3. 对比度增强
     enhancer = ImageEnhance.Contrast(image)
@@ -73,9 +70,6 @@ def _preprocess(image: Image.Image) -> np.ndarray:
     if SHARPEN_FACTOR > 0:
         for _ in range(int(SHARPEN_FACTOR)):
             image = image.filter(ImageFilter.SHARPEN)
-
-    # 5. 中值滤波去噪（3x3 窗口）
-    image = image.filter(ImageFilter.MedianFilter(size=3))
 
     return np.array(image)
 
@@ -100,7 +94,7 @@ def recognize(image_bytes: bytes) -> list[str]:
     image = Image.open(io.BytesIO(image_bytes))
     image_array = _preprocess(image)
 
-    result = engine.ocr(image_array, cls=True)
+    result = engine.ocr(image_array, cls=False)
 
     if not result:
         return []
@@ -116,20 +110,26 @@ def recognize(image_bytes: bytes) -> list[str]:
     return lines
 
 
+_correction_questions: list[str] | None = None
+
+
 def _load_questions_for_correction() -> list[str]:
-    """加载题库中的问题列表，用于 OCR 后处理纠错。"""
+    """加载题库中的问题列表，用于 OCR 后处理纠错（缓存，仅加载一次）。"""
+    global _correction_questions
+    if _correction_questions is not None:
+        return _correction_questions
+
     import json
     from pathlib import Path
-    
+
     questions: list[str] = []
-    
-    # 加载 question.json
     json_path = Path(__file__).resolve().parent.parent.parent / "question.json"
     if json_path.exists():
         with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
             questions.extend(item.get("question", "") for item in data)
-    
+
+    _correction_questions = questions
     return questions
 
 
