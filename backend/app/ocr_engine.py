@@ -8,14 +8,14 @@ logger = logging.getLogger(__name__)
 
 _ocr_engine = None
 
-# 最大图片边长，超过则等比缩小（1核2G 服务器需控制处理分辨率）
+# 最大图片边长，超过则等比缩小（1 核 2G 服务器需控制处理分辨率）
 MAX_IMAGE_SIDE = 1280
-# 最小图片边长，小于则放大（太小文字模糊）
-MIN_IMAGE_SIDE = 600
+# 最小短边长度，短边小于此值则放大（保证文字高度足够）
+MIN_SHORT_SIDE = 200
 # 对比度增强系数，1.0=不增强，>1=增强，<1=减弱
-CONTRAST_FACTOR = 1.5
+CONTRAST_FACTOR = 1.0
 # 锐化强度，0=不锐化，1=标准锐化，>1=更强
-SHARPEN_FACTOR = 1
+SHARPEN_FACTOR = 0
 
 
 def get_ocr_engine():
@@ -25,7 +25,7 @@ def get_ocr_engine():
         from paddleocr import PaddleOCR
         logger.info("Initializing PaddleOCR (lang=ch)...")
         # use_angle_cls=False: 截图通常正向，关闭角度分类省一次推理
-        # det_limit_side_len=1280: 降低检测分辨率，1核CPU上大幅提速
+        # det_limit_side_len=1280: 降低检测分辨率，1 核 CPU 上大幅提速
         _ocr_engine = PaddleOCR(
             use_angle_cls=False,
             lang="ch",
@@ -40,33 +40,43 @@ def get_ocr_engine():
 
 def _preprocess(image: Image.Image) -> np.ndarray:
     """
-    图片预处理，提升 OCR 识别精度。
-
-    步骤:
-    1. 转 RGB（排除 RGBA/灰度等格式干扰）
-    2. 等比缩放到合适尺寸
-    3. 对比度增强（提升文字与背景反差）
-    4. 锐化（让文字边缘更清晰）
+    图片预处理：转 RGB + 按短边缩放 + 自动反色。
+    
+    截图类 OCR 场景：不做额外增强（减少 CPU 开销）。
+    短边 < MIN_SHORT_SIDE 时放大，保证文字高度足够。
+    自动检测黑底白字并反转为白底黑字（PaddleOCR 训练数据是白底黑字）。
     """
     # 1. 转 RGB
     if image.mode != "RGB":
         image = image.convert("RGB")
 
-    # 2. 等比缩放
+    # 2. 自动反色：检测黑底白字并反转
+    # 方法：计算平均亮度，暗图 (>128 平均像素值) 反色
+    gray = image.convert("L")
+    avg_brightness = sum(gray.getdata()) / len(gray.getdata())
+    if avg_brightness < 100:  # 暗图，假设是黑底白字
+        from PIL import ImageOps
+        image = ImageOps.invert(image)
+        logger.debug(f"检测到黑底白字 (avg={avg_brightness:.1f})，已反色")
+
+    # 3. 按短边缩放（保证文字高度）
     w, h = image.size
-    max_side = max(w, h)
-    if max_side > MAX_IMAGE_SIDE:
+    short_side = min(w, h)
+    if short_side < MIN_SHORT_SIDE:
+        scale = MIN_SHORT_SIDE / short_side
+        image = image.resize((int(w * scale), int(h * scale)), Image.BILINEAR)
+    elif max(w, h) > MAX_IMAGE_SIDE:
+        # 仅当长边超大时才缩小
+        max_side = max(w, h)
         scale = MAX_IMAGE_SIDE / max_side
         image = image.resize((int(w * scale), int(h * scale)), Image.BILINEAR)
-    elif max_side < MIN_IMAGE_SIDE:
-        scale = MIN_IMAGE_SIDE / max_side
-        image = image.resize((int(w * scale), int(h * scale)), Image.BILINEAR)
 
-    # 3. 对比度增强
-    enhancer = ImageEnhance.Contrast(image)
-    image = enhancer.enhance(CONTRAST_FACTOR)
+    # 4. 对比度增强（默认不增强）
+    if CONTRAST_FACTOR != 1.0:
+        enhancer = ImageEnhance.Contrast(image)
+        image = enhancer.enhance(CONTRAST_FACTOR)
 
-    # 4. 锐化
+    # 5. 锐化（默认不锐化）
     if SHARPEN_FACTOR > 0:
         for _ in range(int(SHARPEN_FACTOR)):
             image = image.filter(ImageFilter.SHARPEN)
