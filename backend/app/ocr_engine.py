@@ -8,33 +8,35 @@ logger = logging.getLogger(__name__)
 
 _ocr_engine = None
 
-# 最大图片边长，超过则等比缩小（1 核 2G 服务器需控制处理分辨率）
-MAX_IMAGE_SIDE = 960
+# 最大图片边长，超过则等比缩小（1 核 2G 服务器需严格控制分辨率）
+MAX_IMAGE_SIDE = 640
 # 最小短边长度，短边小于此值则放大（保证文字高度足够）
-MIN_SHORT_SIDE = 64
+MIN_SHORT_SIDE = 48
 
 
 def get_ocr_engine():
     """Lazy-load RapidOCR singleton. Loaded once, reused across requests.
     
-    RapidOCR 是 PaddleOCR 的轻量级分支，内存占用约 300MB（PaddleOCR 的 1/5），
+    RapidOCR 是 PaddleOCR 的轻量级分支，内存占用约 200MB，
     速度提升 3-5 倍，精度相当。
     """
     global _ocr_engine
     if _ocr_engine is None:
         from rapidocr_onnxruntime import RapidOCR
-        logger.info("Initializing RapidOCR (lang=ch)...")
-        # det_limit_side_len=960: 降低检测分辨率
+        logger.info("Initializing RapidOCR (lang=ch, low-memory mode)...")
+        # det_limit_side_len=640: 极低检测分辨率，省内存
+        # det_db_box_thresh=0.5: 提高阈值，减少检测框数量
         # cls=False: 关闭角度分类
         # rec_batch_num=1: 单批处理，省内存
         _ocr_engine = RapidOCR(
-            det_limit_side_len=960,
-            det_db_box_thresh=0.3,
+            det_limit_side_len=640,
+            det_db_box_thresh=0.5,
+            det_db_unclip_ratio=1.5,
             cls=False,
             rec_batch_num=1,
             use_cuda=False,
         )
-        logger.info("RapidOCR initialized.")
+        logger.info("RapidOCR initialized (low-memory mode).")
     return _ocr_engine
 
 

@@ -23,6 +23,7 @@ RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debia
     && sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
 
 # 安装系统依赖：ONNX Runtime + Pillow 运行库 + Nginx + supervisord
+# 添加 swap 支持（小内存服务器必需）
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libgomp1 \
         libglib2.0-0 \
@@ -33,7 +34,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libgdiplus \
         nginx \
         supervisor \
+        bzip2 \
     && rm -rf /var/lib/apt/lists/*
+
+# 创建启动脚本，初始化 swap（防止 OOM）
+COPY <<-'EOF' /usr/local/bin/init-swap.sh
+#!/bin/bash
+set -e
+SWAP_FILE="${SWAP_FILE:-/swapfile}"
+SWAP_SIZE="${SWAP_SIZE:-512M}"
+
+if [ ! -f "$SWAP_FILE" ]; then
+    echo "Creating swap file: $SWAP_FILE ($SWAP_SIZE)"
+    dd if=/dev/zero of="$SWAP_FILE" bs=1M count=512 status=progress
+    chmod 600 "$SWAP_FILE"
+    mkswap "$SWAP_FILE" 2>/dev/null || true
+fi
+swapon "$SWAP_FILE" 2>/dev/null || echo "Warning: Could not enable swap"
+echo "Swap enabled: $(swapon --show)"
+EOF
+RUN chmod +x /usr/local/bin/init-swap.sh
 
 WORKDIR /app
 
