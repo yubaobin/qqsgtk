@@ -22,7 +22,7 @@ LABEL description="OCR Q&A - frontend + backend in one container"
 RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources \
     && sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
 
-# 安装系统依赖：PaddlePaddle 运行库 + Nginx + supervisord
+# 安装系统依赖：ONNX Runtime + Pillow 运行库 + Nginx + supervisord
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libgomp1 \
         libglib2.0-0 \
@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libxext6 \
         libxrender-dev \
         libgl1 \
+        libgdiplus \
         nginx \
         supervisor \
     && rm -rf /var/lib/apt/lists/*
