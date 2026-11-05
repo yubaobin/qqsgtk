@@ -15,10 +15,10 @@ mkdir -p "$PID_DIR"
 # 如果虚拟环境不存在，则回退到 conda Python
 if [ -f "$BACKEND_DIR/.venv/bin/python" ]; then
     PYTHON="$BACKEND_DIR/.venv/bin/python"
-    log "使用虚拟环境 Python: $PYTHON"
+    info "使用虚拟环境 Python: $PYTHON"
 else
     PYTHON="/opt/miniconda3/bin/python"
-    log "使用 conda Python: $PYTHON (请确保已安装 numpy<2.0)"
+    info "使用 conda Python: $PYTHON (请确保已安装 numpy<2.0)"
 fi
 
 RED='\033[0;31m'
@@ -26,13 +26,13 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-log()   { echo -e "${GREEN}[start.sh]${NC} $1"; }
+info()  { echo -e "${GREEN}[start.sh]${NC} $1"; }
 warn()  { echo -e "${YELLOW}[start.sh]${NC} $1"; }
 error() { echo -e "${RED}[start.sh]${NC} $1"; }
 
 check_frontend_deps() {
     if [ ! -d "$FRONTEND_DIR/node_modules" ]; then
-        log "安装 frontend 依赖..."
+        info "安装 frontend 依赖..."
         (cd "$FRONTEND_DIR" && npm install)
     fi
 }
@@ -43,13 +43,13 @@ start_backend() {
     sleep 1
     rm -f "$BACKEND_PID_FILE"
     
-    log "启动 backend (端口 8000)..."
+    info "启动 backend (端口 8000)..."
     cd "$BACKEND_DIR"
     $PYTHON -m uvicorn app.main:app --host 0.0.0.0 --port 8000 &
     echo $! > "$BACKEND_PID_FILE"
     cd "$ROOT_DIR"
     sleep 2
-    log "backend 已启动 (PID: $(cat "$BACKEND_PID_FILE"))"
+    info "backend 已启动 (PID: $(cat "$BACKEND_PID_FILE"))"
 }
 
 start_frontend() {
@@ -59,13 +59,13 @@ start_frontend() {
     
     check_frontend_deps
     
-    log "启动 frontend (端口 5173)..."
+    info "启动 frontend (端口 5173)..."
     cd "$FRONTEND_DIR"
     npm run dev &
     echo $! > "$FRONTEND_PID_FILE"
     cd "$ROOT_DIR"
     sleep 2
-    log "frontend 已启动 (PID: $(cat "$FRONTEND_PID_FILE"))"
+    info "frontend 已启动 (PID: $(cat "$FRONTEND_PID_FILE"))"
 }
 
 stop_service() {
@@ -77,16 +77,16 @@ stop_service() {
         pid=$(cat "$pid_file")
         if kill -0 "$pid" 2>/dev/null; then
             kill "$pid"
-            log "停止 $name (PID: $pid)"
+            info "停止 $name (PID: $pid)"
         fi
         rm -f "$pid_file"
     fi
     
     # 通过进程名停止（确保清理手动启动的进程）
     if [ "$name" = "backend" ]; then
-        pkill -f "uvicorn app.main:app" 2>/dev/null && log "已停止所有 $name 进程" || true
+        pkill -f "uvicorn app.main:app" 2>/dev/null && info "已停止所有 $name 进程" || true
     elif [ "$name" = "frontend" ]; then
-        pkill -f "vite" 2>/dev/null && log "已停止所有 $name 进程" || true
+        pkill -f "vite" 2>/dev/null && info "已停止所有 $name 进程" || true
     fi
 }
 
@@ -95,7 +95,7 @@ show_status() {
     for name in backend frontend; do
         local pid_file="$PID_DIR/$name.pid"
         if [ -f "$pid_file" ] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
-            log "$name: 运行中 (PID: $(cat "$pid_file"))"
+            info "$name: 运行中 (PID: $(cat "$pid_file"))"
         else
             warn "$name: 未运行"
         fi
@@ -103,27 +103,27 @@ show_status() {
 }
 
 docker_deploy() {
-    log "开始构建并启动 Docker 容器..."
+    info "开始构建并启动 Docker 容器..."
     cd "$ROOT_DIR"
     docker-compose build
     docker-compose up -d
-    log ""
-    log "✅ Docker 容器已启动："
-    log "   前端页面：http://localhost:8001"
-    log "   API 文档：http://localhost:8001/api/docs"
-    log "   健康检查：http://localhost:8001/api/health"
+    info ""
+    info "✅ Docker 容器已启动："
+    info "   前端页面：http://localhost:8001"
+    info "   API 文档：http://localhost:8001/api/docs"
+    info "   健康检查：http://localhost:8001/api/health"
 }
 
 docker_stop() {
     cd "$ROOT_DIR"
     docker-compose down
-    log "Docker 容器已停止"
+    info "Docker 容器已停止"
 }
 
 docker_restart() {
     cd "$ROOT_DIR"
     docker-compose restart
-    log "Docker 容器已重启"
+    info "Docker 容器已重启"
 }
 
 docker_status() {
@@ -132,7 +132,7 @@ docker_status() {
 }
 
 cleanup() {
-    log "正在停止所有服务..."
+    info "正在停止所有服务..."
     stop_service "backend" "$BACKEND_PID_FILE"
     stop_service "frontend" "$FRONTEND_PID_FILE"
     exit 0
@@ -143,33 +143,33 @@ case "${1:-start}" in
         trap cleanup INT TERM
         start_backend
         start_frontend
-        log ""
-        log "✅ 服务已启动："
-        log "   后端 API:  http://localhost:8000"
-        log "   前端页面：http://localhost:5173"
-        log "   API 文档：http://localhost:8000/docs"
-        log ""
-        log "按 Ctrl+C 停止所有服务"
+        info ""
+        info "✅ 服务已启动："
+        info "   后端 API:  http://localhost:8000"
+        info "   前端页面：http://localhost:5173"
+        info "   API 文档：http://localhost:8000/docs"
+        info ""
+        info "按 Ctrl+C 停止所有服务"
         wait
         ;;
     stop)
         stop_service "backend" "$BACKEND_PID_FILE"
         stop_service "frontend" "$FRONTEND_PID_FILE"
-        log "所有服务已停止"
+        info "所有服务已停止"
         ;;
     restart)
-        log "正在重启服务..."
+        info "正在重启服务..."
         stop_service "backend" "$BACKEND_PID_FILE"
         stop_service "frontend" "$FRONTEND_PID_FILE"
         sleep 2
         start_backend
         start_frontend
-        log ""
-        log "✅ 服务已重启："
-        log "   后端 API:  http://localhost:8000"
-        log "   前端页面：http://localhost:5173"
-        log ""
-        log "按 Ctrl+C 停止所有服务"
+        info ""
+        info "✅ 服务已重启："
+        info "   后端 API:  http://localhost:8000"
+        info "   前端页面：http://localhost:5173"
+        info ""
+        info "按 Ctrl+C 停止所有服务"
         wait
         ;;
     status)
