@@ -11,8 +11,15 @@ FRONTEND_PID_FILE="$PID_DIR/frontend.pid"
 
 mkdir -p "$PID_DIR"
 
-# 使用 conda Python（paddleocr 安装在此环境中）
-PYTHON="/opt/miniconda3/bin/python"
+# 优先使用 backend 虚拟环境中的 Python（已安装 rapidocr-onnxruntime 和兼容的 numpy<2）
+# 如果虚拟环境不存在，则回退到 conda Python
+if [ -f "$BACKEND_DIR/.venv/bin/python" ]; then
+    PYTHON="$BACKEND_DIR/.venv/bin/python"
+    log "使用虚拟环境 Python: $PYTHON"
+else
+    PYTHON="/opt/miniconda3/bin/python"
+    log "使用 conda Python: $PYTHON (请确保已安装 numpy<2.0)"
+fi
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
