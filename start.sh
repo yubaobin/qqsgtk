@@ -11,8 +11,18 @@ FRONTEND_PID_FILE="$PID_DIR/frontend.pid"
 
 mkdir -p "$PID_DIR"
 
-# 优先使用 backend 虚拟环境中的 Python（已安装 rapidocr-onnxruntime 和兼容的 numpy<2）
-# 如果虚拟环境不存在，则回退到 conda Python
+# 颜色定义
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+# 日志函数（必须在最前面定义，避免与 macOS log 命令冲突）
+info()  { echo -e "${GREEN}[start.sh]${NC} $1"; }
+warn()  { echo -e "${YELLOW}[start.sh]${NC} $1"; }
+error() { echo -e "${RED}[start.sh]${NC} $1"; }
+
+# 选择 Python 解释器：优先使用虚拟环境（已安装 rapidocr-onnxruntime 和兼容的 numpy<2）
 if [ -f "$BACKEND_DIR/.venv/bin/python" ]; then
     PYTHON="$BACKEND_DIR/.venv/bin/python"
     info "使用虚拟环境 Python: $PYTHON"
@@ -20,15 +30,6 @@ else
     PYTHON="/opt/miniconda3/bin/python"
     info "使用 conda Python: $PYTHON (请确保已安装 numpy<2.0)"
 fi
-
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
-
-info()  { echo -e "${GREEN}[start.sh]${NC} $1"; }
-warn()  { echo -e "${YELLOW}[start.sh]${NC} $1"; }
-error() { echo -e "${RED}[start.sh]${NC} $1"; }
 
 check_frontend_deps() {
     if [ ! -d "$FRONTEND_DIR/node_modules" ]; then
