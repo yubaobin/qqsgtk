@@ -1,6 +1,13 @@
 # OCR 图片识别 & 答案查找系统
 
-基于 PaddleOCR 的图片文字识别和问题答案匹配系统。
+基于 RapidOCR 的图片文字识别和问题答案匹配系统。
+
+## 性能指标
+
+| 场景 | 耗时 | 内存 |
+|------|------|------|
+| 1 核 2G 服务器（Docker） | 1-4 秒 | ~500MB |
+| 本地开发（M1/M2） | 0.3-1 秒 | ~300MB |
 
 ## 部署后重要提示
 
@@ -14,7 +21,7 @@
 ./start.sh restart
 
 # 或手动重启（Docker）
-docker-compose restart backend
+docker compose restart
 
 # 验证新版本已加载
 curl http://localhost:8000/answer -X POST -H "Content-Type: application/json" -d '{"question":"zsxozmzcchtsdmztzjms"}'
@@ -28,6 +35,7 @@ curl http://localhost:8000/answer -X POST -H "Content-Type: application/json" -d
 - **模糊匹配答案**：支持索引、精确、归一化、包含、相似度五级匹配
 - **多结果返回**：一次返回最多 10 条匹配答案
 - **实时搜索**：输入框内容变化 300ms 后自动查询
+- **黑底白字自动反色**：自动检测并反转，适配游戏截图
 
 ## 快速开始
 
