@@ -9,12 +9,14 @@ services:
     ports:
       - "8001:80"
     restart: unless-stopped
-    mem_limit: 1.5g
-    memswap_limit: 2g
+    mem_limit: 1g
+    memswap_limit: 1.5g
     environment:
       - OMP_NUM_THREADS=1
       - MKL_NUM_THREADS=1
       - ONNX_NUM_THREADS=1
+      - INTRA_OP_NUM_THREADS=1
+      - INTER_OP_NUM_THREADS=1
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s

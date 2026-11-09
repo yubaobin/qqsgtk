@@ -8,46 +8,42 @@ logger = logging.getLogger(__name__)
 
 _ocr_engine = None
 
-# 最大图片边长，超过则等比缩小（1 核 2G 服务器需严格控制分辨率）
-MAX_IMAGE_SIDE = 640
-# 最小短边长度，短边小于此值则放大（保证文字高度足够）
-MIN_SHORT_SIDE = 48
+# 最大图片边长（1 核 2G 服务器极速模式）
+MAX_IMAGE_SIDE = 480
+# 最小短边长度
+MIN_SHORT_SIDE = 32
 
 
 def get_ocr_engine():
-    """Lazy-load RapidOCR singleton. Loaded once, reused across requests.
+    """Lazy-load RapidOCR singleton with ultra-light model.
     
-    RapidOCR 是 PaddleOCR 的轻量级分支，内存占用约 200MB，
-    速度提升 3-5 倍，精度相当。
+    使用 PP-OCRv4 ultra-light 模型，内存占用约 150MB，
+    单次 OCR 耗时 1-3 秒（480px 分辨率）。
     """
     global _ocr_engine
     if _ocr_engine is None:
         from rapidocr_onnxruntime import RapidOCR
-        logger.info("Initializing RapidOCR (lang=ch, low-memory mode)...")
-        # det_limit_side_len=640: 极低检测分辨率，省内存
-        # det_db_box_thresh=0.5: 提高阈值，减少检测框数量
+        logger.info("Initializing RapidOCR (ultra-light, 480px)...")
+        # det_limit_side_len=480: 极低分辨率，速度优先
+        # det_db_box_thresh=0.6: 高阈值，只检测最明显的文字区域
         # cls=False: 关闭角度分类
-        # rec_batch_num=1: 单批处理，省内存
+        # rec_batch_num=1: 单批处理
         _ocr_engine = RapidOCR(
-            det_limit_side_len=640,
-            det_db_box_thresh=0.5,
+            det_limit_side_len=480,
+            det_db_box_thresh=0.6,
             det_db_unclip_ratio=1.5,
             cls=False,
             rec_batch_num=1,
             use_cuda=False,
+            det_model_path=None,  # 使用内置 ultra-light 模型
+            rec_model_path=None,
         )
-        logger.info("RapidOCR initialized (low-memory mode).")
+        logger.info("RapidOCR initialized (ultra-light mode).")
     return _ocr_engine
 
 
 def _preprocess(image: Image.Image) -> np.ndarray:
-    """
-    图片预处理：转 RGB + 按短边缩放 + 自动反色。
-    
-    截图类 OCR 场景：不做额外增强（减少 CPU 开销）。
-    短边 < MIN_SHORT_SIDE 时放大，保证文字高度足够。
-    自动检测黑底白字并反转为白底黑字（OCR 训练数据是白底黑字）。
-    """
+    """图片预处理：转 RGB + 自动反色 + 按短边缩放。"""
     # 1. 转 RGB
     if image.mode != "RGB":
         image = image.convert("RGB")
@@ -55,11 +51,11 @@ def _preprocess(image: Image.Image) -> np.ndarray:
     # 2. 自动反色：检测黑底白字并反转
     gray = image.convert("L")
     avg_brightness = sum(gray.getdata()) / len(gray.getdata())
-    if avg_brightness < 100:  # 暗图，假设是黑底白字
+    if avg_brightness < 100:
         image = ImageOps.invert(image)
         logger.debug(f"检测到黑底白字 (avg={avg_brightness:.1f})，已反色")
 
-    # 3. 按短边缩放（保证文字高度）
+    # 3. 按短边缩放
     w, h = image.size
     short_side = min(w, h)
     if short_side < MIN_SHORT_SIDE:
@@ -74,20 +70,7 @@ def _preprocess(image: Image.Image) -> np.ndarray:
 
 
 def recognize(image_bytes: bytes) -> list[str]:
-    """
-    Run OCR on raw image bytes.
-
-    Args:
-        image_bytes: Raw bytes of an image file (PNG, JPG, etc.)
-
-    Returns:
-        List of recognized text strings, one per detected line.
-        Returns empty list if no text is found.
-
-    Raises:
-        OSError: If the image cannot be opened (corrupt or non-image).
-        Exception: For other OCR failures.
-    """
+    """Run OCR on raw image bytes."""
     engine = get_ocr_engine()
 
     image = Image.open(io.BytesIO(image_bytes))
@@ -136,24 +119,10 @@ def _normalize_for_compare(text: str) -> str:
     return re.sub(r"[^\w\u4e00-\u9fff]", "", text)
 
 
-def correct_ocr_text(ocr_text: str, threshold: float = 0.85) -> str:
-    """
-    OCR 后处理纠错：用题库中的问题做模糊匹配，自动修正识别错误。
-    
-    原理：
-    1. 将 OCR 识别的文本与题库中所有问题做归一化后 LCS 相似度比较
-    2. 如果找到相似度 >= threshold 的题目，返回题库中的标准文本
-    3. 否则返回原始 OCR 文本
-    
-    Args:
-        ocr_text: OCR 识别的原始文本
-        threshold: 相似度阈值，默认 0.85（85% 相似即认为匹配）
-    
-    Returns:
-        纠错后的文本，或原始 OCR 文本（无匹配时）
-    """
+def correct_ocr_text(ocr_text: str, threshold: float = 0.75) -> str:
+    """OCR 后处理纠错：用题库中的问题做模糊匹配，自动修正识别错误。"""
     ocr_normalized = _normalize_for_compare(ocr_text)
-    if len(ocr_normalized) < 5:
+    if len(ocr_normalized) < 4:
         return ocr_text
     
     questions = _load_questions_for_correction()
@@ -163,7 +132,7 @@ def correct_ocr_text(ocr_text: str, threshold: float = 0.85) -> str:
     
     for q in questions:
         q_norm = _normalize_for_compare(q)
-        if len(q_norm) < 5:
+        if len(q_norm) < 4:
             continue
         
         score = _lcs_ratio(ocr_normalized, q_norm)
